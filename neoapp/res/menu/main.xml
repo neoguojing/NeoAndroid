@@ -1,0 +1,54 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.neo.neoapp.MainActivity" >
+    <!--<item android:id="@+id/menu_webbrowser"
+        		  android:orderInCategory="1"
+        		  android:title="@string/intent_menu_webbrowser"
+        		  android:icon="@drawable/"
+        		  android:alphabeticShortcut="a"
+        		  android:visible="true"
+        		  >
+                
+    </item>-->
+	<group android:id="@+id/menu_basic"
+	    	android:checkableBehavior="none"
+	    	android:menuCategory="secondary">
+    <item
+        android:id="@+id/menu_intent"
+        android:title="@string/intent_menu"
+        android:orderInCategory="1">
+        <menu>
+            <item android:id="@+id/menu_webbrowser"
+        		  android:orderInCategory="1"
+        		  android:title="@string/intent_menu_webbrowser">
+                
+            </item>
+            <item android:id="@+id/menu_websearch"
+        		  android:orderInCategory="2"
+        		  android:title="@string/intent_menu_websearch">
+                
+            </item>
+            <item android:id="@+id/menu_dial"
+        		  android:orderInCategory="3"
+        		  android:title="@string/intent_menu_dial">
+                
+            </item>
+            <item android:id="@+id/menu_map"
+        		  android:orderInCategory="4"
+        		  android:title="@string/intent_menu_map">
+                
+            </item>
+        </menu>
+    </item>
+    <item
+        android:id="@+id/menu_db"
+        android:title="@string/db_menu"
+        android:orderInCategory="2">
+    </item>
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/action_settings"/>
+	</group>
+</menu>

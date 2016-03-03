@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.neo.neoapp"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="17"
+        android:targetSdkVersion="17" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <provider
+            android:name=".providers.NeoAppContentProvider"
+            android:authorities="com.neo.providers.RecordProvider"
+            android:multiprocess="false" >
+        </provider>
+
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name" >
+            //intent 注册            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.neo.neoapp.activities.DBOprActivity"
+            android:label="@string/title_activity_dbopr" >
+        </activity>
+        <service android:name="com.neo.neoapp.services.NeoAppBackgroundService">
+        </service>
+        <service android:name="com.neo.neoapp.services.NeoAppRemoteService"
+            android:process=":remote">
+            <intent-filter>
+                <action android:name="com.neo.neoapp.services.INeoAppRemoteServiceInterface" />
+            </intent-filter>
+        </service>
+        <receiver android:name="com.neo.neoapp.broadcasts.NeoAppBroadCastReceiver">
+            <intent-filter>
+                <action android:name="com.neo.neoapp.broadcasts.sendbroadcasts" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>
