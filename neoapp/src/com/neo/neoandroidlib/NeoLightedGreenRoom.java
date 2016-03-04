@@ -40,13 +40,13 @@ public class NeoLightedGreenRoom {
 		return wl;
 	}
 	
-	private int registerClient(){
+	synchronized public int registerClient(){
 		this.clientCount++;
 		Log.d(tag,"register a new client clientCount:"+clientCount);
 		return clientCount;
 	}
 	
-	private int unRegisterClient(){
+	synchronized public int unRegisterClient(){
 		
 		Log.d(tag,"unregister a client clientCount:"+clientCount);
 		if(clientCount==0){
@@ -66,7 +66,7 @@ public class NeoLightedGreenRoom {
 		this.turnOffLights();
 	}
 	
-	public boolean isSetup(){
+	public static boolean isSetup(){
 		return (mInstance != null)? true:false;
 	}
 	
