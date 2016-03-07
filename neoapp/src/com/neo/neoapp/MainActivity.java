@@ -1,21 +1,39 @@
 package com.neo.neoapp;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.neo.neoandroidlib.NeoIntentFactiory;
+import com.neo.neoapp.UI.ChangeColorIconWithTextView;
+import com.neo.neoapp.UI.NeoViewPagerAdapter;
 import com.neo.neoapp.activities.DBOprActivity;
 import com.neo.neoapp.broadcasts.NeoAppBroadCastMessages;
+import com.neo.neoapp.fragments.TabFragment;
 import com.neo.neoapp.handlers.NeoAppUIThreadHandler;
 import com.neo.neoapp.handlers.NeoAppWorkerThreadHandler;
 import com.neo.neoapp.services.NeoAppBackgroundService;
 import com.neo.neoapp.tasks.ServiceWorkerWithLooper;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.view.View.OnClickListener;
+import android.view.ViewConfiguration;
 
-public class MainActivity extends Activity {
+public class MainActivity extends FragmentActivity implements OnClickListener,
+	OnPageChangeListener{
 
 	private static final String TAG = "MainActivity";
 	private int counter = 1;
@@ -23,34 +41,32 @@ public class MainActivity extends Activity {
 	private ServiceWorkerWithLooper mtMainActivityWorker;
 	private NeoAppWorkerThreadHandler mWorkerThreadHandler;
 	
+	//for vies
+	private ViewPager mViewPager;
+	private NeoViewPagerAdapter mfPagerAdapter;
+	private List<TabFragment> mListFragments = new ArrayList<TabFragment>();
+	private List<ChangeColorIconWithTextView> mListViews = 
+			new ArrayList<ChangeColorIconWithTextView>();
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		//兼容性设置
+		setOverflowButtonAlways();
+		getActionBar().setDisplayShowHomeEnabled(false);
 		
-		//启动本地服务
-		Intent bgsvc = new Intent(MainActivity.this,
-				NeoAppBackgroundService.class);
-		bgsvc.putExtra("counter", counter++);
-		startService(bgsvc);
-		
-		//启动工作者线程
-		mtMainActivityWorker = new ServiceWorkerWithLooper("MainActivity Worker thread",
-				MainActivity.this);
-		mWorkerThreadHandler = new NeoAppWorkerThreadHandler
-				(mtMainActivityWorker.getLooper());
-		mWorkerThreadHandler.sendMessage(1);
-		
-		//send notifiation
-		//NeoAppBroadCastMessages.sendBroadCastTestMsg(this);
-		
+		//初始化设置
+		initViews();
+		initService();
+		initWorkerThread();
+		//sendNotifications();
+			
 	}
 	
 	public void onDestroy(){
 		
-		Intent bgsvc = new Intent(MainActivity.this,
-				NeoAppBackgroundService.class);
-		stopService(bgsvc);
+		stopService();
 		super.onDestroy();
 	}
 	
@@ -93,6 +109,185 @@ public class MainActivity extends Activity {
 			return super.onOptionsItemSelected(item);
 		}
 	
+		
+	}
+	
+	@Override
+	public boolean onMenuOpened(int featureId, Menu menu) {
+		// TODO Auto-generated method stub
+		if(featureId == Window.FEATURE_ACTION_BAR && menu != null){
+			if (menu.getClass().getSimpleName().equals("MenuBuilder")){
+				try {
+					//鍒╃敤鍙嶅皠
+					Method m = menu.getClass().getDeclaredMethod(
+							"setOptionalIconsVisible",Boolean.TYPE);
+					m.setAccessible(true);
+					m.invoke(menu, true);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} 
+			}
+		}
+		return super.onMenuOpened(featureId, menu);
+	}
+	
+	private void initViews(){
+		
+		mViewPager = (ViewPager)findViewById(R.id.id_viewpager);
+		
+		ChangeColorIconWithTextView one=(ChangeColorIconWithTextView) findViewById(R.id.id_indicator_one);
+		ChangeColorIconWithTextView two=(ChangeColorIconWithTextView) findViewById(R.id.id_indicator_two);
+		ChangeColorIconWithTextView three=(ChangeColorIconWithTextView) findViewById(R.id.id_indicator_three);
+		ChangeColorIconWithTextView four=(ChangeColorIconWithTextView) findViewById(R.id.id_indicator_four);
+	
+		mListViews.add(one);
+		mListViews.add(two);
+		mListViews.add(three);
+		mListViews.add(four);
+		
+		one.setOnClickListener(this);
+		two.setOnClickListener(this);
+		three.setOnClickListener(this);
+		four.setOnClickListener(this);
+		one.setIconAlpha(1.0f);
+		
+		initDatas();
+		initEvents();
+	}
+	
+	private void initDatas(){
+		
+		String [] titles=new String[]{
+				"First Fragment!","Second Fragment!","Third Fragment!"
+				,"Fourth Fragment!"};
+		
+		for(String title : titles){
+			
+			TabFragment tabFragment = new TabFragment();
+			Bundle bd = new Bundle();
+			bd.putString(TabFragment.TITLE,title);
+			tabFragment.setArguments(bd);
+			mListFragments.add(tabFragment);
+		}
+		
+		mfPagerAdapter = new NeoViewPagerAdapter(this.getSupportFragmentManager()
+				,mListFragments);
+		mViewPager.setAdapter(mfPagerAdapter);
+		
+	}
+	
+	@SuppressWarnings("deprecation")
+	private void initEvents(){
+		//mViewPager.setOnPageChangeListener(this);
+		mViewPager.addOnPageChangeListener(this);
+	}
+	
+	private void initService(){
+		//启动本地服务
+		Intent bgsvc = new Intent(MainActivity.this,
+				NeoAppBackgroundService.class);
+		bgsvc.putExtra("counter", counter++);
+		startService(bgsvc);
+	}
+	
+	private void stopService(){
+		Intent bgsvc = new Intent(MainActivity.this,
+				NeoAppBackgroundService.class);
+		stopService(bgsvc);
+	}
+	
+	private void initWorkerThread(){
+		//启动工作者线程
+		mtMainActivityWorker = new ServiceWorkerWithLooper("MainActivity Worker thread",
+				MainActivity.this);
+		mWorkerThreadHandler = new NeoAppWorkerThreadHandler
+				(mtMainActivityWorker.getLooper());
+		mWorkerThreadHandler.sendMessage(1);
+	}
+	
+	private void sendNotifications(){
+		//send notifiation
+		NeoAppBroadCastMessages.sendBroadCastTestMsg(this);
+	}
+	
+	private void setOverflowButtonAlways(){
+		try {
+			ViewConfiguration viewconfig=ViewConfiguration.get(this);
+			//鍒╃敤鍙嶅皠
+			Field menuKey=ViewConfiguration.class.getDeclaredField("sHasPermanentMenuKey");
+			menuKey.setAccessible(true);
+			menuKey.setBoolean(viewconfig, false);
+		} catch (NoSuchFieldException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void onClick(View view) {
+		// TODO Auto-generated method stub
+		onTabClick(view);
+	}
+	
+	private void onTabClick(View view){
+		resetOthersTab();
+		
+		switch(view.getId()){
+		case R.id.id_indicator_one:
+			mListViews.get(0).setIconAlpha(1.0f);
+			mViewPager.setCurrentItem(0,false);
+			break;
+		case R.id.id_indicator_two:
+			mListViews.get(1).setIconAlpha(1.0f);
+			mViewPager.setCurrentItem(1,false);
+			break;
+		case R.id.id_indicator_three:
+			mListViews.get(2).setIconAlpha(1.0f);
+			mViewPager.setCurrentItem(2,false);
+			break;
+		case R.id.id_indicator_four:
+			mListViews.get(3).setIconAlpha(1.0f);
+			mViewPager.setCurrentItem(3,false);
+			break;
+		}
+	}
+
+	private void resetOthersTab() {
+		// TODO Auto-generated method stub
+		for (int i=0;i<mListViews.size();i++){
+			mListViews.get(i).setIconAlpha(0.0f);
+		}
+	}
+
+	@Override
+	public void onPageScrollStateChanged(int arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onPageScrolled(int position, float positionOffset,
+			int positionOffsetPixels) {
+		// TODO Auto-generated method stub
+		if(positionOffset>0){
+			ChangeColorIconWithTextView left = mListViews.get(position);
+			ChangeColorIconWithTextView right = mListViews.get(position+1);
+			left.setIconAlpha(1-positionOffset);
+			right.setIconAlpha(positionOffset);
+		}
+		
+	}
+
+	@Override
+	public void onPageSelected(int arg0) {
+		// TODO Auto-generated method stub
 		
 	}
 }

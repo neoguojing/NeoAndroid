@@ -21,8 +21,8 @@ public class NeoThreadUtils {
 				pri+":(group)"+gname);
 	}
 	
-	public static void logThreadSignature(){
-		Log.d("NeoThreadUtils",getThreadSignature());
+	public static void logThreadSignature(String name){
+		Log.d(name,getThreadSignature());
 	}
 	
 	public static void sleepForInSecs(int secs){

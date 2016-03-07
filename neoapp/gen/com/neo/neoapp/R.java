@@ -9,6 +9,37 @@ package com.neo.neoapp;
 
 public final class R {
     public static final class attr {
+        /** <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int color=0x7f010001;
+        /** <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+         */
+        public static final int icon=0x7f010000;
+        /** <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int text=0x7f010002;
+        /** <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int text_size=0x7f010003;
     }
     public static final class dimen {
         /**  Default screen margins, per the Android Design guidelines. 
@@ -23,26 +54,51 @@ public final class R {
         public static final int navigation_drawer_width=0x7f040002;
     }
     public static final class drawable {
-        public static final int drawer_shadow=0x7f020000;
-        public static final int ic_drawer=0x7f020001;
-        public static final int ic_launcher=0x7f020002;
+        public static final int actionbar_add_icon=0x7f020000;
+        public static final int actionbar_search_icon=0x7f020001;
+        public static final int drawer_shadow=0x7f020002;
+        public static final int ic_drawer=0x7f020003;
+        public static final int ic_launcher=0x7f020004;
+        public static final int ic_menu_allfriends=0x7f020005;
+        public static final int ic_menu_emoticons=0x7f020006;
+        public static final int ic_menu_friendslist=0x7f020007;
+        public static final int ic_menu_start_conversation=0x7f020008;
+        public static final int men_scan_icon=0x7f020009;
+        public static final int menu_add_icon=0x7f02000a;
+        public static final int menu_feedback_icon=0x7f02000b;
+        public static final int menu_group_chat_icon=0x7f02000c;
+        public static final int tab_address_normal=0x7f02000d;
+        public static final int tab_bg=0x7f02000e;
+        public static final int tab_find_frd_normal=0x7f02000f;
+        public static final int tab_settings_normal=0x7f020010;
+        public static final int tab_weixin_normal=0x7f020011;
     }
     public static final class id {
-        public static final int action_example=0x7f080007;
-        public static final int action_settings=0x7f080008;
+        public static final int action_add_friend=0x7f080017;
+        public static final int action_example=0x7f08000c;
+        public static final int action_feedback=0x7f080019;
+        public static final int action_group_chat=0x7f080016;
+        public static final int action_scan=0x7f080018;
+        public static final int action_search=0x7f080015;
+        public static final int action_settings=0x7f08000d;
         public static final int container=0x7f080001;
-        public static final int db_name=0x7f080003;
-        public static final int db_table_row=0x7f080006;
-        public static final int db_uri=0x7f080005;
-        public static final int db_version=0x7f080004;
+        public static final int db_name=0x7f080008;
+        public static final int db_table_row=0x7f08000b;
+        public static final int db_uri=0x7f08000a;
+        public static final int db_version=0x7f080009;
         public static final int drawer_layout=0x7f080000;
-        public static final int menu_basic=0x7f080009;
-        public static final int menu_db=0x7f08000f;
-        public static final int menu_dial=0x7f08000d;
-        public static final int menu_intent=0x7f08000a;
-        public static final int menu_map=0x7f08000e;
-        public static final int menu_webbrowser=0x7f08000b;
-        public static final int menu_websearch=0x7f08000c;
+        public static final int id_indicator_four=0x7f080007;
+        public static final int id_indicator_one=0x7f080004;
+        public static final int id_indicator_three=0x7f080006;
+        public static final int id_indicator_two=0x7f080005;
+        public static final int id_viewpager=0x7f080003;
+        public static final int menu_basic=0x7f08000e;
+        public static final int menu_db=0x7f080014;
+        public static final int menu_dial=0x7f080012;
+        public static final int menu_intent=0x7f08000f;
+        public static final int menu_map=0x7f080013;
+        public static final int menu_webbrowser=0x7f080010;
+        public static final int menu_websearch=0x7f080011;
         public static final int navigation_drawer=0x7f080002;
     }
     public static final class layout {
@@ -57,7 +113,11 @@ public final class R {
         public static final int main=0x7f070002;
     }
     public static final class string {
+        public static final int action_add=0x7f050011;
         public static final int action_example=0x7f05000f;
+        /**  for weixin or other app 
+         */
+        public static final int action_search=0x7f050010;
         public static final int action_settings=0x7f050002;
         public static final int app_name=0x7f050000;
         /**  for databases 
@@ -71,8 +131,15 @@ public final class R {
         public static final int intent_menu_map=0x7f050007;
         public static final int intent_menu_webbrowser=0x7f050004;
         public static final int intent_menu_websearch=0x7f050005;
+        public static final int menu_addfriend=0x7f050014;
+        public static final int menu_feedback=0x7f050013;
+        public static final int menu_group_chat=0x7f050012;
+        public static final int menu_scan=0x7f050015;
         public static final int navigation_drawer_close=0x7f05000e;
         public static final int navigation_drawer_open=0x7f05000d;
+        public static final int tab_contact=0x7f050016;
+        public static final int tab_found=0x7f050017;
+        public static final int tab_me=0x7f050018;
         /**  for DBOprActivity and NavigationDrawerFragment 
          */
         public static final int title_activity_dbopr=0x7f050009;
@@ -108,4 +175,80 @@ public final class R {
          */
         public static final int AppTheme=0x7f060001;
     }
+    public static final class styleable {
+        /** Attributes that can be used with a ChangeColorIconWithText.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #ChangeColorIconWithText_color com.neo.neoapp:color}</code></td><td></td></tr>
+           <tr><td><code>{@link #ChangeColorIconWithText_icon com.neo.neoapp:icon}</code></td><td></td></tr>
+           <tr><td><code>{@link #ChangeColorIconWithText_text com.neo.neoapp:text}</code></td><td></td></tr>
+           <tr><td><code>{@link #ChangeColorIconWithText_text_size com.neo.neoapp:text_size}</code></td><td></td></tr>
+           </table>
+           @see #ChangeColorIconWithText_color
+           @see #ChangeColorIconWithText_icon
+           @see #ChangeColorIconWithText_text
+           @see #ChangeColorIconWithText_text_size
+         */
+        public static final int[] ChangeColorIconWithText = {
+            0x7f010000, 0x7f010001, 0x7f010002, 0x7f010003
+        };
+        /**
+          <p>This symbol is the offset where the {@link com.neo.neoapp.R.attr#color}
+          attribute's value can be found in the {@link #ChangeColorIconWithText} array.
+
+
+          <p>Must be a color value, in the form of "<code>#<i>rgb</i></code>", "<code>#<i>argb</i></code>",
+"<code>#<i>rrggbb</i></code>", or "<code>#<i>aarrggbb</i></code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name com.neo.neoapp:color
+        */
+        public static final int ChangeColorIconWithText_color = 1;
+        /**
+          <p>This symbol is the offset where the {@link com.neo.neoapp.R.attr#icon}
+          attribute's value can be found in the {@link #ChangeColorIconWithText} array.
+
+
+          <p>Must be a reference to another resource, in the form "<code>@[+][<i>package</i>:]<i>type</i>:<i>name</i></code>"
+or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>".
+          @attr name com.neo.neoapp:icon
+        */
+        public static final int ChangeColorIconWithText_icon = 0;
+        /**
+          <p>This symbol is the offset where the {@link com.neo.neoapp.R.attr#text}
+          attribute's value can be found in the {@link #ChangeColorIconWithText} array.
+
+
+          <p>Must be a string value, using '\\;' to escape characters such as '\\n' or '\\uxxxx' for a unicode character.
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name com.neo.neoapp:text
+        */
+        public static final int ChangeColorIconWithText_text = 2;
+        /**
+          <p>This symbol is the offset where the {@link com.neo.neoapp.R.attr#text_size}
+          attribute's value can be found in the {@link #ChangeColorIconWithText} array.
+
+
+          <p>Must be a dimension value, which is a floating point number appended with a unit such as "<code>14.5sp</code>".
+Available units are: px (pixels), dp (density-independent pixels), sp (scaled pixels based on preferred font size),
+in (inches), mm (millimeters).
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name com.neo.neoapp:text_size
+        */
+        public static final int ChangeColorIconWithText_text_size = 3;
+    };
 }

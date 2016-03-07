@@ -44,7 +44,13 @@
                 <action android:name="com.neo.neoapp.broadcasts.sendbroadcasts" />
             </intent-filter>
         </receiver>
-        
+        <receiver android:name="com.neo.neoapp.broadcasts.NeoLongRunningReceiverImpl">
+            <intent-filter>
+                <action android:name="com.neo.neoapp.broadcasts.longrunningbroadcast" />
+            </intent-filter>
+        </receiver>
+        <service android:name="com.neo.neoapp.services.NeoLongRunningNonStickyServiceImpl">
+        </service>
     </application>
 	<uses-permission android:name="android.permission.WAKE_LOCK"/>
 </manifest>
