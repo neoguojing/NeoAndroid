@@ -1,6 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:jack="http://schemas.android.com/apk/res/com.neo.neoapp"
+    xmlns:neo="http://schemas.android.com/apk/res/com.neo.neoapp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
@@ -26,10 +26,10 @@
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:padding="5dp"
-            jack:color="#ff45c01a"
-            jack:icon="@drawable/ic_menu_start_conversation"
-            jack:text="@string/app_name"
-            jack:text_size="12sp" />
+            neo:color="#ff45c01a"
+            neo:icon="@drawable/ic_menu_start_conversation"
+            neo:text="@string/app_name"
+            neo:text_size="12sp" />
 
         <com.neo.neoapp.UI.ChangeColorIconWithTextView
             android:id="@+id/id_indicator_two"
@@ -37,10 +37,10 @@
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:padding="5dp"
-            jack:color="#ff45c01a"
-            jack:icon="@drawable/ic_menu_friendslist"
-            jack:text="@string/tab_contact"
-            jack:text_size="12sp" />
+            neo:color="#ff45c01a"
+            neo:icon="@drawable/ic_menu_friendslist"
+            neo:text="@string/tab_contact"
+            neo:text_size="12sp" />
 
         <com.neo.neoapp.UI.ChangeColorIconWithTextView
             android:id="@+id/id_indicator_three"
@@ -48,10 +48,10 @@
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:padding="5dp"
-            jack:color="#ff45c01a"
-            jack:icon="@drawable/ic_menu_emoticons"
-            jack:text="@string/tab_found"
-            jack:text_size="12sp" />
+            neo:color="#ff45c01a"
+            neo:icon="@drawable/ic_menu_emoticons"
+            neo:text="@string/tab_found"
+            neo:text_size="12sp" />
 
         <com.neo.neoapp.UI.ChangeColorIconWithTextView
             android:id="@+id/id_indicator_four"
@@ -59,10 +59,10 @@
             android:layout_height="fill_parent"
             android:layout_weight="1"
             android:padding="5dp"
-            jack:color="#ff45c01a"
-            jack:icon="@drawable/ic_menu_allfriends"
-            jack:text="@string/tab_me"
-            jack:text_size="12sp" />
+            neo:color="#ff45c01a"
+            neo:icon="@drawable/ic_menu_allfriends"
+            neo:text="@string/tab_me"
+            neo:text_size="12sp" />
     </LinearLayout>
 
 </LinearLayout>

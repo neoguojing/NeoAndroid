@@ -5,24 +5,25 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.neo.neoapp.R;
 import com.neo.neoandroidlib.NeoIntentFactiory;
 import com.neo.neoapp.UI.ChangeColorIconWithTextView;
 import com.neo.neoapp.UI.NeoViewPagerAdapter;
 import com.neo.neoapp.activities.DBOprActivity;
 import com.neo.neoapp.broadcasts.NeoAppBroadCastMessages;
+import com.neo.neoapp.fragments.NeoBasicFragment;
+import com.neo.neoapp.fragments.NeoDisPlayFragment;
+import com.neo.neoapp.fragments.NeoSetingListFragment;
+import com.neo.neoapp.fragments.RefreshListFragment;
 import com.neo.neoapp.fragments.TabFragment;
 import com.neo.neoapp.handlers.NeoAppUIThreadHandler;
 import com.neo.neoapp.handlers.NeoAppWorkerThreadHandler;
 import com.neo.neoapp.services.NeoAppBackgroundService;
 import com.neo.neoapp.tasks.ServiceWorkerWithLooper;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Looper;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.Menu;
@@ -34,7 +35,9 @@ import android.view.ViewConfiguration;
 
 public class MainActivity extends FragmentActivity implements OnClickListener,
 	OnPageChangeListener{
-
+	
+	private NeoBasicApplication mApplication;
+	
 	private static final String TAG = "MainActivity";
 	private int counter = 1;
 	
@@ -44,7 +47,9 @@ public class MainActivity extends FragmentActivity implements OnClickListener,
 	//for vies
 	private ViewPager mViewPager;
 	private NeoViewPagerAdapter mfPagerAdapter;
-	private List<TabFragment> mListFragments = new ArrayList<TabFragment>();
+	private List<NeoBasicFragment> mListFragments = new ArrayList<NeoBasicFragment>();
+	//private List<RefreshListFragment> mListFragments = new ArrayList<RefreshListFragment>();
+	
 	private List<ChangeColorIconWithTextView> mListViews = 
 			new ArrayList<ChangeColorIconWithTextView>();
 	
@@ -52,11 +57,13 @@ public class MainActivity extends FragmentActivity implements OnClickListener,
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		//¼æÈÝÐÔÉèÖÃ
+		
+		mApplication = (NeoBasicApplication) getApplication();
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		setOverflowButtonAlways();
 		getActionBar().setDisplayShowHomeEnabled(false);
 		
-		//³õÊ¼»¯ÉèÖÃ
+		//ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		initViews();
 		initService();
 		initWorkerThread();
@@ -158,9 +165,19 @@ public class MainActivity extends FragmentActivity implements OnClickListener,
 	
 	private void initDatas(){
 		
-		String [] titles=new String[]{
-				"First Fragment!","Second Fragment!","Third Fragment!"
-				,"Fourth Fragment!"};
+		String [] titles=new String[]{"Fourth Fragment!"};
+		
+		RefreshListFragment refreshList = 
+				new RefreshListFragment(mApplication,this,this);
+		mListFragments.add(refreshList);
+		
+		NeoDisPlayFragment displayView = 
+				new NeoDisPlayFragment(mApplication,this,this);
+		mListFragments.add(displayView);
+		
+		NeoSetingListFragment setingList = 
+				new NeoSetingListFragment(mApplication,this,this);
+		mListFragments.add(setingList);
 		
 		for(String title : titles){
 			
@@ -184,7 +201,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener,
 	}
 	
 	private void initService(){
-		//Æô¶¯±¾µØ·þÎñ
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø·ï¿½ï¿½ï¿½
 		Intent bgsvc = new Intent(MainActivity.this,
 				NeoAppBackgroundService.class);
 		bgsvc.putExtra("counter", counter++);
@@ -198,7 +215,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener,
 	}
 	
 	private void initWorkerThread(){
-		//Æô¶¯¹¤×÷ÕßÏß³Ì
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß³ï¿½
 		mtMainActivityWorker = new ServiceWorkerWithLooper("MainActivity Worker thread",
 				MainActivity.this);
 		mWorkerThreadHandler = new NeoAppWorkerThreadHandler

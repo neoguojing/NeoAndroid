@@ -1,12 +1,6 @@
 package com.neo.neoapp.fragments;
 
 import com.neo.neoapp.R;
-import com.neo.neoapp.R.drawable;
-import com.neo.neoapp.R.id;
-import com.neo.neoapp.R.layout;
-import com.neo.neoapp.R.menu;
-import com.neo.neoapp.R.string;
-import com.neo.neoapp.activities.views.DBOprActivityView;
 
 import android.app.Activity;
 import android.app.ActionBar;

@@ -1,6 +1,5 @@
 package com.neo.neoapp.services;
 
-import com.neo.neoapp.MainActivity;
 import com.neo.neoapp.broadcasts.NeoAppBroadCastMessages;
 import com.neo.neoapp.tasks.ServicieWorker;
 
@@ -55,7 +54,7 @@ public class NeoAppBackgroundService extends Service {
 	public void onDestroy(){
 		Log.v(TAG,"in onDestroy");
 		
-		mThreadGroup.interrupt();
+		mThreadGroup.interrupt(); 
 		notifyMgr.cancelAll();
 		super.onDestroy();
 	}

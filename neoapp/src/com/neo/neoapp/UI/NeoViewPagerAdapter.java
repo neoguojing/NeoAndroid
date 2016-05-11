@@ -2,7 +2,7 @@ package com.neo.neoapp.UI;
 
 import java.util.List;
 
-import com.neo.neoapp.fragments.TabFragment;
+import com.neo.neoapp.fragments.NeoBasicFragment;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -10,9 +10,9 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 public class NeoViewPagerAdapter extends FragmentPagerAdapter {
 	
-	private List<TabFragment> mList;
+	private List<NeoBasicFragment> mList;
 
-	public NeoViewPagerAdapter(FragmentManager fm,List<TabFragment> inlist) {
+	public NeoViewPagerAdapter(FragmentManager fm,List<NeoBasicFragment> inlist) {
 		super(fm);
 		// TODO Auto-generated constructor stub
 		mList = inlist;
