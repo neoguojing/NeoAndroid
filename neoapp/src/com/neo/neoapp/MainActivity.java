@@ -33,7 +33,7 @@ import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.ViewConfiguration;
 
-public class MainActivity extends FragmentActivity implements OnClickListener,
+public class MainActivity extends NeoBasicActivity implements OnClickListener,
 	OnPageChangeListener{
 	
 	private NeoBasicApplication mApplication;
@@ -139,7 +139,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener,
 		return super.onMenuOpened(featureId, menu);
 	}
 	
-	private void initViews(){
+	protected void initViews(){
 		
 		mViewPager = (ViewPager)findViewById(R.id.id_viewpager);
 		
@@ -195,7 +195,7 @@ public class MainActivity extends FragmentActivity implements OnClickListener,
 	}
 	
 	@SuppressWarnings("deprecation")
-	private void initEvents(){
+	protected void initEvents(){
 		//mViewPager.setOnPageChangeListener(this);
 		mViewPager.addOnPageChangeListener(this);
 	}

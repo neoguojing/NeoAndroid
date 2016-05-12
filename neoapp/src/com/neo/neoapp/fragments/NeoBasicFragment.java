@@ -8,7 +8,7 @@ import com.neo.neoapp.R;
 import com.neo.neoandroidlib.NetWorkUtils;
 import com.neo.neoapp.NeoBasicApplication;
 import com.neo.neoapp.UI.views.NeoBasicTextView;
-import com.neo.neoapp.dialog.FlippingLoadingDialog;
+import com.neo.neoapp.dialog.NeoFlippingLoadingDialog;
 
 import android.app.Activity;
 import android.content.Context;
@@ -30,7 +30,7 @@ public abstract class NeoBasicFragment extends Fragment {
 	protected Context mContext;
 	protected View mView;
 	protected NetWorkUtils mNetWorkUtils;
-	protected FlippingLoadingDialog mLoadingDialog;
+	protected NeoFlippingLoadingDialog mLoadingDialog;
 
 	/**
 	 * 屏幕的宽度、高度、密度
@@ -51,7 +51,7 @@ public abstract class NeoBasicFragment extends Fragment {
 		mActivity = activity;
 		mContext = context;
 		mNetWorkUtils = new NetWorkUtils(context);
-		mLoadingDialog = new FlippingLoadingDialog(context, "请求提交中");
+		mLoadingDialog = new NeoFlippingLoadingDialog(context, "请求提交中");
 		/**
 		 * 获取屏幕宽度、高度、密度
 		 */
