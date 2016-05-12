@@ -56,6 +56,14 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".activities.chat.ChatActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".activities.imageactivity.ImageFactoryActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name=".activities.DBOprActivity"
             android:label="@string/title_activity_dbopr" >
         </activity>

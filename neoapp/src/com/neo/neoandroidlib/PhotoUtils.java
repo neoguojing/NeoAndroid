@@ -30,6 +30,8 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 
 import com.neo.neoapp.R;
+import com.neo.neoapp.activities.imageactivity.ImageFactoryActivity;
+import com.neo.neoapp.activities.imageactivity.ImageFactoryFliter.FilterType;
 
 public class PhotoUtils {
 
@@ -85,7 +87,7 @@ public class PhotoUtils {
 		 * @param path
 		 *            需要裁剪的图片路径
 		 */
-		/*public static void cropPhoto(Context context, Activity activity, String path) {
+		public static void cropPhoto(Context context, Activity activity, String path) {
 			Intent intent = new Intent(context, ImageFactoryActivity.class);
 			if (path != null) {
 				intent.putExtra("path", path);
@@ -93,7 +95,7 @@ public class PhotoUtils {
 						ImageFactoryActivity.CROP);
 			}
 			activity.startActivityForResult(intent, INTENT_REQUEST_CODE_CROP);
-		}*/
+		}
 
 		/**
 		 * 滤镜图片
@@ -103,7 +105,7 @@ public class PhotoUtils {
 		 * @param path
 		 *            需要滤镜的图片路径
 		 */
-		/*public static void fliterPhoto(Context context, Activity activity,
+		public static void fliterPhoto(Context context, Activity activity,
 				String path) {
 			Intent intent = new Intent(context, ImageFactoryActivity.class);
 			if (path != null) {
@@ -112,7 +114,7 @@ public class PhotoUtils {
 						ImageFactoryActivity.FLITER);
 			}
 			activity.startActivityForResult(intent, INTENT_REQUEST_CODE_FLITER);
-		}*/
+		}
 
 		/**
 		 * 删除图片缓存目录
@@ -317,14 +319,14 @@ public class PhotoUtils {
 		 *            默认图片
 		 * @return
 		 */
-		/*public static Bitmap getFilter(FilterType filterType, Bitmap defaultBitmap) {
+		public static Bitmap getFilter(FilterType filterType, Bitmap defaultBitmap) {
 			if (filterType.equals(FilterType.默认)) {
 				return defaultBitmap;
 			} else if (filterType.equals(FilterType.LOMO)) {
 				return lomoFilter(defaultBitmap);
 			}
 			return defaultBitmap;
-		}*/
+		}
 
 		/**
 		 * 滤镜效果--LOMO

@@ -18,6 +18,7 @@ import com.neo.neoapp.UI.adapters.NeoPeopleListAdapter;
 import com.neo.neoapp.UI.views.list.NeoRefreshListView;
 import com.neo.neoapp.UI.views.list.NeoRefreshListView.OnCancelListener;
 import com.neo.neoapp.UI.views.list.NeoRefreshListView.OnRefreshListener;
+import com.neo.neoapp.activities.chat.ChatActivity;
 import com.neo.neoapp.entity.People;
 
 public class RefreshListFragment extends NeoBasicFragment implements
@@ -64,7 +65,7 @@ OnItemClickListener, OnRefreshListener, OnCancelListener{
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		int position = (int) arg3;
 		People people = mApplication.mNearByPeoples.get(position);
-		String uid = null;
+		/*String uid = null;
 		String name = null;
 		String avatar = null;
 		if (position > 3) {
@@ -74,12 +75,16 @@ OnItemClickListener, OnRefreshListener, OnCancelListener{
 		}
 		name = people.getName();
 		avatar = people.getAvatar();
-		/*Intent intent = new Intent(mContext, OtherProfileActivity.class);
+		Intent intent = new Intent(mContext, OtherProfileActivity.class);
 		intent.putExtra("uid", uid);
 		intent.putExtra("name", name);
 		intent.putExtra("avatar", avatar);
+		intent.putExtra("entity_people", people);*/
+		
+		Intent intent = new Intent(mContext, ChatActivity.class);
 		intent.putExtra("entity_people", people);
-		startActivity(intent);8*/
+		//intent.putExtra("entity_profile", mProfile);
+		startActivity(intent);
 	}
 
 	private void getPeoples() {
