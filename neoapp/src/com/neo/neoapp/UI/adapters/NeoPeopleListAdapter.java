@@ -68,8 +68,8 @@ public class NeoPeopleListAdapter extends NeoBasicListAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 		People people = (People) getItem(position);
-		/*holder.mIvAvatar.setImageBitmap(mApplication.getAvatar(people
-				.getAvatar()));*/
+		holder.mIvAvatar.setImageBitmap(mApplication.getAvatar(people
+				.getAvatar()));
 		holder.mHtvName.setText(people.getName());
 		holder.mLayoutGender.setBackgroundResource(people.getGenderBgId());
 		holder.mIvGender.setImageResource(people.getGenderId());

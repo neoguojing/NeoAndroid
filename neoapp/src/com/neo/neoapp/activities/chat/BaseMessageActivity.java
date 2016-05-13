@@ -35,12 +35,14 @@ import com.neo.neoapp.UI.views.HeaderLayout.onMiddleImageButtonClickListener;
 import com.neo.neoapp.UI.views.HeaderLayout.onRightImageButtonClickListener;
 import com.neo.neoapp.UI.views.ScrollLayout;
 import com.neo.neoapp.UI.views.ScrollLayout.OnScrollToScreenListener;
+import com.neo.neoapp.activities.PeopleDetailActivity;
 import com.neo.neoapp.activities.chat.ChatPopupWindow.onChatPopupItemClickListener;
 import com.neo.neoapp.dialog.BaseDialog;
 import com.neo.neoapp.dialog.SimpleListDialog;
 import com.neo.neoapp.dialog.SimpleListDialog.onSimpleListItemClickListener;
 import com.neo.neoapp.entity.Message;
 import com.neo.neoapp.entity.People;
+import com.neo.neoapp.entity.PeopleProfile;
 
 public abstract class BaseMessageActivity extends NeoBasicActivity implements
 		OnScrollToScreenListener, OnClickListener, OnTouchListener,
@@ -74,7 +76,7 @@ public abstract class BaseMessageActivity extends NeoBasicActivity implements
 	protected ChatAdapter mAdapter;
 
 	protected People mPeople;
-	//protected NearByPeopleProfile mProfile;
+	protected PeopleProfile mProfile;
 
 	protected Bitmap mRoundsSelected;
 	protected Bitmap mRoundsNormal;
@@ -103,14 +105,14 @@ public abstract class BaseMessageActivity extends NeoBasicActivity implements
 
 		@Override
 		public void onClick() {
-			/*Intent intent = new Intent(BaseMessageActivity.this,
-					OtherProfileActivity.class);
+			Intent intent = new Intent(BaseMessageActivity.this,
+					PeopleDetailActivity.class);
 			intent.putExtra("uid", mPeople.getUid());
 			intent.putExtra("name", mPeople.getName());
 			intent.putExtra("avatar", mPeople.getAvatar());
 			intent.putExtra("entity_people", mPeople);
 			startActivity(intent);
-			finish();*/
+			finish();
 		}
 	}
 

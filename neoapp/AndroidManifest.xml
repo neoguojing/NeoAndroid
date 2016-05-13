@@ -64,6 +64,12 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name=".activities.PeopleDetailActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" >
+        </activity>
+        
+        <activity
             android:name=".activities.DBOprActivity"
             android:label="@string/title_activity_dbopr" >
         </activity>

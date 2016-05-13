@@ -3,24 +3,12 @@ package com.neo.neoandroidlib;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
+import android.annotation.SuppressLint;
 import android.content.Context;
 
-/**
- * @fileName DateUtils.java
- * @package com.immomo.momo.android.util
- * @description 日期工具类
- * @author 任东卫
- * @email 86930007@qq.com
- * @version 1.0
- */
 public class DateUtils {
-	/**
-	 * 获取yyyyMMdd格式日期
-	 * 
-	 * @param time
-	 * @return
-	 */
+
+	@SuppressLint("SimpleDateFormat")
 	public static Date getDate(String time) {
 		Date date = new Date(System.currentTimeMillis());
 		SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");

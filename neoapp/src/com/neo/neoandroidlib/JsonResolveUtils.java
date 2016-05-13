@@ -1,16 +1,20 @@
 package com.neo.neoandroidlib;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.neo.neoapp.NeoBasicApplication;
+import com.neo.neoapp.R;
 import com.neo.neoapp.entity.Entity;
 import com.neo.neoapp.entity.People;
+import com.neo.neoapp.entity.PeopleProfile;
 import com.neo.neoapp.entity.Setings;
 
 public class JsonResolveUtils {
@@ -29,6 +33,7 @@ public class JsonResolveUtils {
 		private static final String FEEDCOMMENT = "feedcomment.json";
 		
 		private static final String TAG = "JsonResolveUtils";
+		private static final String NearByPeopleProfile = null;
 
 		/**
 		 * 解析附近个人Json数据
@@ -121,4 +126,154 @@ public class JsonResolveUtils {
 				return true;
 			}
 		}
+		
+		public static boolean resolveNearbyProfile(Context context,
+				PeopleProfile profile, String uid) {
+			if (!android.text.TextUtils.isEmpty(uid)) {
+				String json = TextUtils.getJson(context, PROFILE + uid + SUFFIX);
+				if (json != null) {
+					try {
+						JSONObject object = new JSONObject(json);
+						String userId = object.getString(PeopleProfile.UID);
+						String avatar = object
+								.getString(PeopleProfile.AVATAR);
+						String name = object.getString(PeopleProfile.NAME);
+						int gender = object.getInt(PeopleProfile.GENDER);
+						int genderId = -1;
+						int genderBgId = -1;
+						if (gender == 0) {
+							genderId = R.drawable.ic_user_famale;
+							genderBgId = R.drawable.bg_gender_famal;
+						} else {
+							genderId = R.drawable.ic_user_male;
+							genderBgId = R.drawable.bg_gender_male;
+						}
+						int age = object.getInt(PeopleProfile.AGE);
+						String constellation = object
+								.getString(PeopleProfile.CONSTELLATION);
+						String distance = object
+								.getString(PeopleProfile.DISTANCE);
+						String time = object.getString(PeopleProfile.TIME);
+
+						boolean isHasSign = false;
+						String sign = null;
+						String signPic = null;
+						String signDis = null;
+
+						if (object.has(PeopleProfile.SIGNATURE)) {
+							isHasSign = true;
+							JSONObject signObject = object
+									.getJSONObject(PeopleProfile.SIGNATURE);
+							sign = signObject.getString(PeopleProfile.SIGN);
+							if (signObject.has(PeopleProfile.SIGN_PIC)) {
+								signPic = signObject
+										.getString(PeopleProfile.SIGN_PIC);
+							}
+							signDis = signObject
+									.getString(PeopleProfile.SIGN_DIS);
+						}
+
+						JSONArray photosArray = object
+								.getJSONArray(PeopleProfile.PHOTOS);
+						List<String> photos = new ArrayList<String>();
+						for (int i = 0; i < photosArray.length(); i++) {
+							photos.add(photosArray.getString(i));
+						}
+						profile.setUid(userId);
+						profile.setAvatar(avatar);
+						profile.setName(name);
+						profile.setGender(gender);
+						profile.setGenderId(genderId);
+						profile.setGenderBgId(genderBgId);
+						profile.setAge(age);
+						profile.setConstellation(constellation);
+						profile.setDistance(distance);
+						profile.setTime(time);
+						profile.setHasSign(isHasSign);
+						profile.setSign(sign);
+						profile.setSignPicture(signPic);
+						profile.setSignDistance(signDis);
+						profile.setPhotos(photos);
+					} catch (JSONException e) {
+						e.printStackTrace();
+						profile = null;
+						return false;
+					}
+					return true;
+				}
+			}
+			return false;
+		}
+
+		/**
+		 * 解析附近个人状态
+		 * 
+		 * @param context
+		 * @param feeds
+		 * @param uid
+		 * @return
+		 */
+		/*public static boolean resolveNearbyStatus(Context context,
+				List<Feed> feeds, String uid) {
+			if (!android.text.TextUtils.isEmpty(uid)) {
+				String json = TextUtils.getJson(context, STATUS + uid + SUFFIX);
+				if (json != null) {
+					try {
+						JSONArray array = new JSONArray(json);
+						Feed feed = null;
+						for (int i = 0; i < array.length(); i++) {
+							JSONObject object = array.getJSONObject(i);
+							String time = object.getString(Feed.TIME);
+							String content = object.getString(Feed.CONTENT);
+							String contentImage = null;
+							if (object.has(Feed.CONTENT_IMAGE)) {
+								contentImage = object.getString(Feed.CONTENT_IMAGE);
+							}
+							String site = object.getString(Feed.SITE);
+							int commentCount = object.getInt(Feed.COMMENT_COUNT);
+							feed = new Feed(time, content, contentImage, site,
+									commentCount);
+							feeds.add(feed);
+						}
+					} catch (JSONException e) {
+						e.printStackTrace();
+						feeds = null;
+						return false;
+					}
+					return true;
+				}
+			}
+			return false;
+		}*/
+
+		/**
+		 * 解析状态评论
+		 * 
+		 */
+		/*public static boolean resoleFeedComment(Context context,
+				List<FeedComment> comments) {
+			String json = TextUtils.getJson(context, FEEDCOMMENT);
+			if (json != null) {
+				try {
+					JSONArray array = new JSONArray(json);
+					FeedComment comment = null;
+					for (int i = 0; i < array.length(); i++) {
+						JSONObject object = array.getJSONObject(i);
+						String name = object.getString(FeedComment.NAME);
+						String avatar = object.getString(FeedComment.AVATAR);
+						String content = object.getString(FeedComment.CONTENT);
+						String time = object.getString(FeedComment.TIME);
+						comment = new FeedComment(name, avatar, content, time);
+						comments.add(comment);
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+					comments = null;
+					return false;
+				}
+				return true;
+			}
+			return false;
+		}
+	}*/
 }
