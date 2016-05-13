@@ -31,10 +31,12 @@ public class NeoBasicApplication extends Application {
 	private static final String PHOTO_ORIGINAL_DIR = "photo/original/";
 	private static final String PHOTO_THUMBNAIL_DIR = "photo/thumbnail/";
 	private static final String PORTRAIT_DIR = "portrait/";
+	private static final String STATUS_PHOTO_DIR = "statusphoto/";
 
 	public Map<String, SoftReference<Bitmap>> mPortraitCache = new HashMap<String, SoftReference<Bitmap>>();
 	public Map<String, SoftReference<Bitmap>> mPhotoOriginalCache = new HashMap<String, SoftReference<Bitmap>>();
 	public Map<String, SoftReference<Bitmap>> mPhotoThumbnailCache = new HashMap<String, SoftReference<Bitmap>>();
+	public Map<String, SoftReference<Bitmap>> mStatusPhotoCache = new HashMap<String, SoftReference<Bitmap>>();
 	
 	public static List<String> mEmoticons = new ArrayList<String>();
 	public static Map<String, Integer> mEmoticonsId = new HashMap<String, Integer>();
@@ -174,6 +176,39 @@ public class NeoBasicApplication extends Application {
 			}
 			mPhotoThumbnailCache.put(imageName, new SoftReference<Bitmap>(
 					bitmap));
+			return bitmap;
+		} catch (Exception e) {
+			return null;
+		} finally {
+			try {
+				if (is != null) {
+					is.close();
+					is = null;
+				}
+			} catch (IOException e) {
+
+			}
+		}
+	}
+	
+	public Bitmap getStatusPhoto(String imageName) {
+		if (mStatusPhotoCache.containsKey(imageName)) {
+			Reference<Bitmap> reference = mStatusPhotoCache.get(imageName);
+			if (reference.get() == null || reference.get().isRecycled()) {
+				mStatusPhotoCache.remove(imageName);
+			} else {
+				return reference.get();
+			}
+		}
+		InputStream is = null;
+		Bitmap bitmap = null;
+		try {
+			is = getAssets().open(STATUS_PHOTO_DIR + imageName);
+			bitmap = BitmapFactory.decodeStream(is);
+			if (bitmap == null) {
+				throw new FileNotFoundException(imageName + "is not find");
+			}
+			mStatusPhotoCache.put(imageName, new SoftReference<Bitmap>(bitmap));
 			return bitmap;
 		} catch (Exception e) {
 			return null;

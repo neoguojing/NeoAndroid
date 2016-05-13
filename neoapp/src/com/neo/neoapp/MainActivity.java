@@ -194,7 +194,6 @@ public class MainActivity extends NeoBasicActivity implements OnClickListener,
 		
 	}
 	
-	@SuppressWarnings("deprecation")
 	protected void initEvents(){
 		//mViewPager.setOnPageChangeListener(this);
 		mViewPager.addOnPageChangeListener(this);

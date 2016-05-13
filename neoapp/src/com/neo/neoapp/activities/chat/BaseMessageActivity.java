@@ -24,8 +24,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.neo.neoandroidlib.PhotoUtils;
-import com.neo.neoapp.R;
 import com.neo.neoapp.NeoBasicActivity;
+import com.neo.neoapp.R;
 import com.neo.neoapp.UI.adapters.ChatAdapter;
 import com.neo.neoapp.UI.views.ChatListView;
 import com.neo.neoapp.UI.views.EmoteInputView;

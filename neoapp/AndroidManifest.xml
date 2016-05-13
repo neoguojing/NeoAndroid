@@ -68,6 +68,10 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name=".activities.ImageBrowserActivity"
+            android:screenOrientation="portrait" >
+        </activity>
         
         <activity
             android:name=".activities.DBOprActivity"

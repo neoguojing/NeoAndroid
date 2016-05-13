@@ -70,6 +70,7 @@ public class PeopleDetailActivity extends NeoBasicActivity implements
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		getActionBar().hide();
 		setContentView(R.layout.activity_otherprofile);
 		initViews();
 		initEvents();
@@ -167,13 +168,13 @@ public class PeopleDetailActivity extends NeoBasicActivity implements
 
 	@Override
 	public void onItemClick(View view, int position) {
-		/*Intent intent = new Intent(PeopleDetailActivity.this,
+		Intent intent = new Intent(PeopleDetailActivity.this,
 				ImageBrowserActivity.class);
 		intent.putExtra(ImageBrowserActivity.IMAGE_TYPE,
 				ImageBrowserActivity.TYPE_ALBUM);
 		intent.putExtra("position", position);
 		intent.putExtra("entity_profile", mProfile);
-		startActivity(intent);*/
+		startActivity(intent);
 		overridePendingTransition(R.anim.zoom_enter, 0);
 	}
 
@@ -222,9 +223,9 @@ public class PeopleDetailActivity extends NeoBasicActivity implements
 			mHtvFeedSignature.setText(mProfile.getSign());
 			if (mProfile.getSignPicture() != null) {
 				mLayoutFeedPicture.setVisibility(View.VISIBLE);
-				/*mRivFeedPicture.setImageBitmap(
+				mRivFeedPicture.setImageBitmap(
 						mApplication.getStatusPhoto(mProfile.getSignPicture()),
-						5);*/
+						5);
 			} else {
 				mLayoutFeedPicture.setVisibility(View.GONE);
 			}

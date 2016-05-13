@@ -37,6 +37,7 @@ public class ChatActivity extends BaseMessageActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		getActionBar().hide();
 		init();
 	}
 
