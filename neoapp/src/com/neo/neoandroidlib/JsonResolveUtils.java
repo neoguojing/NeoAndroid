@@ -13,6 +13,8 @@ import android.util.Log;
 import com.neo.neoapp.NeoBasicApplication;
 import com.neo.neoapp.R;
 import com.neo.neoapp.entity.Entity;
+import com.neo.neoapp.entity.Feed;
+import com.neo.neoapp.entity.FeedComment;
 import com.neo.neoapp.entity.People;
 import com.neo.neoapp.entity.PeopleProfile;
 import com.neo.neoapp.entity.Setings;
@@ -213,7 +215,7 @@ public class JsonResolveUtils {
 		 * @param uid
 		 * @return
 		 */
-		/*public static boolean resolveNearbyStatus(Context context,
+		public static boolean resolveNearbyStatus(Context context,
 				List<Feed> feeds, String uid) {
 			if (!android.text.TextUtils.isEmpty(uid)) {
 				String json = TextUtils.getJson(context, STATUS + uid + SUFFIX);
@@ -244,13 +246,13 @@ public class JsonResolveUtils {
 				}
 			}
 			return false;
-		}*/
+		}
 
 		/**
 		 * 解析状态评论
 		 * 
 		 */
-		/*public static boolean resoleFeedComment(Context context,
+		public static boolean resoleFeedComment(Context context,
 				List<FeedComment> comments) {
 			String json = TextUtils.getJson(context, FEEDCOMMENT);
 			if (json != null) {
@@ -275,5 +277,5 @@ public class JsonResolveUtils {
 			}
 			return false;
 		}
-	}*/
-}
+	}
+

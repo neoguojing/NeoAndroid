@@ -72,7 +72,15 @@
             android:name=".activities.ImageBrowserActivity"
             android:screenOrientation="portrait" >
         </activity>
-        
+        <activity
+            android:name=".activities.PeopleStateListActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".activities.PeopleStateProfileActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustUnspecified|adjustResize" >
+        </activity>
         <activity
             android:name=".activities.DBOprActivity"
             android:label="@string/title_activity_dbopr" >

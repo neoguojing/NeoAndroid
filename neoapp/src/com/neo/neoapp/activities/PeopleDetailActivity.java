@@ -157,11 +157,11 @@ public class PeopleDetailActivity extends NeoBasicActivity implements
 			break;
 
 		case R.id.otherprofile_layout_feed:
-			/*intent = new Intent(PeopleDetailActivity.this,
-					OtherFeedListActivity.class);
+			intent = new Intent(PeopleDetailActivity.this,
+					PeopleStateListActivity.class);
 			intent.putExtra("entity_profile", mProfile);
 			intent.putExtra("entity_people", mPeople);
-			startActivity(intent);*/
+			startActivity(intent);
 			break;
 		}
 	}
