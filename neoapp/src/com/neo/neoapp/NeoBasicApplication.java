@@ -18,6 +18,7 @@ import java.util.Map;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
+import com.baidu.mapapi.SDKInitializer;
 import com.neo.neoapp.R;
 import com.neo.neoapp.entity.People;
 
@@ -50,6 +51,8 @@ public class NeoBasicApplication extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();	
+		
+		SDKInitializer.initialize(getApplicationContext());
 		
 		mDefaultPortrait = BitmapFactory.decodeResource(getResources(),
 				R.drawable.ic_common_def_header);

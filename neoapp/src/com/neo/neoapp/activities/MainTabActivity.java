@@ -1,17 +1,22 @@
-package com.neo.neoapp;
+package com.neo.neoapp.activities;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.neo.neoapp.NeoBasicActivity;
+import com.neo.neoapp.NeoBasicApplication;
 import com.neo.neoapp.R;
 import com.neo.neoandroidlib.NeoIntentFactiory;
+import com.neo.neoapp.R.id;
+import com.neo.neoapp.R.layout;
+import com.neo.neoapp.R.menu;
 import com.neo.neoapp.UI.ChangeColorIconWithTextView;
 import com.neo.neoapp.UI.NeoViewPagerAdapter;
-import com.neo.neoapp.activities.DBOprActivity;
 import com.neo.neoapp.broadcasts.NeoAppBroadCastMessages;
 import com.neo.neoapp.fragments.NeoBasicFragment;
+import com.neo.neoapp.fragments.NeoBasicMapFragment;
 import com.neo.neoapp.fragments.NeoDisPlayFragment;
 import com.neo.neoapp.fragments.NeoSetingListFragment;
 import com.neo.neoapp.fragments.RefreshListFragment;
@@ -33,7 +38,7 @@ import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.ViewConfiguration;
 
-public class MainActivity extends NeoBasicActivity implements OnClickListener,
+public class MainTabActivity extends NeoBasicActivity implements OnClickListener,
 	OnPageChangeListener{
 	
 	private NeoBasicApplication mApplication;
@@ -108,9 +113,9 @@ public class MainActivity extends NeoBasicActivity implements OnClickListener,
 			return true;
 		case R.id.menu_db:
 			Intent db_activity = new Intent();
-			db_activity.setClass(MainActivity.this, DBOprActivity.class);
+			db_activity.setClass(MainTabActivity.this, DBOprActivity.class);
 			startActivity(db_activity);
-			MainActivity.this.finish();
+			MainTabActivity.this.finish();
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
@@ -165,8 +170,6 @@ public class MainActivity extends NeoBasicActivity implements OnClickListener,
 	
 	private void initDatas(){
 		
-		String [] titles=new String[]{"Fourth Fragment!"};
-		
 		RefreshListFragment refreshList = 
 				new RefreshListFragment(mApplication,this,this);
 		mListFragments.add(refreshList);
@@ -175,18 +178,22 @@ public class MainActivity extends NeoBasicActivity implements OnClickListener,
 				new NeoDisPlayFragment(mApplication,this,this);
 		mListFragments.add(displayView);
 		
+		NeoBasicMapFragment neoMap = 
+				new NeoBasicMapFragment(mApplication,this,this);
+		mListFragments.add(neoMap);
+		
 		NeoSetingListFragment setingList = 
 				new NeoSetingListFragment(mApplication,this,this);
 		mListFragments.add(setingList);
 		
-		for(String title : titles){
+		/*for(String title : titles){
 			
 			TabFragment tabFragment = new TabFragment();
 			Bundle bd = new Bundle();
 			bd.putString(TabFragment.TITLE,title);
 			tabFragment.setArguments(bd);
 			mListFragments.add(tabFragment);
-		}
+		}*/
 		
 		mfPagerAdapter = new NeoViewPagerAdapter(this.getSupportFragmentManager()
 				,mListFragments);
@@ -201,14 +208,14 @@ public class MainActivity extends NeoBasicActivity implements OnClickListener,
 	
 	private void initService(){
 		//�������ط���
-		Intent bgsvc = new Intent(MainActivity.this,
+		Intent bgsvc = new Intent(MainTabActivity.this,
 				NeoAppBackgroundService.class);
 		bgsvc.putExtra("counter", counter++);
 		startService(bgsvc);
 	}
 	
 	private void stopService(){
-		Intent bgsvc = new Intent(MainActivity.this,
+		Intent bgsvc = new Intent(MainTabActivity.this,
 				NeoAppBackgroundService.class);
 		stopService(bgsvc);
 	}
@@ -216,7 +223,7 @@ public class MainActivity extends NeoBasicActivity implements OnClickListener,
 	private void initWorkerThread(){
 		//�����������߳�
 		mtMainActivityWorker = new ServiceWorkerWithLooper("MainActivity Worker thread",
-				MainActivity.this);
+				MainTabActivity.this);
 		mWorkerThreadHandler = new NeoAppWorkerThreadHandler
 				(mtMainActivityWorker.getLooper());
 		mWorkerThreadHandler.sendMessage(1);

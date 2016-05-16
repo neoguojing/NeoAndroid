@@ -1,6 +1,6 @@
 package com.neo.neoapp.handlers;
 
-import com.neo.neoapp.MainActivity;
+import com.neo.neoapp.activities.MainTabActivity;
 import com.neo.neoapp.definitions.ENeoAppWorkerThreadMessages;
 import com.neo.neoapp.definitions.ENeoUIThreadMessges;
 

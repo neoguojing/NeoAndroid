@@ -1,6 +1,6 @@
 package com.neo.neoapp.broadcasts;
 
-import com.neo.neoapp.MainActivity;
+import com.neo.neoapp.activities.MainTabActivity;
 
 import android.R;
 import android.app.Notification;
@@ -215,7 +215,7 @@ public class NeoAppBroadCastReceiver extends BroadcastReceiver {
 					params.isIndeterminate());
 		}
 		
-		Intent intent = new Intent(ctx,MainActivity.class);  
+		Intent intent = new Intent(ctx,MainTabActivity.class);  
 		PendingIntent pendingIntent = PendingIntent.getActivity(ctx, 0, intent, 0);  
 		mBuilder.setContentIntent(pendingIntent); 
 		
