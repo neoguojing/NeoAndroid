@@ -32,7 +32,7 @@ public class LoginActivity extends NeoBasicActivity implements OnClickListener,
 	private Button mBtnLogin;
 
 	private static final String[] DEFAULT_ACCOUNTS = new String[] {
-			"+8612345678901", "86930007@qq.com", "86930007" };
+			"+8612345678901", "805118680@qq.com", "12345678" };
 	private static final String DEFAULT_PASSWORD = "123456";
 	private String mAreaCode = "+86";
 	private String mAccount;
@@ -78,7 +78,7 @@ public class LoginActivity extends NeoBasicActivity implements OnClickListener,
 	public void onClick(View v) {
 		switch (v.getId()) {
 		case R.id.login_htv_forgotpassword:
-			//startActivity(FindPwdTabsActivity.class);
+			startActivity(FindPwdTabsActivity.class);
 			break;
 
 		case R.id.login_htv_selectcountrycode:
@@ -196,9 +196,9 @@ public class LoginActivity extends NeoBasicActivity implements OnClickListener,
 	}
 
 	private void login() {
-		/*if ((!validateAccount()) || (!validatePwd())) {
+		if ((!validateAccount()) || (!validatePwd())) {
 			return;
-		}*/
+		}
 		putAsyncTask(new AsyncTask<Void, Void, Boolean>() {
 
 			@Override
@@ -211,12 +211,12 @@ public class LoginActivity extends NeoBasicActivity implements OnClickListener,
 			protected Boolean doInBackground(Void... params) {
 				try {
 					Thread.sleep(2000);
-					/*if ((DEFAULT_ACCOUNTS[0].equals(mAccount)
+					if ((DEFAULT_ACCOUNTS[0].equals(mAccount)
 							|| DEFAULT_ACCOUNTS[1].equals(mAccount) || DEFAULT_ACCOUNTS[2]
 								.equals(mAccount))
 							&& DEFAULT_PASSWORD.equals(mPassword)) {
 						return true;
-					}*/
+					}
 					return true;
 				} catch (InterruptedException e) {
 
