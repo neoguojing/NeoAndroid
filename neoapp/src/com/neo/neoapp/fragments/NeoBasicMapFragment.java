@@ -13,13 +13,20 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.baidu.mapapi.SDKInitializer;
+import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.BitmapDescriptor;
+import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.MyLocationConfiguration;
+import com.baidu.mapapi.map.MyLocationData;
 import com.neo.neoapp.R;
 import com.neo.neoapp.NeoBasicApplication;
 
 public class NeoBasicMapFragment extends NeoBasicFragment{
 	
 	MapView mMapView = null; 
+	BaiduMap mBaiduMap = null;
+	BitmapDescriptor mCurrentMarker;
 	
 	public NeoBasicMapFragment() {
 		super();
@@ -46,12 +53,15 @@ public class NeoBasicMapFragment extends NeoBasicFragment{
 	@Override
 	protected void initEvents() {
 
-
+		
 	}
 
 	@Override
 	protected void init() {
-
+		mBaiduMap = mMapView.getMap();
+		mBaiduMap.setMapType(BaiduMap.MAP_TYPE_NORMAL);
+		
+		initLocation();
 	}
 
 	
@@ -59,10 +69,29 @@ public class NeoBasicMapFragment extends NeoBasicFragment{
 		clearAsyncTask();
 		
 	}
+	
+	protected void initLocation()
+	{
+		mBaiduMap.setMyLocationEnabled(true);
+		MyLocationData locData = new MyLocationData.Builder()
+		.accuracy(mApplication.mLocation.getRadius()) 
+	    .direction(100).latitude(mApplication.mLocation.getLatitude())  
+	    .longitude(mApplication.mLocation.getLongitude()).build();  
+		
+		mBaiduMap.setMyLocationData(locData);
+		
+		// 设置定位图层的配置（定位模式，是否允许方向信息，用户自定义定位图标）  
+		/*mCurrentMarker = BitmapDescriptorFactory  
+		    .fromResource(R.drawable.icon_geo);  
+		MyLocationConfiguration config = 
+				new MyLocationConfiguration(mCurrentMode, true, mCurrentMarker);  
+		mBaiduMap.setMyLocationConfiguration(); */
+	}
 
 	@Override
 	public void onDestroy() {
 		clearAsyncTask();
+		mBaiduMap.setMyLocationEnabled(false);
 		mMapView.onDestroy(); 
 		super.onDestroy();
 	}

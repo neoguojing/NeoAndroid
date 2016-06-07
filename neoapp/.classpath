@@ -10,5 +10,7 @@
 	<classpathentry kind="lib" path="libs/httpmime-4.1.3.jar"/>
 	<classpathentry kind="lib" path="libs/BaiduLBS_Android.jar"/>
 	<classpathentry kind="lib" path="libs/IndoorscapeAlbumPlugin.jar"/>
+	<classpathentry kind="lib" path="F:/redhatrepo/android/neoapp/libs/android-async-http-1.4.9.jar"/>
+	<classpathentry kind="lib" path="F:/redhatrepo/android/neoapp/libs/httpclient-4.3.6.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

@@ -20,6 +20,7 @@ import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.mapapi.SDKInitializer;
 import com.neo.neoapp.R;
+import com.neo.neoapp.entity.NeoConfig;
 import com.neo.neoapp.entity.People;
 
 import android.app.Application;
@@ -45,9 +46,11 @@ public class NeoBasicApplication extends Application {
 	
 	public List<People> mNearByPeoples = new ArrayList<People>();
 	
+	public NeoConfig mNeoConfig = null;
 	public LocationClient mLocationClient;
 	public double mLongitude;
 	public double mLatitude;
+	public BDLocation mLocation;
 	@Override
 	public void onCreate() {
 		super.onCreate();	
@@ -72,6 +75,7 @@ public class NeoBasicApplication extends Application {
 			public void onReceiveLocation(BDLocation arg0) {
 				mLongitude = arg0.getLongitude();
 				mLatitude = arg0.getLatitude();
+				mLocation = arg0;
 				Log.i("定位信息", "经度:" + mLongitude + ",纬度:" + mLatitude);
 				mLocationClient.stop();
 			}

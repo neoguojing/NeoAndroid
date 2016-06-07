@@ -70,8 +70,8 @@ public class Setings extends Entity implements Parcelable {
 			String uid = source.readString();
 			String mImame = source.readString();
 			String mName = source.readString();
-			Setings people = new Setings(uid, mImame, mName);
-			return people;
+			Setings setting = new Setings(uid, mImame, mName);
+			return setting;
 		}
 
 		@Override

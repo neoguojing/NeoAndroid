@@ -1,18 +1,59 @@
 package com.neo.neoandroidlib;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.Environment;
+import android.util.Log;
 
 public class FileUtils {
-	/**
-	 * 判断SD是否可以
-	 * 
-	 * @return
-	 */
+	
+	private static  String Tag = "FileUtils";
+	
+	public static String getSysPathPath(){
+		return Environment.getRootDirectory().getAbsolutePath()+"/";//system
+	}
+	
+	public static String getDataPath(){
+		return Environment.getDataDirectory().getAbsolutePath()+"/";///data
+	}
+	
+	public static String getDldCachePath()
+	{
+		return Environment.getDownloadCacheDirectory().getAbsolutePath()+"/";//cache
+	}
+	
+	public static String getSDPath()
+	{
+		return Environment.getExternalStorageDirectory().getAbsolutePath()+"/";//sdcard
+	}
+	
+	public static String getSDPicPath(Context context)
+	{
+		return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath()+"/";
+	}
+	
+	public static String getAppDataPath(Context context)
+	{
+		String path = null;
+		try{
+			path = context.getExternalFilesDir(null).getAbsolutePath()+"/";
+		}catch (Exception e) {
+			Log.e(Tag, e.toString());
+			path = null;
+		}
+		return path;
+	}
+	
+	public static String getAppCachePath(Context context)
+	{
+		return context.getExternalCacheDir().getAbsolutePath()+"/";
+	}
+	
 	public static boolean isSdcardExist() {
 		if (Environment.getExternalStorageState().equals(
 				Environment.MEDIA_MOUNTED)) {
@@ -21,12 +62,6 @@ public class FileUtils {
 		return false;
 	}
 
-	/**
-	 * 创建根目录
-	 * 
-	 * @param path
-	 *            目录路径
-	 */
 	public static void createDirFile(String path) {
 		File dir = new File(path);
 		if (!dir.exists()) {
@@ -34,13 +69,6 @@ public class FileUtils {
 		}
 	}
 
-	/**
-	 * 创建文件
-	 * 
-	 * @param path
-	 *            文件路径
-	 * @return 创建的文件
-	 */
 	public static File createNewFile(String path) {
 		File file = new File(path);
 		if (!file.exists()) {
@@ -52,13 +80,31 @@ public class FileUtils {
 		}
 		return file;
 	}
-
-	/**
-	 * 删除文件夹
-	 * 
-	 * @param folderPath
-	 *            文件夹的路径
-	 */
+	
+	public static void overrideContent(String fileName, String content) {  
+        try {  
+        	if (fileName==null||content==null)
+        		return;
+            // 打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件  
+            FileWriter writer = new FileWriter(fileName, false);  
+            writer.write(content);  
+            writer.close();  
+        } catch (IOException e) {  
+            e.printStackTrace();  
+        }  
+    }  
+	
+	public static void appendToEnd(String fileName, String content) {  
+        try {  
+            // 打开一个写文件器，构造函数中的第二个参数true表示以追加形式写文件  
+            FileWriter writer = new FileWriter(fileName, true);  
+            writer.write(content);  
+            writer.close();  
+        } catch (IOException e) {  
+            e.printStackTrace();  
+        }  
+    }  
+	
 	public static void delFolder(String folderPath) {
 		delAllFile(folderPath);
 		String filePath = folderPath;
@@ -67,12 +113,6 @@ public class FileUtils {
 		myFilePath.delete();
 	}
 
-	/**
-	 * 删除文件
-	 * 
-	 * @param path
-	 *            文件的路径
-	 */
 	public static void delAllFile(String path) {
 		File file = new File(path);
 		if (!file.exists()) {
@@ -99,24 +139,11 @@ public class FileUtils {
 		}
 	}
 
-	/**
-	 * 获取文件的Uri
-	 * 
-	 * @param path
-	 *            文件的路径
-	 * @return
-	 */
 	public static Uri getUriFromFile(String path) {
 		File file = new File(path);
 		return Uri.fromFile(file);
 	}
 
-	/**
-	 * 换算文件大小
-	 * 
-	 * @param size
-	 * @return
-	 */
 	public static String formatFileSize(long size) {
 		DecimalFormat df = new DecimalFormat("#.00");
 		String fileSizeString = "未知大小";
@@ -130,5 +157,13 @@ public class FileUtils {
 			fileSizeString = df.format((double) size / 1073741824) + "G";
 		}
 		return fileSizeString;
+	}
+	
+	public static boolean isFileExist(String path) {
+		File file = new File(path);
+		if (!file.exists()) {
+			return false;
+		}
+		return true;
 	}
 }

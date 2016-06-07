@@ -1,12 +1,24 @@
 package com.neo.neoapp.activities;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import cz.msebera.android.httpclient.Header;
+
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.neo.neoandroidlib.FileUtils;
+import com.neo.neoandroidlib.NeoAsyncHttpUtil;
+import com.neo.neoandroidlib.NetWorkUtils.NetWorkState;
+import com.neo.neoapp.NeoAppSetings;
 import com.neo.neoapp.NeoBasicActivity;
 import com.neo.neoapp.R;
 import com.neo.neoapp.UI.views.NeoBasicTextView;
 import com.neo.neoapp.activities.register.RegisterActivity;
+import com.neo.neoapp.entity.NeoConfig;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,6 +34,7 @@ import android.widget.LinearLayout;
 
 public class WelcomeActivity extends NeoBasicActivity implements OnClickListener {
 
+	private String Tag = "WelcomeActivity";
 	private LinearLayout mLinearCtrlbar;
 	private LinearLayout mLinearAvatars;
 	private Button mBtnRegister;
@@ -40,9 +53,12 @@ public class WelcomeActivity extends NeoBasicActivity implements OnClickListener
 		setContentView(R.layout.activity_welcome);
 		initViews();
 		initEvents();
-		initAvatarsItem();
+		initData();
+		//initAvatarsItem();
 		showWelcomeAnimation();
 	}
+
+	
 
 	@Override
 	protected void initViews() {
@@ -58,6 +74,74 @@ public class WelcomeActivity extends NeoBasicActivity implements OnClickListener
 		mBtnRegister.setOnClickListener(this);
 		mBtnLogin.setOnClickListener(this);
 		mIbtnAbout.setOnClickListener(this);
+	}
+	
+	private void initData() {
+		// TODO Auto-generated method stub
+		if (mNetWorkUtils.getConnectState() == NetWorkState.NONE) {
+			showAlertDialog("NEO","Please check your NetWork connection!");
+		}
+		else
+		{
+			NeoAsyncHttpUtil.get(this,NeoAppSetings.IpServerUrl,
+					new JsonHttpResponseHandler(){
+				
+				@Override
+				public void onSuccess(int statusCode, Header[] headers,JSONArray arg0) { // 成功后返回一个JSONArray数据
+	                Log.i(Tag, arg0.length() + "");
+	                try {
+	                    //textView.setText("菜谱名字："
+	                    //        + arg0.getJSONObject(2).getString("name")); //返回的是JSONArray， 获取JSONArray数据里面的第2个JSONObject对象，然后获取名字为name的数据值
+	                } catch (Exception e) {
+	                    Log.e(Tag, e.toString());
+	                }
+	            };
+	            
+	            @Override
+	            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+	            	Log.e(Tag, " onFailure" + throwable.toString());
+	            	showAlertDialog("NEO","Get Server Address failed"+throwable.toString());
+	            }
+	            
+	            @Override 
+	            public void onFinish() {
+	                Log.i(Tag, "onFinish");
+	                //showAlertDialog("NEO","Get Server Address failed");
+	            }
+	            
+	            @Override
+	            public void onSuccess(int statusCode, Header[] headers,  
+	                    JSONObject response) {  
+	                // TODO Auto-generated method stub  
+	                super.onSuccess(statusCode, headers, response);  
+	                Log.i(Tag, "onSuccess ");
+	                try {
+	                	showLongToast("ip:"+response.getString(NeoConfig.IP)
+	                			+";port:"+response.getString(NeoConfig.PORT));
+	                	
+	                	mApplication.mNeoConfig = new NeoConfig(response.getString(NeoConfig.IP),
+	                			response.getString(NeoConfig.PORT),"neo");
+	                	
+	                	FileUtils.overrideContent(FileUtils.getAppDataPath(WelcomeActivity.this)+NeoAppSetings.ConfigFile,
+	                			response.toString());
+	                	
+	                	NeoAsyncHttpUtil.addPersistCookieToGlobaList(WelcomeActivity.this);
+	                	//showAlertDialog("NEO",NeoAsyncHttpUtil.getCookieText(WelcomeActivity.this));
+	                } catch (Exception e) {
+	                    Log.e(Tag, e.toString());
+	                }
+	            }
+	            
+	            @Override
+	            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+	            	Log.e(Tag, " onFailure" + throwable.toString());
+	            	showAlertDialog("NEO","Get Server Address failed!\r\n statusCode="
+	            	+String.valueOf(statusCode)+"\r\nexception:"
+	            	+throwable.toString());
+	            }
+	            
+			});
+		}
 	}
 
 	private void initAvatarsItem() {
