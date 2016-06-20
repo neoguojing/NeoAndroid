@@ -1,0 +1,115 @@
+<!--  <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.neoandroid.MainActivity"
+    tools:ignore="MergeRootFrame" />-->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+					android:orientation="vertical"
+					android:layout_width="fill_parent"
+					android:layout_height="fill_parent"
+					>
+
+    <TextView 
+    android:id="@+id/widget31_show_TextView"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="@string/hello_world"
+    >
+    
+</TextView>
+
+<EditText android:id="@+id/widget29_getName_EditText"
+    android:layout_width="fill_parent"   
+	android:layout_height="wrap_content"   
+	android:text="这是一个EditText"
+	>
+    
+</EditText>
+
+<Button
+    android:id="@+id/widget30_button_OK"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="OK"
+    >
+    
+</Button>
+
+<!-- layout 切换 -->
+    <TextView 
+    android:id="@+id/textview_test3"
+    style = "@style/style_test"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="this is layout1"
+    android:autoLink="all"
+    >
+    </TextView>
+    <Button
+		android:id="@+id/button_test2"
+		android:layout_width="300px"
+		android:layout_height="wrap_content"
+		android:text="Go to Layout2">
+        
+    </Button>
+    
+    <!-- bundle && radio -->
+    <TextView
+	android:id="@+id/showText"
+	android:layout_width="wrap_content"
+	android:layout_height="26px"
+	android:text="计算你的标准体重!"
+	android:textSize="25px">
+	</TextView>
+	<TextView
+	android:id="@+id/text_Sex"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:text="性别:">
+	</TextView>
+	<TextView
+	android:id="@+id/text_Height"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:text="身高:">
+	</TextView>
+	
+	<RadioGroup
+	android:id="@+id/radioGroup"
+	android:layout_width="wrap_content"
+	android:layout_height="37px"
+	android:orientation="horizontal"
+	android:layout_x="124px"
+	android:layout_y="101px">
+		<RadioButton
+		android:id="@+id/Sex_Man"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="男">
+		</RadioButton>
+		<RadioButton
+		android:id="@+id/Sex_Woman"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="女">
+		</RadioButton>
+	</RadioGroup>
+	
+	<EditText
+	android:id="@+id/height_Edit"
+	android:layout_width="123px"
+	android:layout_height="wrap_content"
+	android:text=""
+	android:textSize="18sp">
+	</EditText>
+	<Button
+	android:id="@+id/button_OK"
+	android:layout_width="80px"
+	android:layout_height="wrap_content"
+	android:text="计算">
+	</Button>
+	
+</LinearLayout>

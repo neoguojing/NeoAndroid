@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <TextView 
+    android:id="@+id/textview_test"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="超链接测试:www.baidu.com"
+    android:autoLink="all"
+    >
+    </TextView>
+    
+    <EditText
+    android:id="@+id/edittext_test1"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text=""
+    android:hint="username"
+    android:autoLink="all"
+    >
+    </EditText>
+    
+    <EditText
+    android:id="@+id/edittext_test2"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text=""
+    android:password="true"
+    android:hint="password"
+    android:autoLink="all"
+    >
+    </EditText>
+    
+    <EditText
+    android:id="@+id/edittext_test3"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    >
+    </EditText>
+    <TextView 
+    android:id="@+id/textview_editview"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    >
+    </TextView>
+    
+    <!-- style test -->
+    <TextView 
+    android:id="@+id/textview_test1"
+    style = "@style/style_test"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="style test"
+    android:autoLink="all"
+    >
+    </TextView>
+    
+    <!-- layout 切换 -->
+    <TextView 
+    android:id="@+id/textview_test2"
+    style = "@style/style_test"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:text="this is layout2"
+    android:autoLink="all"
+    >
+    </TextView>
+    <Button
+		android:id="@+id/button_test1"
+		android:layout_width="300px"
+		android:layout_height="wrap_content"
+		android:text="Go to Layout1">
+        
+    </Button>
+	
+    <!-- bundle-->
+    <TextView 
+    android:id="@+id/textview_test4"
+    style = "@style/style_test"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:autoLink="all"
+    >
+    </TextView>
+    <Button
+	android:id="@+id/button_back"
+	android:layout_width="100px"
+	android:layout_height="48px"
+	android:text="回上一页"
+	></Button>
+    
+    <!-- image button-->
+    <ImageButton
+    android:id="@+id/image_Button"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"/>
+    
+    <ImageButton
+    android:id="@+id/image_Button1"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/advancedbt"/>
+    
+    <Button
+		android:id="@+id/imagebt_bt"
+		android:layout_width="300px"
+		android:layout_height="wrap_content"
+		android:text="general button">   
+    </Button>
+    
+    <!-- tost-->
+    <EditText
+		android:layout_height="wrap_content"
+		android:id="@+id/EditText_Wish"
+		android:layout_width="fill_parent"></EditText>
+	<Button
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/Button_Send"
+		android:text="send wish"
+		android:layout_marginLeft="50px"></Button>
+	
+	
+</LinearLayout>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AbsoluteLayout
+	android:id="@+id/widget0"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	xmlns:android="http://schemas.android.com/apk/res/android" >
+	<TextView
+		android:id="@+id/TextView_showTime"
+		android:layout_width="200px"
+		android:layout_height="39px"
+		android:textSize="25px"
+		android:layout_x="82px"
+		android:layout_y="222px">
+	</TextView>
+	<AnalogClock
+		android:id="@+id/Clock"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_x="82px"
+		android:layout_y="34px">
+	</AnalogClock>
+	<DigitalClock
+		android:id="@+id/DigitalClock01"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="上午1:01"
+		android:textSize="25px"
+		android:layout_x="82px"
+		android:layout_y="300px">
+	</DigitalClock>
+	<TextView
+		android:id="@+id/widget46"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="模拟时钟"
+		android:layout_x="11px"
+		android:layout_y="46px">
+	</TextView>
+	<TextView
+		android:id="@+id/widget47"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="线程时钟"
+		android:layout_x="11px"
+		android:layout_y="228px">
+	</TextView>
+	<TextView
+		android:id="@+id/widget48"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="数字时钟"
+		android:layout_x="11px"
+		android:layout_y="308px">
+	</TextView>
+</AbsoluteLayout>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--把textView应用为下拉样式,等同于style="@android:attr/spinnerDropDownItemStyle"-->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dropdown_tv"
+    android:layout_width="wrap_content"
+    android:layout_height="24sp"
+    android:singleLine="true"
+    style="?android:attr/spinnerDropDownItemStyle"
+    >
+</TextView>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+ 
+<!-- checkbox-->
+	<CheckBox
+		android:layout_height="wrap_content"
+		android:id="@+id/CheckBox_MP4"
+		android:text="MP4"
+		android:layout_width="180px"></CheckBox>
+	<CheckBox
+		android:layout_height="wrap_content"
+		android:text="Music CD"
+		android:id="@+id/CheckBox_musicCD"
+		android:layout_width="180px"></CheckBox>
+	<CheckBox
+		android:layout_height="wrap_content"
+		android:text="book"
+		android:id="@+id/CheckBox_book"
+		android:layout_width="180px"></CheckBox>
+	
+	<RadioGroup
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:id="@+id/RadioGroup">
+		<RadioButton
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:id="@+id/RadioButton_Boy"
+		android:text="boy">
+		</RadioButton>
+		<RadioButton
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="girl"
+		android:id="@+id/RadioButton_Gril">
+		</RadioButton>
+	</RadioGroup>
+	
+	<LinearLayout
+	android:orientation="horizontal"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content" >
+		<Button
+		android:id="@+id/answer_The_Q_button"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="anwser"
+		></Button>
+		<Button
+		android:id="@+id/clean_The_Q_button"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="clean"
+		></Button>
+	</LinearLayout>
+	
+	<TextView 
+    android:id="@+id/tv_checkbox"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    >
+    </TextView>
+
+</LinearLayout>

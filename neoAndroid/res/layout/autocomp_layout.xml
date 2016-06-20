@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AbsoluteLayout
+android:id="@+id/widget0"
+android:layout_width="fill_parent"
+android:layout_height="fill_parent"
+xmlns:android="http://schemas.android.com/apk/res/android"
+> 
+	<TextView
+		android:id="@+id/TextView_InputShow"
+		android:layout_width="228px"
+		android:layout_height="47px"
+		android:text="请输入"
+		android:textSize="25px"
+		android:layout_x="42px"
+		android:layout_y="37px"
+	> </TextView>
+	<AutoCompleteTextView
+		android:id="@+id/AutoCompleteTextView_input"
+		android:layout_width="275px"
+		android:layout_height="wrap_content"
+		android:text=""
+		android:textSize="18sp"
+		android:layout_x="23px"
+		android:layout_y="98px"
+	> </AutoCompleteTextView>
+	<MultiAutoCompleteTextView
+		android:layout_width="275px"
+		android:layout_height="wrap_content"
+		android:text=""
+		android:id="@+id/MultiAutoCompleteTextView"
+		android:layout_x="23px"
+		android:layout_y="98px"/>
+	<Button
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_x="127dip"
+		android:text="清空"
+		android:id="@+id/Button_clean"
+		android:layout_y="150dip">
+	</Button>
+</AbsoluteLayout>

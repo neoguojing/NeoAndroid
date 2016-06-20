@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    
+    <TextView
+		android:id="@+id/Spinner_Show"
+		android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+		android:text="你选择的是"
+		android:textSize="25sp">
+	</TextView>
+	
+    <EditText
+		android:id="@+id/EditView_Input"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:textSize="18sp"
+		> 
+	</EditText>
+	<Button
+		android:id="@+id/Button_ADD"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:text="添加"
+		> 
+	</Button>
+	<Button
+		android:id="@+id/Button_DEL"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:text="删除"
+		> 
+	</Button>
+	<Spinner 
+	    android:id="@+id/Spinner_City"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    />
+    
+</LinearLayout>
