@@ -55,12 +55,12 @@ public class FileUtils {
 	
 	public static String getAppDataPath(Context context)
 	{
-		String path = null;
+		String path = "";
 		try{
 			path = context.getExternalFilesDir(null).getAbsolutePath()+"/";
 		}catch (Exception e) {
 			Log.e(Tag, e.toString());
-			path = null;
+			path = "";
 		}
 		return path;
 	}
