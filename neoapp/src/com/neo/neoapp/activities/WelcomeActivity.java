@@ -96,6 +96,15 @@ public class WelcomeActivity extends NeoBasicActivity implements OnClickListener
 
 
     private void initAppDirs() {
+    	String prefix = FileUtils.getAppDataPath(this);
+    	showAlertDialog("NEO", prefix);
+        FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.HeadPicDir).toString());
+        FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.MyPhotosDir).toString());
+        FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.MyPhotosOriginalDir).toString());
+        FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.MyPhotosThumbnailDir).toString());
+        FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.ProfilesDir).toString());
+        FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.StatuPhotosDir).toString());
+        FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.StatusDir).toString());
         putAsyncTask(new AsyncTask<Void, Void, Boolean>() {
             protected void onPreExecute() {
                 super.onPreExecute();
@@ -105,14 +114,7 @@ public class WelcomeActivity extends NeoBasicActivity implements OnClickListener
             protected Boolean doInBackground(Void... params) {
                 try {
                     Boolean rtn = Boolean.valueOf(true);
-                    String prefix = FileUtils.getAppDataPath(WelcomeActivity.this);
-                    FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.HeadPicDir).toString());
-                    FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.MyPhotosDir).toString());
-                    FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.MyPhotosOriginalDir).toString());
-                    FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.MyPhotosThumbnailDir).toString());
-                    FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.ProfilesDir).toString());
-                    FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.StatuPhotosDir).toString());
-                    FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.StatusDir).toString());
+                    
                     return rtn;
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -124,7 +126,7 @@ public class WelcomeActivity extends NeoBasicActivity implements OnClickListener
                 super.onPostExecute(result);
                 WelcomeActivity.this.dismissLoadingDialog();
                 if (!result.booleanValue()) {
-                    WelcomeActivity.this.showAlertDialog("NEO", "json file does not exist");
+                    WelcomeActivity.this.showAlertDialog("NEO", "create dir faied");
                 }
             }
         });
@@ -199,7 +201,7 @@ public class WelcomeActivity extends NeoBasicActivity implements OnClickListener
 
     private LOGIN_STATE checkLoginState() {
         if (netWorkCheck()) {
-            NeoAsyncHttpUtil.get((Context) this, NeoAppSetings.getLoginCheckUrl(this.mApplication.mNeoConfig), new JsonHttpResponseHandler() {
+            NeoAsyncHttpUtil.get(this, NeoAppSetings.getLoginCheckUrl(this.mApplication.mNeoConfig), new JsonHttpResponseHandler() {
                 public void onFinish() {
                     Log.i(WelcomeActivity.this.Tag, "onFinish");
                 }
@@ -217,6 +219,8 @@ public class WelcomeActivity extends NeoBasicActivity implements OnClickListener
                         } else if (response.getString("errcode").equals(NEO_ERRCODE.UER_NOLOGIN.toString())) {
                             WelcomeActivity.this.showLongToast(response.getString("info"));
                             WelcomeActivity.this.loginstate = LOGIN_STATE.NOLOGIN;
+                            WelcomeActivity.this.startActivity(new Intent(WelcomeActivity.this, LoginActivity.class));
+                            WelcomeActivity.this.finish();
                         }
                     } catch (Exception e) {
                         Log.e(WelcomeActivity.this.Tag, e.toString());

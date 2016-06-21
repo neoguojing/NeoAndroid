@@ -61,7 +61,6 @@ public abstract class NeoBasicActivity extends FragmentActivity {
 		mScreenHeight = metric.heightPixels;
 		mDensity = metric.density;
 		
-		initViews();
 	}
 
 	@Override
@@ -74,10 +73,7 @@ public abstract class NeoBasicActivity extends FragmentActivity {
         return this.mApplication;
     }
     
-    protected void initViews() {
-		// TODO Auto-generated method stub
-		
-	}
+    protected abstract void initViews();
 	/** 初始化事件 **/
 	protected abstract void initEvents();
 

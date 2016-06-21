@@ -24,7 +24,8 @@ public class NeoAsyncHttpUtil {
     {
     	if (null==client){
     		client =new AsyncHttpClient();
-        	client.setTimeout(5);
+        	client.setTimeout(AsyncHttpClient.DEFAULT_SOCKET_TIMEOUT);
+        	
     	}
     	
     	if (NeoCookieListUtil.getCookies() != null) {//每次请求都要带上cookie  
@@ -47,7 +48,7 @@ public class NeoAsyncHttpUtil {
     //在activity和fragment中调用，
     public static void persistCookies(Context context)    //用一个完整url获取一个string对象
     {
-    	if (null==client){
+    	if (null!=client){
 	    	PersistentCookieStore cookieStore = new PersistentCookieStore(context);  
 	    	client.setCookieStore(cookieStore); 
     	}
@@ -55,7 +56,7 @@ public class NeoAsyncHttpUtil {
     
     public static List<Cookie> addPersistCookieToGlobaList(Context context){  
     	List<Cookie> cookies = null;
-    	if (null==client){
+    	if (null!=client){
 	        PersistentCookieStore cookieStore = new PersistentCookieStore(context);  
 	        cookies = cookieStore.getCookies();  
     	}

@@ -248,6 +248,7 @@ public class LoginActivity extends NeoBasicActivity implements OnClickListener,
                         NeoAsyncHttpUtil.addPersistCookieToGlobaList(LoginActivity.this);
                         try {
                             if (response.getString("errcode").equals(NEO_ERRCODE.LOGIN_SUCCESS.toString())) {
+                            	mApplication.mMe.setName(mAccount);
                                 LoginActivity.this.startActivity(new Intent(LoginActivity.this, MainTabActivity.class));
                                 LoginActivity.this.finish();
                             }

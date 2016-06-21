@@ -262,17 +262,41 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
         if (!netWorkCheck()) {
             return;
         }
+        
         if (FileUtils.isDirEmpty(NeoAppSetings.ProfilesDir)) {
             showAlertDialog("NEO", "ni meimei");
             return;
         }
+        
+        //getMe();
+        //getMyProfile();
+        //getMyHeadpic();
         getNearbyData();
         getFriendData();
         getMyStatusData();
     }
-
+    
+    private void getMe() {
+    	
+    }
+    
+    private void getMyProfile() {
+   
+    }
+    
+    private void getMyHeadpic() {
+    	
+    }
+    
     private void getNearbyData() {
-        NeoAsyncHttpUtil.get((Context) this, new StringBuilder(String.valueOf(NeoAppSetings.getGetUrl(this.mApplication.mNeoConfig, this.mApplication.mMe.getName()))).append("/").append("3/").toString(), new JsonHttpResponseHandler() {
+    	showAlertDialog("NEO", new StringBuilder(String.valueOf(
+				NeoAppSetings.getGetUrl(this.mApplication.mNeoConfig,
+						this.mApplication.mMe.getName()))).append("/").append("3/").toString());
+        NeoAsyncHttpUtil.get(this, 
+        		new StringBuilder(String.valueOf(
+        				NeoAppSetings.getGetUrl(this.mApplication.mNeoConfig,
+        						this.mApplication.mMe.getName()))).append("/").append("3/").toString(),
+        						new JsonHttpResponseHandler() {
             public void onFinish() {
                 Log.i(MainTabActivity.this.Tag, "onFinish");
             }
@@ -280,19 +304,23 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
             public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
                 super.onSuccess(statusCode, headers, response);
                 Log.i(MainTabActivity.this.Tag, new StringBuilder(String.valueOf(response.length())).toString());
+                showAlertDialog("NEO", response.toString());
                 NeoAsyncHttpUtil.addPersistCookieToGlobaList(MainTabActivity.this);
                 int i = 0;
                 while (i < response.length()) {
                     try {
                         JSONObject object = response.getJSONObject(i);
-                        MainTabActivity.this.getNearbyAndFriendProfile(object.getString(Setings.NAME));
+                        MainTabActivity.this.getNearbyAndFriendProfile(object.getString(People.NAME));
                         MainTabActivity.this.mApplication.mNearByPeoples.add(new People(object));
                         i++;
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
-                FileUtils.overrideContent(new StringBuilder(String.valueOf(FileUtils.getAppDataPath(MainTabActivity.this))).append(NeoAppSetings.MyNearByFile).toString(), response.toString());
+                FileUtils.overrideContent(new StringBuilder(String.valueOf(
+                		FileUtils.getAppDataPath(MainTabActivity.this))).
+                		append(NeoAppSetings.MyNearByFile).toString(), 
+                		response.toString());
             }
 
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
@@ -303,8 +331,14 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
                 Log.i(MainTabActivity.this.Tag, "onSuccess ");
-                MainTabActivity.this.showNeoJsoErrorCodeToast(response);
                 NeoAsyncHttpUtil.addPersistCookieToGlobaList(MainTabActivity.this);
+                if (response.has("errcode"))
+					try {
+						showAlertDialog("NEO", response.get("info").toString());
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
             }
 
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {

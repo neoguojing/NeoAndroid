@@ -65,8 +65,8 @@ public class NeoBasicApplication extends Application {
         this.mNearByPeoples = new ArrayList();
         this.mFriends = new ArrayList();
         this.mNeoConfig = null;
-        this.mMe = null;
-        this.mMyProfile = null;
+        this.mMe = new People();
+        this.mMyProfile = new PeopleProfile();
     }
 
     static {
