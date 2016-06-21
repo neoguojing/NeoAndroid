@@ -22,35 +22,58 @@ import com.baidu.mapapi.SDKInitializer;
 import com.neo.neoapp.R;
 import com.neo.neoapp.entity.NeoConfig;
 import com.neo.neoapp.entity.People;
+import com.neo.neoapp.entity.PeopleProfile;
 
+import android.app.AlertDialog;
 import android.app.Application;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 public class NeoBasicApplication extends Application {
-	private Bitmap mDefaultPortrait;
-	private static final String PHOTO_ORIGINAL_DIR = "photo/original/";
-	private static final String PHOTO_THUMBNAIL_DIR = "photo/thumbnail/";
-	private static final String PORTRAIT_DIR = "portrait/";
-	private static final String STATUS_PHOTO_DIR = "statusphoto/";
+    private static final String PHOTO_ORIGINAL_DIR = "photo/original/";
+    private static final String PHOTO_THUMBNAIL_DIR = "photo/thumbnail/";
+    private static final String PORTRAIT_DIR = "portrait/";
+    private static final String STATUS_PHOTO_DIR = "statusphoto/";
+    public static List<String> mEmoticons;
+    public static Map<String, Integer> mEmoticonsId;
+    public static List<String> mEmoticons_Zem;
+    private String Tag;
+    private Bitmap mDefaultPortrait;
+    public List<People> mFriends;
+    public double mLatitude;
+    public BDLocation mLocation;
+    public LocationClient mLocationClient;
+    public double mLongitude;
+    public People mMe;
+    public PeopleProfile mMyProfile;
+    public List<People> mNearByPeoples;
+    public NeoConfig mNeoConfig;
+    public Map<String, SoftReference<Bitmap>> mPhotoOriginalCache;
+    public Map<String, SoftReference<Bitmap>> mPhotoThumbnailCache;
+    public Map<String, SoftReference<Bitmap>> mPortraitCache;
+    public Map<String, SoftReference<Bitmap>> mStatusPhotoCache;
 
-	public Map<String, SoftReference<Bitmap>> mPortraitCache = new HashMap<String, SoftReference<Bitmap>>();
-	public Map<String, SoftReference<Bitmap>> mPhotoOriginalCache = new HashMap<String, SoftReference<Bitmap>>();
-	public Map<String, SoftReference<Bitmap>> mPhotoThumbnailCache = new HashMap<String, SoftReference<Bitmap>>();
-	public Map<String, SoftReference<Bitmap>> mStatusPhotoCache = new HashMap<String, SoftReference<Bitmap>>();
-	
-	public static List<String> mEmoticons = new ArrayList<String>();
-	public static Map<String, Integer> mEmoticonsId = new HashMap<String, Integer>();
-	public static List<String> mEmoticons_Zem = new ArrayList<String>();
-	
-	public List<People> mNearByPeoples = new ArrayList<People>();
-	
-	public NeoConfig mNeoConfig = null;
-	public LocationClient mLocationClient;
-	public double mLongitude;
-	public double mLatitude;
-	public BDLocation mLocation;
+    public NeoBasicApplication() {
+        this.Tag = "NeoBasicApplication";
+        this.mPortraitCache = new HashMap();
+        this.mPhotoOriginalCache = new HashMap();
+        this.mPhotoThumbnailCache = new HashMap();
+        this.mStatusPhotoCache = new HashMap();
+        this.mNearByPeoples = new ArrayList();
+        this.mFriends = new ArrayList();
+        this.mNeoConfig = null;
+        this.mMe = null;
+        this.mMyProfile = null;
+    }
+
+    static {
+        mEmoticons = new ArrayList();
+        mEmoticonsId = new HashMap();
+        mEmoticons_Zem = new ArrayList();
+    }
 	@Override
 	public void onCreate() {
 		super.onCreate();	
@@ -85,6 +108,15 @@ public class NeoBasicApplication extends Application {
 		System.out.println("开始加载。。");
 	}
 
+    protected void showLongToast(String text) {
+        Toast.makeText(this, text, 1).show();
+    }
+
+    protected AlertDialog showAlertDialog(String title, String message) {
+    	AlertDialog alertDialog = new AlertDialog.Builder(this).setTitle(title)
+				.setMessage(message).show();
+		return alertDialog;
+    }
 	@Override
 	public void onLowMemory() {
 		super.onLowMemory();
@@ -97,38 +129,51 @@ public class NeoBasicApplication extends Application {
 		Log.e("BaseApplication", "onTerminate");
 	}
 
-	public Bitmap getAvatar(String imageName) {
-		if (mPortraitCache.containsKey(imageName)) {
-			Reference<Bitmap> reference = mPortraitCache.get(imageName);
-			if (reference.get() == null || reference.get().isRecycled()) {
-				mPortraitCache.remove(imageName);
-			} else {
-				return reference.get();
-			}
-		}
-		InputStream is = null;
-		Bitmap bitmap = null;
-		try {
-			is = getAssets().open(PORTRAIT_DIR + imageName);
-			bitmap = BitmapFactory.decodeStream(is);
-			if (bitmap == null) {
-				throw new FileNotFoundException(imageName + "is not find");
-			}
-			mPortraitCache.put(imageName, new SoftReference<Bitmap>(bitmap));
-			return bitmap;
-		} catch (Exception e) {
-			return mDefaultPortrait;
-		} finally {
-			try {
-				if (is != null) {
-					is.close();
-					is = null;
-				}
-			} catch (IOException e) {
 
-			}
-		}
-	}
+    public Bitmap getAvatar(String imageName) {
+        if (this.mPortraitCache.containsKey(imageName)) {
+            Reference<Bitmap> reference = (Reference) this.mPortraitCache.get(imageName);
+            if (reference.get() != null && !((Bitmap) reference.get()).isRecycled()) {
+                return (Bitmap) reference.get();
+            }
+            this.mPortraitCache.remove(imageName);
+        }
+        InputStream is = null;
+        try {
+            is = getAssets().open(new StringBuilder(PORTRAIT_DIR).append(imageName).toString());
+            Bitmap bitmap = BitmapFactory.decodeStream(is);
+            if (bitmap == null) {
+                throw new FileNotFoundException(new StringBuilder(String.valueOf(imageName)).append("is not find").toString());
+            }
+            this.mPortraitCache.put(imageName, new SoftReference(bitmap));
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                }
+            }
+            return bitmap;
+        } catch (Exception e2) {
+            Bitmap bitmap2 = this.mDefaultPortrait;
+            if (is == null) {
+                return bitmap2;
+            }
+            try {
+                is.close();
+                return bitmap2;
+            } catch (IOException e3) {
+                return bitmap2;
+            }
+        } catch (Throwable th) {
+            if (is != null) {
+                try {
+                    is.close();
+                } catch (IOException e4) {
+                }
+            }
+        }
+		return mDefaultPortrait;
+    }
 
 	public Bitmap getPhotoOriginal(String imageName) {
 		if (mPhotoOriginalCache.containsKey(imageName)) {

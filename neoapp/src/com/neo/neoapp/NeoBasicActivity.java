@@ -9,7 +9,9 @@ import com.neo.neoapp.UI.views.NeoBasicTextView;
 import com.neo.neoapp.dialog.NeoFlippingLoadingDialog;
 
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,6 +23,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Toast;
 
+import com.neo.neoandroidlib.NetWorkUtils;
+import com.neo.neoandroidlib.NetWorkUtils.NetWorkState;
+import com.neo.neoapp.UI.views.NeoBasicTextView;
+import com.neo.neoapp.dialog.NeoFlippingLoadingDialog;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public abstract class NeoBasicActivity extends FragmentActivity {
 	protected NeoBasicApplication mApplication;
@@ -48,6 +60,8 @@ public abstract class NeoBasicActivity extends FragmentActivity {
 		mScreenWidth = metric.widthPixels;
 		mScreenHeight = metric.heightPixels;
 		mDensity = metric.density;
+		
+		initViews();
 	}
 
 	@Override
@@ -56,9 +70,14 @@ public abstract class NeoBasicActivity extends FragmentActivity {
 		super.onDestroy();
 	}
 
-	/** 初始化视图 **/
-	protected abstract void initViews();
-
+    public NeoBasicApplication getMyApplication() {
+        return this.mApplication;
+    }
+    
+    protected void initViews() {
+		// TODO Auto-generated method stub
+		
+	}
 	/** 初始化事件 **/
 	protected abstract void initEvents();
 
@@ -111,18 +130,23 @@ public abstract class NeoBasicActivity extends FragmentActivity {
 		Toast.makeText(this, text, Toast.LENGTH_LONG).show();
 	}
 
-	/** 显示自定义Toast提示(来自res) **/
-	protected void showCustomToast(int resId) {
-		View toastRoot = LayoutInflater.from(NeoBasicActivity.this).inflate(
-				R.layout.common_toast, null);
-		((NeoBasicTextView) toastRoot.findViewById(R.id.toast_text))
-				.setText(getString(resId));
-		Toast toast = new Toast(NeoBasicActivity.this);
-		toast.setGravity(Gravity.CENTER, 0, 0);
-		toast.setDuration(Toast.LENGTH_SHORT);
-		toast.setView(toastRoot);
-		toast.show();
-	}
+    public void showNeoJsoErrorCodeToast(JSONObject json) {
+        try {
+            showLongToast("errcode:" + json.getString("errcode") + ";info:" + json.getString("info"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void showCustomToast(int resId) {
+        View toastRoot = LayoutInflater.from(this).inflate(R.layout.common_toast, null);
+        ((NeoBasicTextView) toastRoot.findViewById(R.id.toast_text)).setText(getString(resId));
+        Toast toast = new Toast(this);
+        toast.setGravity(17, 0, 0);
+        toast.setDuration(0);
+        toast.setView(toastRoot);
+        toast.show();
+    }
 
 	/** 显示自定义Toast提示(来自String) **/
 	protected void showCustomToast(String text) {
@@ -215,4 +239,17 @@ public abstract class NeoBasicActivity extends FragmentActivity {
 	protected void defaultFinish() {
 		super.finish();
 	}
+
+    protected boolean netWorkCheck() {
+        if (this.mNetWorkUtils.getConnectState() == NetWorkState.NONE) {
+            showAlertDialog("NEO", "Please check your NetWork connection!");
+            return false;
+        } else if (this.mApplication.mNeoConfig != null) {
+            return true;
+        } else {
+            showAlertDialog("NEO", "The server info is not exist");
+            return false;
+        }
+    }
+
 }

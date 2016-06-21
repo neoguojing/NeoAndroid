@@ -1,22 +1,105 @@
 package com.neo.neoapp;
 
 import android.net.Uri;
+import com.neo.neoapp.entity.NeoConfig;
 
 public class NeoAppSetings {
-	
-	public static final String IpServerUrl = "http://mainapp.applinzi.com/nat/obtain/neo/";
-	
-	private static String prefix = "http://";
-	
-	public static final String ConfigFile = "config.json";
-	
-	public static Uri getServerUrl(String ip,String port)
-	{
-		return Uri.parse(prefix+ip+port);
-	}
-	
-	public static String getServerUrlString(String ip,String port)
-	{
-		return (prefix+ip+port);
-	}
+    public static final String ConfigFile = "config.json";
+    public static final String HeadPicDir = "headpic/";
+    public static final String IpServerUrl = "http://mainapp.applinzi.com/nat/obtain/neo/";
+    public static final String MeFile = "me.json";
+    public static final String MyFriendsFile = "myfriends.json";
+    public static final String MyHeadPic = "headpic";
+    public static final String MyNearByFile = "mynearby.json";
+    public static final String MyPhotosDir = "myphotos/";
+    public static final String MyPhotosOriginalDir = "myphotos/original/";
+    public static final String MyPhotosThumbnailDir = "myphotos/thumbnail/";
+    public static final String MyProfileFile = "myprofile.json";
+    public static final String MyStatusFile = "mystatus.json";
+    public static final String ProfilesDir = "profile/";
+    public static final String StatuPhotosDir = "statusphoto/";
+    public static final String StatusDir = "status/";
+    private static String download_suffix = null;
+    private static String getsvc_suffix = null;
+    private static String headpic_suffix = null;
+    private static final String login_check_suffix = "/site1/android/logincheck/";
+    private static final String login_suffix = "/site1/android/login/";
+    private static final String prefix = "http://";
+    private static String register_suffix;
+
+    public enum LOGIN_STATE {
+        LOGIN,
+        NOLOGIN,
+        OFFLINE,
+        SRVNOREACH,
+        HTTPERR
+    }
+
+    public enum NEO_ERRCODE {
+        NOERROR(0),
+        REGISTER_SUCCESS(1),
+        REGISTER_USER_EXIST(2),
+        USER_NOEXIST(3),
+        LOGIN_SUCCESS(4),
+        PASSWORD_INVALICE(5),
+        PASSWORD_ISNONE(6),
+        PHONE_NOEXIST(7),
+        EMAIL_NOEXIST(8),
+        INVALIDE_JSON(9),
+        UERE_LOGOUT(10),
+        UER_NOLOGIN(11),
+        DATA_NOEXIST(12),
+        PHONE_REGISTERED(13),
+        PIC_UPLOAD_FAIED(14),
+        PIC_DOWNLOAD_ERROR(15);
+        
+        private int nCode;
+
+        private NEO_ERRCODE(int _nCode) {
+            this.nCode = _nCode;
+        }
+
+        public String toString() {
+            return String.valueOf(this.nCode);
+        }
+    }
+
+    static {
+        register_suffix = "/site1/android/register/";
+        headpic_suffix = "/site1/android/headpic/";
+        getsvc_suffix = "/site1/android/get/";
+        download_suffix = "/site1/android/download/";
+    }
+
+    public static Uri getServerUrl(String ip, String port) {
+        return Uri.parse(new StringBuilder(prefix).append(ip).append(port).toString());
+    }
+
+    private static String getServerUrlString(NeoConfig config) {
+        return new StringBuilder(prefix).append(config.getIp()).append(":").append(config.getPort()).toString();
+    }
+
+    public static String getLoginUrl(NeoConfig config) {
+        return getServerUrlString(config) + login_suffix;
+    }
+
+    public static String getLoginCheckUrl(NeoConfig config) {
+        return getServerUrlString(config) + login_check_suffix;
+    }
+
+    public static String getRegisterUrl(NeoConfig config) {
+        return getServerUrlString(config) + register_suffix;
+    }
+
+    public static String getRegisterPicUrl(NeoConfig config) {
+        return getServerUrlString(config) + headpic_suffix;
+    }
+
+    public static String getGetUrl(NeoConfig config, String name) {
+        return getServerUrlString(config) + getsvc_suffix + name;
+    }
+
+    public static String getGetDownLoad(NeoConfig config, String name) {
+        return getServerUrlString(config) + download_suffix + name;
+    }
 }
