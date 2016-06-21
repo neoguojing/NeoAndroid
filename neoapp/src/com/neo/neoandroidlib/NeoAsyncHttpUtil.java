@@ -12,6 +12,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.PersistentCookieStore;
 import com.loopj.android.http.RequestParams;
 
+import cz.msebera.android.httpclient.HttpEntity;
 import cz.msebera.android.httpclient.cookie.Cookie;
 import cz.msebera.android.httpclient.impl.client.BasicCookieStore;
 
@@ -87,6 +88,25 @@ public class NeoAsyncHttpUtil {
         return sb.toString();  
     }  
     
+    public static String getListUtilCookieText() {
+        Cookie cookie;
+        List<Cookie> cookies = NeoCookieListUtil.getCookies();
+        NeoCookieListUtil.setCookies(cookies);
+        for (Cookie cookie2 : cookies) {
+            Log.d(TAG, cookie2.getName() + " = " + cookie2.getValue());
+        }
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < cookies.size(); i++) {
+            Cookie cookie2 = (Cookie) cookies.get(i);
+            String cookieName = cookie2.getName();
+            String cookieValue = cookie2.getValue();
+            if (!(cookieName.isEmpty() || cookieValue.isEmpty())) {
+                sb.append(new StringBuilder(String.valueOf(cookieName)).append("=").toString());
+                sb.append(new StringBuilder(String.valueOf(cookieValue)).append(";").toString());
+            }
+        }
+        return sb.toString();
+    }
     public static void get(Context context,String urlString,AsyncHttpResponseHandler res)    //用一个完整url获取一个string对象
     {
     	getClientInstance(context).get(urlString, res);
@@ -136,5 +156,12 @@ public class NeoAsyncHttpUtil {
     {
     	getClientInstance().get(uString, bHandler);
     }
- 
+
+    public static void postJson(Context context, String urlString, HttpEntity json, JsonHttpResponseHandler res) {
+        getClientInstance(context).post(context, urlString, json, RequestParams.APPLICATION_JSON, res);
+    }
+
+    public static void post(Context context, String urlString, RequestParams param, JsonHttpResponseHandler res) {
+        getClientInstance(context).post(urlString, param, res);
+    }
 }

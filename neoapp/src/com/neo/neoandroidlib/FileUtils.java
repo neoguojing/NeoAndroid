@@ -1,8 +1,24 @@
 package com.neo.neoandroidlib;
 
+import android.content.Context;
+import android.net.Uri;
+import android.os.Environment;
+import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
+import android.util.Log;
+
+import com.loopj.android.http.AsyncHttpResponseHandler;
+
+import cz.msebera.httpclient.android.BuildConfig;
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
 
 import android.content.Context;
@@ -159,11 +175,198 @@ public class FileUtils {
 		return fileSizeString;
 	}
 	
-	public static boolean isFileExist(String path) {
-		File file = new File(path);
-		if (!file.exists()) {
-			return false;
-		}
-		return true;
-	}
+    public static boolean isFileExist(String path) {
+        if (new File(path).exists()) {
+            return true;
+        }
+        return false;
+    }
+
+    public static long getFilesize(String path) {
+        File file = new File(path);
+        if (file.exists()) {
+            return 0;
+        }
+        return file.length();
+    }
+
+    public static String getJson(Context context, String name) {
+        Throwable th;
+        String str = null;
+        if (name != null) {
+            File file = new File(getAppDataPath(context) + name);
+            if (file.exists()) {
+                FileInputStream fis = null;
+                try {
+                    FileInputStream fis2 = new FileInputStream(file);
+                    try {
+                        str = readTextFile(fis2);
+                        if (fis2 != null) {
+                            try {
+                                fis2.close();
+                            } catch (IOException e) {
+                                fis = fis2;
+                            }
+                        }
+                    } catch (Throwable th2) {
+                        th = th2;
+                        fis = fis2;
+                        if (fis != null) {
+                            try {
+                                fis.close();
+                            } catch (IOException e4) {
+                            }
+                        }
+                        throw th;
+                    }
+                } catch (IOException e5) {
+                    if (fis != null) {
+                        try {
+							fis.close();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+                    }
+                    return str;
+                } catch (Throwable th3) {
+                    th = th3;
+                    if (fis != null) {
+                        try {
+							fis.close();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+                    }
+                    try {
+						throw th;
+					} catch (Throwable e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+                }
+            }
+        }
+        return str;
+    }
+
+    public static String readTextFile(InputStream inputStream) {
+        String readedStr = BuildConfig.VERSION_NAME;
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, AsyncHttpResponseHandler.DEFAULT_CHARSET));
+            while (true) {
+                String tmp = br.readLine();
+                if (tmp == null) {
+                    br.close();
+                    inputStream.close();
+                    return readedStr;
+                }
+                readedStr = new StringBuilder(String.valueOf(readedStr)).append(tmp).toString();
+            }
+        } catch (UnsupportedEncodingException e) {
+            return null;
+        } catch (IOException e2) {
+            return null;
+        }
+    }
+
+    public static int moveFile(String oldPath, String newPath) {
+        int bytesum = 0;
+        try {
+            File oldfile = new File(oldPath);
+            File newfile = new File(newPath);
+            if (newfile.exists()) {
+                newfile.delete();
+            }
+            if (oldfile.exists()) {
+                InputStream inStream = new FileInputStream(oldPath);
+                FileOutputStream fs = new FileOutputStream(newPath);
+                byte[] buffer = new byte[AccessibilityNodeInfoCompat.ACTION_NEXT_HTML_ELEMENT];
+                while (true) {
+                    int byteread = inStream.read(buffer);
+                    if (byteread == -1) {
+                        break;
+                    }
+                    bytesum += byteread;
+                    System.out.println(bytesum);
+                    fs.write(buffer, 0, byteread);
+                }
+                inStream.close();
+            }
+        } catch (Exception e) {
+            System.out.println("\u590d\u5236\u5355\u4e2a\u6587\u4ef6\u64cd\u4f5c\u51fa\u9519");
+            e.printStackTrace();
+        }
+        return bytesum;
+    }
+
+    public static int copyFile(String oldPath, String newPath) {
+        int bytesum = 0;
+        try {
+            if (new File(oldPath).exists()) {
+                InputStream inStream = new FileInputStream(oldPath);
+                FileOutputStream fs = new FileOutputStream(newPath);
+                byte[] buffer = new byte[AccessibilityNodeInfoCompat.ACTION_NEXT_HTML_ELEMENT];
+                while (true) {
+                    int byteread = inStream.read(buffer);
+                    if (byteread == -1) {
+                        break;
+                    }
+                    bytesum += byteread;
+                    System.out.println(bytesum);
+                    fs.write(buffer, 0, byteread);
+                }
+                inStream.close();
+            }
+        } catch (Exception e) {
+            System.out.println("\u590d\u5236\u5355\u4e2a\u6587\u4ef6\u64cd\u4f5c\u51fa\u9519");
+            e.printStackTrace();
+        }
+        return bytesum;
+    }
+
+    public static void copyFolder(String oldPath, String newPath) {
+        try {
+            new File(newPath).mkdirs();
+            String[] file = new File(oldPath).list();
+            for (int i = 0; i < file.length; i++) {
+                File temp;
+                if (oldPath.endsWith(File.separator)) {
+                    temp = new File(new StringBuilder(String.valueOf(oldPath)).append(file[i]).toString());
+                } else {
+                    temp = new File(new StringBuilder(String.valueOf(oldPath)).append(File.separator).append(file[i]).toString());
+                }
+                if (temp.isFile()) {
+                    FileInputStream input = new FileInputStream(temp);
+                    FileOutputStream output = new FileOutputStream(new StringBuilder(String.valueOf(newPath)).append("/").append(temp.getName().toString()).toString());
+                    byte[] b = new byte[5120];
+                    while (true) {
+                        int len = input.read(b);
+                        if (len == -1) {
+                            break;
+                        }
+                        output.write(b, 0, len);
+                    }
+                    output.flush();
+                    output.close();
+                    input.close();
+                }
+                if (temp.isDirectory()) {
+                    copyFolder(new StringBuilder(String.valueOf(oldPath)).append("/").append(file[i]).toString(), new StringBuilder(String.valueOf(newPath)).append("/").append(file[i]).toString());
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("\u590d\u5236\u6574\u4e2a\u6587\u4ef6\u5939\u5185\u5bb9\u64cd\u4f5c\u51fa\u9519");
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean isDirEmpty(String path) {
+        File file = new File(path);
+        if (!file.isDirectory() || file.list().length > 0) {
+            return false;
+        }
+        return true;
+    }
 }

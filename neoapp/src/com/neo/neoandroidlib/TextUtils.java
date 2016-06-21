@@ -129,7 +129,7 @@ public class TextUtils {
 			return "射手座";
 		} else if ((((month != 12) || (day < 22)))
 				&& (((month != 1) || (day > 19)))) {
-			return "魔蝎座";
+			return "摩羯座";
 		}
 		return "";
 	}
