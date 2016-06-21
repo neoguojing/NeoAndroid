@@ -1,31 +1,31 @@
 package com.neo.neoandroidlib;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.UUID;
-
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
+import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Paint.FontMetrics;
+import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.Bitmap.Config;
-import android.graphics.Paint.FontMetrics;
-import android.graphics.PorterDuff.Mode;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.MediaStore.Images.Media;
+import android.support.v4.media.TransportMediator;
+import android.support.v4.view.MotionEventCompat;
+import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 
@@ -33,33 +33,30 @@ import com.neo.neoapp.R;
 import com.neo.neoapp.activities.imageactivity.ImageFactoryActivity;
 import com.neo.neoapp.activities.imageactivity.ImageFactoryFliter.FilterType;
 
+import cz.msebera.android.httpclient.cookie.ClientCookie;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.UUID;
+
 public class PhotoUtils {
+    private static final String IMAGE_PATH;
+    public static final int INTENT_REQUEST_CODE_ALBUM = 0;
+    public static final int INTENT_REQUEST_CODE_CAMERA = 1;
+    public static final int INTENT_REQUEST_CODE_CROP = 2;
+    public static final int INTENT_REQUEST_CODE_FLITER = 3;
 
-	// 图片在SD卡中的缓存路径
-		private static final String IMAGE_PATH = Environment
-				.getExternalStorageDirectory().toString()
-				+ File.separator
-				+ "immomo" + File.separator + "Images" + File.separator;
-		// 相册的RequestCode
-		public static final int INTENT_REQUEST_CODE_ALBUM = 0;
-		// 照相的RequestCode
-		public static final int INTENT_REQUEST_CODE_CAMERA = 1;
-		// 裁剪照片的RequestCode
-		public static final int INTENT_REQUEST_CODE_CROP = 2;
-		// 滤镜图片的RequestCode
-		public static final int INTENT_REQUEST_CODE_FLITER = 3;
+    static {
+        IMAGE_PATH = new StringBuilder(String.valueOf(Environment.getExternalStorageDirectory().toString())).append(File.separator).append("neo").append(File.separator).append("Images").append(File.separator).toString();
+    }
 
-		/**
-		 * 通过手机相册获取图片
-		 * 
-		 * @param activity
-		 */
-		public static void selectPhoto(Activity activity) {
-			Intent intent = new Intent(Intent.ACTION_PICK, null);
-			intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-					"image/*");
-			activity.startActivityForResult(intent, INTENT_REQUEST_CODE_ALBUM);
-		}
+    public static void selectPhoto(Activity activity) {
+        Intent intent = new Intent("android.intent.action.GET_CONTENT", null);
+        intent.setDataAndType(Media.EXTERNAL_CONTENT_URI, "image/*");
+        activity.startActivityForResult(intent, INTENT_REQUEST_CODE_ALBUM);
+    }
 
 		/**
 		 * 通过手机照相获取图片
@@ -310,6 +307,66 @@ public class PhotoUtils {
 			return newFilePath;
 		}
 
+    public static String savePhotoToSDCard(Bitmap bitmap, String filepath) {
+        IOException e;
+        Throwable th;
+        if (!FileUtils.isSdcardExist()) {
+            return null;
+        }
+        FileOutputStream fileOutputStream = null;
+        File file = new File(filepath);
+        if (file.exists()) {
+            file.delete();
+        }
+        try {
+            file.createNewFile();
+            FileOutputStream fileOutputStream2 = new FileOutputStream(filepath);
+            try {
+                bitmap.compress(CompressFormat.JPEG, 100, fileOutputStream2);
+                try {
+                    fileOutputStream2.flush();
+                    fileOutputStream2.close();
+                    fileOutputStream = fileOutputStream2;
+                    return filepath;
+                } catch (IOException e2) {
+                    return null;
+                }
+            } catch (Throwable th3) {
+                th = th3;
+                try {
+                	fileOutputStream = fileOutputStream2;
+                    fileOutputStream.flush();
+                    fileOutputStream.close();
+					throw th;
+				} catch (Throwable e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+            }
+        } catch (FileNotFoundException e8) {
+            try {
+				fileOutputStream.flush();
+				fileOutputStream.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+            return null;
+        } catch (IOException e9) {
+            e = e9;
+            e.printStackTrace();
+            try {
+				fileOutputStream.flush();
+				fileOutputStream.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+
+            return filepath;
+        }
+		return filepath;
+    }
 		/**
 		 * 根据滤镜类型获取图片
 		 * 

@@ -1,28 +1,44 @@
 package com.neo.neoapp.activities;
 
-import java.util.regex.Pattern;
-
+import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
+import com.baidu.navisdk.adapter.BNOuterTTSPlayerCallback;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+import com.neo.neoandroidlib.NeoAsyncHttpUtil;
+import com.neo.neoandroidlib.NetWorkUtils.NetWorkState;
 import com.neo.neoandroidlib.TextUtils;
+import com.neo.neoapp.NeoAppSetings;
+import com.neo.neoapp.NeoAppSetings.NEO_ERRCODE;
 import com.neo.neoapp.NeoBasicActivity;
 import com.neo.neoapp.R;
 import com.neo.neoapp.UI.adapters.SimpleListDialogAdapter;
 import com.neo.neoapp.UI.views.HeaderLayout;
 import com.neo.neoapp.UI.views.HeaderLayout.HeaderStyle;
 import com.neo.neoapp.UI.views.NeoBasicTextView;
+import com.neo.neoapp.activities.imageactivity.ImageFactoryCrop;
 import com.neo.neoapp.dialog.SimpleListDialog;
 import com.neo.neoapp.dialog.SimpleListDialog.onSimpleListItemClickListener;
-
-import android.content.Intent;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.EditText;
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.conn.params.ConnPerRouteBean;
+import cz.msebera.android.httpclient.entity.StringEntity;
+import cz.msebera.android.httpclient.message.BasicHeader;
+import java.io.UnsupportedEncodingException;
+import java.util.regex.Pattern;
+import org.apache.http.entity.mime.MIME;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class LoginActivity extends NeoBasicActivity implements OnClickListener,
 		onSimpleListItemClickListener {
-
+	private final String Tag = "LoginActivity";
 	private HeaderLayout mHeaderLayout;
 	private EditText mEtAccount;
 	private EditText mEtPwd;
@@ -39,11 +55,19 @@ public class LoginActivity extends NeoBasicActivity implements OnClickListener,
 	private String mPassword;
 
 	private SimpleListDialog mSimpleListDialog;
+    private enum AccountType {
+        USERNAME,
+        EMAIL,
+        PHONE,
+        USERID,
+        INVALID
+    }
 	private String[] mCountryCodes;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+        getActionBar().hide();
 		setContentView(R.layout.activity_login);
 		initViews();
 		initEvents();
@@ -130,12 +154,12 @@ public class LoginActivity extends NeoBasicActivity implements OnClickListener,
 		return false;
 	}
 
-	private boolean matchMoMo(String text) {
-		if (Pattern.compile("\\d{7,9}").matcher(text).matches()) {
-			return true;
-		}
-		return false;
-	}
+    private boolean matchUid(String text) {
+        if (Pattern.compile("\\d{1,9}").matcher(text).matches()) {
+            return true;
+        }
+        return false;
+    }
 
 	private boolean isNull(EditText editText) {
 		String text = editText.getText().toString().trim();
@@ -145,38 +169,35 @@ public class LoginActivity extends NeoBasicActivity implements OnClickListener,
 		return true;
 	}
 
-	private boolean validateAccount() {
-		mAccount = null;
-		if (isNull(mEtAccount)) {
-			showCustomToast("请输入陌陌号码或登录邮箱");
-			mEtAccount.requestFocus();
-			return false;
-		}
-		String account = mEtAccount.getText().toString().trim();
-		if (matchPhone(account)) {
-			if (account.length() < 3) {
-				showCustomToast("账号格式不正确");
-				mEtAccount.requestFocus();
-				return false;
-			}
-			if (Pattern.compile("(\\d{3,})|(\\+\\d{3,})").matcher(account)
-					.matches()) {
-				mAccount = account;
-				return true;
-			}
-		}
-		if (matchEmail(account)) {
-			mAccount = account;
-			return true;
-		}
-		if (matchMoMo(account)) {
-			mAccount = account;
-			return true;
-		}
-		showCustomToast("账号格式不正确");
-		mEtAccount.requestFocus();
-		return false;
-	}
+    private AccountType validateAccount() {
+        this.mAccount = null;
+        if (isNull(this.mEtAccount)) {
+            showCustomToast("\u8bf7\u8f93\u5165\u7528\u6237\u540d/\u7535\u8bdd/\u767b\u5f55\u90ae\u7bb1");
+            this.mEtAccount.requestFocus();
+            return AccountType.INVALID;
+        }
+        String account = this.mEtAccount.getText().toString().trim();
+        if (matchPhone(account)) {
+            if (account.length() < 3) {
+                showCustomToast("\u8d26\u53f7\u683c\u5f0f\u4e0d\u6b63\u786e");
+                this.mEtAccount.requestFocus();
+                return AccountType.INVALID;
+            } else if (Pattern.compile("(\\d{3,})|(\\+\\d{3,})").matcher(account).matches()) {
+                this.mAccount = account;
+                return AccountType.PHONE;
+            }
+        }
+        if (matchEmail(account)) {
+            this.mAccount = account;
+            return AccountType.EMAIL;
+        } else if (matchUid(account)) {
+            this.mAccount = account;
+            return AccountType.USERID;
+        } else {
+            this.mAccount = account;
+            return AccountType.USERNAME;
+        }
+    }
 
 	private boolean validatePwd() {
 		mPassword = null;
@@ -195,48 +216,99 @@ public class LoginActivity extends NeoBasicActivity implements OnClickListener,
 		return true;
 	}
 
-	private void login() {
-		if ((!validateAccount()) || (!validatePwd())) {
-			return;
-		}
-		putAsyncTask(new AsyncTask<Void, Void, Boolean>() {
+    private void onlineLogin(AccountType accounttype) {
+        try {
+            if (netWorkCheck()) {
+                JSONObject jsonObject = new JSONObject();
+                switch (accounttype) {
+                    case USERNAME /*1*/:
+                        jsonObject.put("username", this.mAccount);
+                        break;
+                    case EMAIL:
+                        jsonObject.put("email", this.mAccount);
+                        break;
+                    case PHONE:
+                        jsonObject.put("phone", this.mAccount);
+                        break;
+					default:
+						break;
+                }
+                jsonObject.put("password", this.mPassword);
+                StringEntity stringEntity = new StringEntity(jsonObject.toString());
+                stringEntity.setContentType(new BasicHeader(MIME.CONTENT_TYPE, RequestParams.APPLICATION_JSON));
+                NeoAsyncHttpUtil.postJson(this, NeoAppSetings.getLoginUrl(this.mApplication.mNeoConfig), stringEntity, new JsonHttpResponseHandler() {
+                    public void onFinish() {
+                        Log.i(LoginActivity.this.Tag, "onFinish");
+                    }
 
-			@Override
-			protected void onPreExecute() {
-				super.onPreExecute();
-				showLoadingDialog("正在登录,请稍后...");
-			}
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        super.onSuccess(statusCode, headers, response);
+                        Log.i(LoginActivity.this.Tag, "onSuccess ");
+                        LoginActivity.this.showNeoJsoErrorCodeToast(response);
+                        NeoAsyncHttpUtil.addPersistCookieToGlobaList(LoginActivity.this);
+                        try {
+                            if (response.getString("errcode").equals(NEO_ERRCODE.LOGIN_SUCCESS.toString())) {
+                                LoginActivity.this.startActivity(new Intent(LoginActivity.this, MainTabActivity.class));
+                                LoginActivity.this.finish();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
 
-			@Override
-			protected Boolean doInBackground(Void... params) {
-				try {
-					Thread.sleep(2000);
-					if ((DEFAULT_ACCOUNTS[0].equals(mAccount)
-							|| DEFAULT_ACCOUNTS[1].equals(mAccount) || DEFAULT_ACCOUNTS[2]
-								.equals(mAccount))
-							&& DEFAULT_PASSWORD.equals(mPassword)) {
-						return true;
-					}
-					return true;
-				} catch (InterruptedException e) {
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                        Log.e(LoginActivity.this.Tag, " onFailure" + throwable.toString());
+                        LoginActivity.this.showAlertDialog("NEO", "Get Server Address failed" + errorResponse.toString());
+                    }
+                });
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e2) {
+            e2.printStackTrace();
+        }
+    }
 
-				}
-				return false;
-			}
+    private void testLogin() {
+        putAsyncTask(new AsyncTask<Void, Void, Boolean>() {
+            protected void onPreExecute() {
+                super.onPreExecute();
+                LoginActivity.this.showLoadingDialog("\u6b63\u5728\u767b\u5f55,\u8bf7\u7a0d\u540e...");
+            }
 
-			@Override
-			protected void onPostExecute(Boolean result) {
-				super.onPostExecute(result);
-				dismissLoadingDialog();
-				if (result) {
-					Intent intent = new Intent(LoginActivity.this,
-							MainTabActivity.class);
-					startActivity(intent);
-					finish();
-				} else {
-					showCustomToast("账号或密码错误,请检查是否输入正确");
-				}
-			}
-		});
-	}
+            protected Boolean doInBackground(Void... params) {
+                try {
+                    Thread.sleep(2000);
+                    if ((LoginActivity.DEFAULT_ACCOUNTS[0].equals(LoginActivity.this.mAccount) || LoginActivity.DEFAULT_ACCOUNTS[1].equals(LoginActivity.this.mAccount) || LoginActivity.DEFAULT_ACCOUNTS[2].equals(LoginActivity.this.mAccount)) && LoginActivity.DEFAULT_PASSWORD.equals(LoginActivity.this.mPassword)) {
+                        return Boolean.valueOf(true);
+                    }
+                    return Boolean.valueOf(true);
+                } catch (InterruptedException e) {
+                    return Boolean.valueOf(false);
+                }
+            }
+
+            protected void onPostExecute(Boolean result) {
+                super.onPostExecute(result);
+                LoginActivity.this.dismissLoadingDialog();
+                if (result.booleanValue()) {
+                    LoginActivity.this.startActivity(new Intent(LoginActivity.this, MainTabActivity.class));
+                    LoginActivity.this.finish();
+                    return;
+                }
+                LoginActivity.this.showCustomToast("\u8d26\u53f7\u6216\u5bc6\u7801\u9519\u8bef,\u8bf7\u68c0\u67e5\u662f\u5426\u8f93\u5165\u6b63\u786e");
+            }
+        });
+    }
+
+    private void login() {
+        AccountType accountType = validateAccount();
+        if (accountType != AccountType.INVALID && validatePwd()) {
+            if (this.mNetWorkUtils.getConnectState() == NetWorkState.NONE) {
+                showAlertDialog("NEO", "Please check your NetWork connection!");
+            } else {
+                onlineLogin(accountType);
+            }
+        }
+    }
 }

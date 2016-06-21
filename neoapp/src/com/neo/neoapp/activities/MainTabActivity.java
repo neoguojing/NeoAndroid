@@ -1,46 +1,64 @@
 package com.neo.neoapp.activities;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Bundle;
+import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewConfiguration;
+import android.view.Window;
 
+import com.loopj.android.http.BinaryHttpResponseHandler;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.neo.neoandroidlib.FileUtils;
+import com.neo.neoandroidlib.NeoAsyncHttpUtil;
+import com.neo.neoandroidlib.NeoIntentFactiory;
+import com.neo.neoandroidlib.PhotoUtils;
+import com.neo.neoapp.NeoAppSetings;
+import com.neo.neoapp.NeoAppSetings.NEO_ERRCODE;
 import com.neo.neoapp.NeoBasicActivity;
 import com.neo.neoapp.NeoBasicApplication;
 import com.neo.neoapp.R;
-import com.neo.neoandroidlib.NeoIntentFactiory;
-import com.neo.neoapp.R.id;
-import com.neo.neoapp.R.layout;
-import com.neo.neoapp.R.menu;
 import com.neo.neoapp.UI.ChangeColorIconWithTextView;
 import com.neo.neoapp.UI.NeoViewPagerAdapter;
+import com.neo.neoapp.UI.views.photo.PhotoViewAttacher;
 import com.neo.neoapp.broadcasts.NeoAppBroadCastMessages;
+import com.neo.neoapp.entity.People;
+import com.neo.neoapp.entity.Setings;
 import com.neo.neoapp.fragments.NeoBasicFragment;
 import com.neo.neoapp.fragments.NeoBasicMapFragment;
 import com.neo.neoapp.fragments.NeoDisPlayFragment;
 import com.neo.neoapp.fragments.NeoSetingListFragment;
 import com.neo.neoapp.fragments.RefreshListFragment;
-import com.neo.neoapp.fragments.TabFragment;
-import com.neo.neoapp.handlers.NeoAppUIThreadHandler;
 import com.neo.neoapp.handlers.NeoAppWorkerThreadHandler;
 import com.neo.neoapp.services.NeoAppBackgroundService;
 import com.neo.neoapp.tasks.ServiceWorkerWithLooper;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.Window;
-import android.view.View.OnClickListener;
-import android.view.ViewConfiguration;
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.protocol.HTTP;
+import cz.msebera.httpclient.android.BuildConfig;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.http.entity.mime.MIME;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class MainTabActivity extends NeoBasicActivity implements OnClickListener,
 	OnPageChangeListener{
 	
+	private final String Tag = "MainTabActivity";
 	private NeoBasicApplication mApplication;
 	
 	private static final String TAG = "MainActivity";
@@ -57,7 +75,38 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
 	
 	private List<ChangeColorIconWithTextView> mListViews = 
 			new ArrayList<ChangeColorIconWithTextView>();
-	
+    /* renamed from: com.neo.neoapp.activities.MainTabActivity.5 */
+    class AnonymousClass5 extends BinaryHttpResponseHandler {
+        AnonymousClass5(String[] $anonymous0) {
+            super($anonymous0);
+        }
+
+        public void onFinish() {
+            Log.i(MainTabActivity.this.Tag, "onFinish");
+        }
+
+        public void onFailure(int arg0, Header[] arg1, byte[] response, Throwable throwable) {
+            Log.e(MainTabActivity.this.Tag, " onFailure" + throwable.toString());
+            MainTabActivity.this.showAlertDialog("NEO", throwable.toString());
+        }
+
+        public void onSuccess(int arg0, Header[] arg1, byte[] response) {
+            Log.i(MainTabActivity.this.Tag, "onSuccess" + response.length);
+            NeoAsyncHttpUtil.addPersistCookieToGlobaList(MainTabActivity.this);
+            String filename = BuildConfig.VERSION_NAME;
+            for (int i = 0; i < arg1.length; i++) {
+                if (arg1[i].getName().equals(MIME.CONTENT_DISPOSITION)) {
+                    filename = arg1[i].getValue();
+                }
+                filename = filename.substring(filename.lastIndexOf("=") + 1);
+            }
+            Bitmap bmp = BitmapFactory.decodeByteArray(response, 0, response.length);
+            MainTabActivity.this.showAlertDialog("NEO", filename);
+            PhotoUtils.savePhotoToSDCard(bmp, new StringBuilder(String.valueOf(
+            		FileUtils.getAppDataPath(MainTabActivity.this))).append(NeoAppSetings.HeadPicDir).append(filename).toString());
+        }
+    }
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -70,12 +119,16 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
 		
 		//��ʼ������
 		initViews();
-		initService();
-		initWorkerThread();
+		//initService();
+		//initWorkerThread();
 		//sendNotifications();
-			
+        initNetWorkData();
 	}
-	
+    private void test() {
+        if (this.mApplication.mMe != null) {
+            showAlertDialog("NEO", new StringBuilder(String.valueOf(String.valueOf(this.mApplication.mMe.getGender()))).append(this.mApplication.mMe.getAvatar()).toString());
+        }
+    }
 	public void onDestroy(){
 		
 		stopService();
@@ -205,7 +258,198 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
 		//mViewPager.setOnPageChangeListener(this);
 		mViewPager.addOnPageChangeListener(this);
 	}
-	
+    private void initNetWorkData() {
+        if (!netWorkCheck()) {
+            return;
+        }
+        if (FileUtils.isDirEmpty(NeoAppSetings.ProfilesDir)) {
+            showAlertDialog("NEO", "ni meimei");
+            return;
+        }
+        getNearbyData();
+        getFriendData();
+        getMyStatusData();
+    }
+
+    private void getNearbyData() {
+        NeoAsyncHttpUtil.get((Context) this, new StringBuilder(String.valueOf(NeoAppSetings.getGetUrl(this.mApplication.mNeoConfig, this.mApplication.mMe.getName()))).append("/").append("3/").toString(), new JsonHttpResponseHandler() {
+            public void onFinish() {
+                Log.i(MainTabActivity.this.Tag, "onFinish");
+            }
+
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                super.onSuccess(statusCode, headers, response);
+                Log.i(MainTabActivity.this.Tag, new StringBuilder(String.valueOf(response.length())).toString());
+                NeoAsyncHttpUtil.addPersistCookieToGlobaList(MainTabActivity.this);
+                int i = 0;
+                while (i < response.length()) {
+                    try {
+                        JSONObject object = response.getJSONObject(i);
+                        MainTabActivity.this.getNearbyAndFriendProfile(object.getString(Setings.NAME));
+                        MainTabActivity.this.mApplication.mNearByPeoples.add(new People(object));
+                        i++;
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                FileUtils.overrideContent(new StringBuilder(String.valueOf(FileUtils.getAppDataPath(MainTabActivity.this))).append(NeoAppSetings.MyNearByFile).toString(), response.toString());
+            }
+
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                Log.e(MainTabActivity.this.Tag, " onFailure" + throwable.toString());
+                MainTabActivity.this.showAlertDialog("NEO", throwable.toString());
+            }
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                Log.i(MainTabActivity.this.Tag, "onSuccess ");
+                MainTabActivity.this.showNeoJsoErrorCodeToast(response);
+                NeoAsyncHttpUtil.addPersistCookieToGlobaList(MainTabActivity.this);
+            }
+
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                MainTabActivity.this.showAlertDialog("NEO", throwable.toString());
+            }
+        });
+    }
+
+    private void getFriendData() {
+        NeoAsyncHttpUtil.get((Context) this, new StringBuilder(String.valueOf(NeoAppSetings.getGetUrl(this.mApplication.mNeoConfig, this.mApplication.mMe.getName()))).append("/").append("2/").toString(), new JsonHttpResponseHandler() {
+            public void onFinish() {
+                Log.i(MainTabActivity.this.Tag, "onFinish");
+            }
+
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                super.onSuccess(statusCode, headers, response);
+                Log.i(MainTabActivity.this.Tag, new StringBuilder(String.valueOf(response.length())).toString());
+                NeoAsyncHttpUtil.addPersistCookieToGlobaList(MainTabActivity.this);
+                int i = 0;
+                while (i < response.length()) {
+                    try {
+                        JSONObject object = response.getJSONObject(i);
+                        MainTabActivity.this.getNearbyAndFriendProfile(object.getString(Setings.NAME));
+                        MainTabActivity.this.mApplication.mFriends.add(new People(object));
+                        i++;
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                FileUtils.overrideContent(new StringBuilder(String.valueOf(FileUtils.getAppDataPath(MainTabActivity.this))).append(NeoAppSetings.MyFriendsFile).toString(), response.toString());
+            }
+
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                Log.e(MainTabActivity.this.Tag, " onFailure" + throwable.toString());
+                MainTabActivity.this.showAlertDialog("NEO", throwable.toString());
+            }
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                Log.i(MainTabActivity.this.Tag, "onSuccess ");
+                MainTabActivity.this.showNeoJsoErrorCodeToast(response);
+                NeoAsyncHttpUtil.addPersistCookieToGlobaList(MainTabActivity.this);
+                try {
+                    if (!response.getString("errcode").equals(NEO_ERRCODE.LOGIN_SUCCESS.toString())) {
+                        MainTabActivity.this.showAlertDialog("NEO", response.toString());
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                MainTabActivity.this.showAlertDialog("NEO", throwable.toString());
+            }
+        });
+    }
+
+    private void getNearbyAndFriendProfile(String name) {
+        NeoAsyncHttpUtil.get((Context) this, new StringBuilder(String.valueOf(NeoAppSetings.getGetUrl(this.mApplication.mNeoConfig, name))).append("/").append("1/").toString(), new JsonHttpResponseHandler() {
+            public void onFinish() {
+                Log.i(MainTabActivity.this.Tag, "onFinish");
+            }
+
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                super.onSuccess(statusCode, headers, response);
+                Log.i(MainTabActivity.this.Tag, new StringBuilder(String.valueOf(response.length())).toString());
+                NeoAsyncHttpUtil.addPersistCookieToGlobaList(MainTabActivity.this);
+                MainTabActivity.this.showAlertDialog("NEO", "JSONArray:" + response.toString());
+            }
+
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                Log.e(MainTabActivity.this.Tag, " onFailure" + throwable.toString());
+                MainTabActivity.this.showAlertDialog("NEO", throwable.toString());
+            }
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                Log.i(MainTabActivity.this.Tag, "onSuccess ");
+                NeoAsyncHttpUtil.addPersistCookieToGlobaList(MainTabActivity.this);
+                try {
+                    if (!response.has("errcode")) {
+                        MainTabActivity.this.getOtherHeadImages(response.getString(Setings.NAME));
+                        FileUtils.overrideContent(new StringBuilder(String.valueOf(FileUtils.getAppDataPath(MainTabActivity.this))).append(NeoAppSetings.ProfilesDir).append(response.getString(Setings.NAME)).append(".json").toString(), response.toString());
+                    } else if (response.getString("errcode").equals(NEO_ERRCODE.DATA_NOEXIST.toString())) {
+                        MainTabActivity.this.showAlertDialog("NEO", response.getString("info"));
+                    } else if (response.getString("errcode").equals(NEO_ERRCODE.UER_NOLOGIN.toString())) {
+                        MainTabActivity.this.showAlertDialog("NEO", response.getString("info"));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                MainTabActivity.this.showAlertDialog("NEO", throwable.toString());
+            }
+        });
+    }
+
+    private void getMyStatusData() {
+        NeoAsyncHttpUtil.get((Context) this, new StringBuilder(String.valueOf(NeoAppSetings.getGetUrl(this.mApplication.mNeoConfig, this.mApplication.mMe.getName()))).append("/").append("4/").toString(), new JsonHttpResponseHandler() {
+            public void onFinish() {
+                Log.i(MainTabActivity.this.Tag, "onFinish");
+            }
+
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                super.onSuccess(statusCode, headers, response);
+                Log.i(MainTabActivity.this.Tag, new StringBuilder(String.valueOf(response.length())).toString());
+                NeoAsyncHttpUtil.addPersistCookieToGlobaList(MainTabActivity.this);
+                FileUtils.overrideContent(new StringBuilder(String.valueOf(FileUtils.getAppDataPath(MainTabActivity.this))).append(NeoAppSetings.MyStatusFile).toString(), response.toString());
+            }
+
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                Log.e(MainTabActivity.this.Tag, " onFailure" + throwable.toString());
+                MainTabActivity.this.showAlertDialog("NEO", throwable.toString());
+            }
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                Log.i(MainTabActivity.this.Tag, "onSuccess ");
+                MainTabActivity.this.showNeoJsoErrorCodeToast(response);
+                NeoAsyncHttpUtil.addPersistCookieToGlobaList(MainTabActivity.this);
+                try {
+                    if (!response.getString("errcode").equals(NEO_ERRCODE.LOGIN_SUCCESS.toString())) {
+                        MainTabActivity.this.showAlertDialog("NEO", response.toString());
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                MainTabActivity.this.showAlertDialog("NEO", throwable.toString());
+            }
+        });
+    }
+
+    private void getOtherHeadImages(String name) {
+        NeoAsyncHttpUtil.get((Context) this, 
+		new StringBuilder(String.valueOf(NeoAppSetings.getGetDownLoad(this.mApplication.mNeoConfig, name))).append("/").append("1/").toString(),
+		new AnonymousClass5(new String[]{"application/x-jpg", "image/png", "image/jpeg", HTTP.OCTET_STREAM_TYPE})
+        
+        		
+        );
+    }
 	private void initService(){
 		//�������ط���
 		Intent bgsvc = new Intent(MainTabActivity.this,

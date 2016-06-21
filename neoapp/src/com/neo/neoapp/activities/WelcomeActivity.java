@@ -1,21 +1,8 @@
 package com.neo.neoapp.activities;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import cz.msebera.android.httpclient.Header;
-
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.neo.neoandroidlib.FileUtils;
-import com.neo.neoandroidlib.NeoAsyncHttpUtil;
-import com.neo.neoandroidlib.NetWorkUtils.NetWorkState;
-import com.neo.neoapp.NeoAppSetings;
-import com.neo.neoapp.NeoBasicActivity;
-import com.neo.neoapp.R;
-import com.neo.neoapp.UI.views.NeoBasicTextView;
-import com.neo.neoapp.activities.register.RegisterActivity;
-import com.neo.neoapp.entity.NeoConfig;
-
+import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -23,6 +10,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
@@ -31,31 +19,56 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.neo.neoandroidlib.FileUtils;
+import com.neo.neoandroidlib.NeoAsyncHttpUtil;
+import com.neo.neoandroidlib.NetWorkUtils;
+import com.neo.neoandroidlib.NetWorkUtils.NetWorkState;
+import com.neo.neoapp.NeoAppSetings;
+import com.neo.neoapp.NeoAppSetings.LOGIN_STATE;
+import com.neo.neoapp.NeoAppSetings.NEO_ERRCODE;
+import com.neo.neoapp.NeoBasicActivity;
+import com.neo.neoapp.R;
+import com.neo.neoapp.UI.views.NeoBasicTextView;
+import com.neo.neoapp.activities.register.RegisterActivity;
+import com.neo.neoapp.entity.NeoConfig;
+import com.neo.neoapp.entity.People;
+import com.neo.neoapp.entity.PeopleProfile;
+
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.cookie.ClientCookie;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class WelcomeActivity extends NeoBasicActivity implements OnClickListener {
+    private String Tag;
+    LOGIN_STATE loginstate;
+    private String[] mAvatars;
+    private Button mBtnLogin;
+    private Button mBtnRegister;
+    private String[] mDistances;
+    private ImageButton mIbtnAbout;
+    private LinearLayout mLinearAvatars;
+    private LinearLayout mLinearCtrlbar;
+    private View[] mMemberBlocks;
 
-	private String Tag = "WelcomeActivity";
-	private LinearLayout mLinearCtrlbar;
-	private LinearLayout mLinearAvatars;
-	private Button mBtnRegister;
-	private Button mBtnLogin;
-	private ImageButton mIbtnAbout;
-
-	private View[] mMemberBlocks;
-	private String[] mAvatars = new String[] { "welcome_0", "welcome_1",
-			"welcome_2", "welcome_3", "welcome_4", "welcome_5" };
-	private String[] mDistances = new String[] { "0.84km", "1.02km", "1.34km",
-			"1.88km", "2.50km", "2.78km" };
-
+    public WelcomeActivity() {
+        this.loginstate = null;
+        this.Tag = "WelcomeActivity";
+        this.mAvatars = new String[]{"welcome_0", "welcome_1", "welcome_2", "welcome_3", "welcome_4", "welcome_5"};
+        this.mDistances = new String[]{"0.84km", "1.02km", "1.34km", "1.88km", "2.50km", "2.78km"};
+    }
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_welcome);
-		initViews();
-		initEvents();
-		initData();
-		//initAvatarsItem();
-		showWelcomeAnimation();
+        getActionBar().hide();
+        setContentView(R.layout.activity_welcome);
+        initViews();
+        initEvents();
+        initNetWorkData();
+        initData();
+        showWelcomeAnimation();
 	}
 
 	
@@ -77,73 +90,152 @@ public class WelcomeActivity extends NeoBasicActivity implements OnClickListener
 	}
 	
 	private void initData() {
-		// TODO Auto-generated method stub
-		if (mNetWorkUtils.getConnectState() == NetWorkState.NONE) {
-			showAlertDialog("NEO","Please check your NetWork connection!");
-		}
-		else
-		{
-			NeoAsyncHttpUtil.get(this,NeoAppSetings.IpServerUrl,
-					new JsonHttpResponseHandler(){
-				
-				@Override
-				public void onSuccess(int statusCode, Header[] headers,JSONArray arg0) { // 成功后返回一个JSONArray数据
-	                Log.i(Tag, arg0.length() + "");
-	                try {
-	                    //textView.setText("菜谱名字："
-	                    //        + arg0.getJSONObject(2).getString("name")); //返回的是JSONArray， 获取JSONArray数据里面的第2个JSONObject对象，然后获取名字为name的数据值
-	                } catch (Exception e) {
-	                    Log.e(Tag, e.toString());
-	                }
-	            };
-	            
-	            @Override
-	            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-	            	Log.e(Tag, " onFailure" + throwable.toString());
-	            	showAlertDialog("NEO","Get Server Address failed"+throwable.toString());
-	            }
-	            
-	            @Override 
-	            public void onFinish() {
-	                Log.i(Tag, "onFinish");
-	                //showAlertDialog("NEO","Get Server Address failed");
-	            }
-	            
-	            @Override
-	            public void onSuccess(int statusCode, Header[] headers,  
-	                    JSONObject response) {  
-	                // TODO Auto-generated method stub  
-	                super.onSuccess(statusCode, headers, response);  
-	                Log.i(Tag, "onSuccess ");
-	                try {
-	                	showLongToast("ip:"+response.getString(NeoConfig.IP)
-	                			+";port:"+response.getString(NeoConfig.PORT));
-	                	
-	                	mApplication.mNeoConfig = new NeoConfig(response.getString(NeoConfig.IP),
-	                			response.getString(NeoConfig.PORT),"neo");
-	                	
-	                	FileUtils.overrideContent(FileUtils.getAppDataPath(WelcomeActivity.this)+NeoAppSetings.ConfigFile,
-	                			response.toString());
-	                	
-	                	NeoAsyncHttpUtil.addPersistCookieToGlobaList(WelcomeActivity.this);
-	                	//showAlertDialog("NEO",NeoAsyncHttpUtil.getCookieText(WelcomeActivity.this));
-	                } catch (Exception e) {
-	                    Log.e(Tag, e.toString());
-	                }
-	            }
-	            
-	            @Override
-	            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-	            	Log.e(Tag, " onFailure" + throwable.toString());
-	            	showAlertDialog("NEO","Get Server Address failed!\r\n statusCode="
-	            	+String.valueOf(statusCode)+"\r\nexception:"
-	            	+throwable.toString());
-	            }
-	            
-			});
-		}
+        initAppDirs();
+        loadMyData();
 	}
 
+
+    private void initAppDirs() {
+        putAsyncTask(new AsyncTask<Void, Void, Boolean>() {
+            protected void onPreExecute() {
+                super.onPreExecute();
+                WelcomeActivity.this.showLoadingDialog("\u8bf7\u7a0d\u540e,\u6b63\u5728\u521d\u59cb\u5316...");
+            }
+
+            protected Boolean doInBackground(Void... params) {
+                try {
+                    Boolean rtn = Boolean.valueOf(true);
+                    String prefix = FileUtils.getAppDataPath(WelcomeActivity.this);
+                    FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.HeadPicDir).toString());
+                    FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.MyPhotosDir).toString());
+                    FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.MyPhotosOriginalDir).toString());
+                    FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.MyPhotosThumbnailDir).toString());
+                    FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.ProfilesDir).toString());
+                    FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.StatuPhotosDir).toString());
+                    FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.StatusDir).toString());
+                    return rtn;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return Boolean.valueOf(false);
+                }
+            }
+
+            protected void onPostExecute(Boolean result) {
+                super.onPostExecute(result);
+                WelcomeActivity.this.dismissLoadingDialog();
+                if (!result.booleanValue()) {
+                    WelcomeActivity.this.showAlertDialog("NEO", "json file does not exist");
+                }
+            }
+        });
+    }
+
+    private void loadMyData() {
+        putAsyncTask(new AsyncTask<Void, Void, Boolean>() {
+            protected void onPreExecute() {
+                super.onPreExecute();
+                WelcomeActivity.this.showLoadingDialog("\u8bf7\u7a0d\u540e,\u6b63\u5728\u521d\u59cb\u5316...");
+            }
+
+            protected Boolean doInBackground(Void... params) {
+                try {
+                    if (People.resolveMe(WelcomeActivity.this.mApplication, WelcomeActivity.this) 
+                    		&& PeopleProfile.resolveMyProfile(WelcomeActivity.this.mApplication, WelcomeActivity.this)) {
+                        return Boolean.valueOf(true);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return Boolean.valueOf(false);
+            }
+
+            protected void onPostExecute(Boolean result) {
+                super.onPostExecute(result);
+                WelcomeActivity.this.dismissLoadingDialog();
+                if (!result.booleanValue()) {
+                    WelcomeActivity.this.showAlertDialog("NEO", "json file does not exist");
+                }
+            }
+        });
+    }
+
+    private void initNetWorkData() {
+        this.mNetWorkUtils = new NetWorkUtils(getApplicationContext());
+        if (this.mNetWorkUtils.getConnectState() == NetWorkState.NONE) {
+            showAlertDialog("NEO", "Please check your NetWork connection!");
+        } else {
+            NeoAsyncHttpUtil.get((Context) this, NeoAppSetings.IpServerUrl, new JsonHttpResponseHandler() {
+                public void onSuccess(int statusCode, Header[] headers, JSONArray arg0) {
+                    Log.i(WelcomeActivity.this.Tag, new StringBuilder(String.valueOf(arg0.length())).toString());
+                }
+
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                    Log.e(WelcomeActivity.this.Tag, " onFailure" + throwable.toString());
+                    WelcomeActivity.this.showAlertDialog("NEO", "Get Server Address failed" + throwable.toString());
+                }
+
+                public void onFinish() {
+                    Log.i(WelcomeActivity.this.Tag, "onFinish");
+                }
+
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    super.onSuccess(statusCode, headers, response);
+                    Log.i(WelcomeActivity.this.Tag, "onSuccess ");
+                    try {
+                        WelcomeActivity.this.showLongToast("ip:" + response.getString(NeoConfig.IP) + ";port:" + response.getString(ClientCookie.PORT_ATTR));
+                        WelcomeActivity.this.mApplication.mNeoConfig = new NeoConfig(response.getString(NeoConfig.IP), response.getString(ClientCookie.PORT_ATTR), "neo");
+                        FileUtils.overrideContent(new StringBuilder(String.valueOf(FileUtils.getAppDataPath(WelcomeActivity.this))).append(NeoAppSetings.ConfigFile).toString(), response.toString());
+                    } catch (Exception e) {
+                        Log.e(WelcomeActivity.this.Tag, e.toString());
+                    }
+                }
+
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    Log.e(WelcomeActivity.this.Tag, " onFailure" + throwable.toString());
+                }
+            });
+        }
+    }
+
+    private LOGIN_STATE checkLoginState() {
+        if (netWorkCheck()) {
+            NeoAsyncHttpUtil.get((Context) this, NeoAppSetings.getLoginCheckUrl(this.mApplication.mNeoConfig), new JsonHttpResponseHandler() {
+                public void onFinish() {
+                    Log.i(WelcomeActivity.this.Tag, "onFinish");
+                }
+
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    super.onSuccess(statusCode, headers, response);
+                    Log.i(WelcomeActivity.this.Tag, "onSuccess ");
+                    try {
+                        WelcomeActivity.this.showNeoJsoErrorCodeToast(response);
+                        NeoAsyncHttpUtil.addPersistCookieToGlobaList(WelcomeActivity.this);
+                        if (response.getString("errcode").equals(NEO_ERRCODE.LOGIN_SUCCESS.toString())) {
+                            WelcomeActivity.this.loginstate = LOGIN_STATE.LOGIN;
+                            WelcomeActivity.this.startActivity(new Intent(WelcomeActivity.this, MainTabActivity.class));
+                            WelcomeActivity.this.finish();
+                        } else if (response.getString("errcode").equals(NEO_ERRCODE.UER_NOLOGIN.toString())) {
+                            WelcomeActivity.this.showLongToast(response.getString("info"));
+                            WelcomeActivity.this.loginstate = LOGIN_STATE.NOLOGIN;
+                        }
+                    } catch (Exception e) {
+                        Log.e(WelcomeActivity.this.Tag, e.toString());
+                    }
+                }
+
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    Log.e(WelcomeActivity.this.Tag, " onFailure" + throwable.toString());
+                    WelcomeActivity.this.showAlertDialog("NEO", "exception:" + throwable.toString());
+                    WelcomeActivity.this.loginstate = LOGIN_STATE.HTTPERR;
+                }
+            });
+            return this.loginstate;
+        }
+        LOGIN_STATE login_state = LOGIN_STATE.OFFLINE;
+        this.loginstate = login_state;
+        return login_state;
+    }
+    
 	private void initAvatarsItem() {
 		initMemberBlocks();
 		for (int i = 0; i < mMemberBlocks.length; i++) {
@@ -218,7 +310,9 @@ public class WelcomeActivity extends NeoBasicActivity implements OnClickListener
 			break;
 
 		case R.id.welcome_btn_login:
-			startActivity(LoginActivity.class);
+            if (checkLoginState() == LOGIN_STATE.NOLOGIN) {
+                startActivity(LoginActivity.class);
+            }
 			break;
 
 		case R.id.welcome_ibtn_about:
