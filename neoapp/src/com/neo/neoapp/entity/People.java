@@ -125,7 +125,11 @@ public class People extends Entity implements Parcelable {
         }
     }
 
-    public String getUid() {
+    public People() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public String getUid() {
         return this.uid;
     }
 

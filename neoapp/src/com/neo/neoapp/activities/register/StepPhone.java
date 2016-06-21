@@ -1,6 +1,18 @@
 package com.neo.neoapp.activities.register;
 
+import android.content.DialogInterface;
+import android.os.AsyncTask;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.EditText;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+import com.neo.neoandroidlib.NeoAsyncHttpUtil;
 import com.neo.neoandroidlib.TextUtils;
+import com.neo.neoapp.NeoAppSetings.NEO_ERRCODE;
 import com.neo.neoapp.R;
 import com.neo.neoapp.UI.adapters.SimpleListDialogAdapter;
 import com.neo.neoapp.UI.views.NeoBasicTextView;
@@ -8,40 +20,39 @@ import com.neo.neoapp.dialog.SimpleListDialog;
 import com.neo.neoapp.dialog.SimpleListDialog.onSimpleListItemClickListener;
 import com.neo.neoapp.dialog.WebDialog;
 import com.neo.neoapp.dialog.WebDialog.OnWebDialogErrorListener;
-
-import android.content.DialogInterface;
-import android.os.AsyncTask;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.EditText;
-
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
+import cz.msebera.android.httpclient.message.BasicHeader;
+import java.io.UnsupportedEncodingException;
+import org.apache.http.entity.mime.MIME;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class StepPhone extends RegisterStep implements OnClickListener,
 		TextWatcher, onSimpleListItemClickListener, OnWebDialogErrorListener {
-
-	private NeoBasicTextView mHtvAreaCode;
-	private EditText mEtPhone;
-	private NeoBasicTextView mHtvNotice;
-	private NeoBasicTextView mHtvNote;
-
-	private String mAreaCode = "+86";
-	private SimpleListDialog mSimpleListDialog;
-	private String[] mCountryCodes;
-
-	private static final String DEFAULT_PHONE = "+8612345678901";
-	private String mPhone;
-	private boolean mIsChange = true;
+    private static final String DEFAULT_PHONE = "+8612345678901";
+    private String Tag;
+    private String mAreaCode;
+    private String[] mCountryCodes;
+    private EditText mEtPhone;
+    private NeoBasicTextView mHtvAreaCode;
+    private NeoBasicTextView mHtvNote;
+    private NeoBasicTextView mHtvNotice;
+    private boolean mIsChange;
+    private String mPhone;
+    private SimpleListDialog mSimpleListDialog;
 
 	private WebDialog mWebDialog;
 
-	public StepPhone(RegisterActivity activity, View contentRootView) {
-		super(activity, contentRootView);
-	}
+    public StepPhone(RegisterActivity activity, View contentRootView) {
+        super(activity, contentRootView);
+        this.Tag = "StepPhone";
+        this.mAreaCode = "+86";
+        this.mIsChange = true;
+    }
 
 	public String getPhoneNumber() {
-		return "(" + mAreaCode + ")" + mPhone;
+        return this.mAreaCode + this.mPhone;
 	}
 
 	@Override
@@ -59,42 +70,154 @@ public class StepPhone extends RegisterStep implements OnClickListener,
 		mEtPhone.addTextChangedListener(this);
 	}
 
+    private void testPhoneVerify() {
+        putAsyncTask(new AsyncTask<Void, Void, Boolean>() {
+            protected void onPreExecute() {
+                super.onPreExecute();
+                StepPhone.this.showLoadingDialog("\u6b63\u5728\u9a8c\u8bc1\u624b\u673a\u53f7,\u8bf7\u7a0d\u540e...");
+            }
+
+            protected Boolean doInBackground(Void... params) {
+                try {
+                    Thread.sleep(2000);
+                    if (StepPhone.DEFAULT_PHONE.equals(new StringBuilder(String.valueOf(StepPhone.this.mAreaCode)).append(StepPhone.this.mPhone).toString())) {
+                        return Boolean.valueOf(true);
+                    }
+                } catch (InterruptedException e) {
+                }
+                return Boolean.valueOf(false);
+            }
+
+            protected void onPostExecute(Boolean result) {
+                super.onPostExecute(result);
+                StepPhone.this.dismissLoadingDialog();
+                if (result.booleanValue()) {
+                    StepPhone.this.mIsChange = false;
+                    StepPhone.this.mOnNextActionListener.next();
+                    return;
+                }
+                StepPhone.this.showCustomToast("\u624b\u673a\u53f7\u7801\u4e0d\u53ef\u7528\u6216\u5df2\u88ab\u6ce8\u518c");
+            }
+        });
+    }
+
+    private void onlinePhoneVerify() {
+        JSONException e1;
+        UnsupportedEncodingException e;
+        StringEntity stringEntity = null;
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("step", "1");
+            jsonObject.put("phone", getPhoneNumber());
+            StringEntity stringEntity2 = new StringEntity(jsonObject.toString());
+            stringEntity2.setContentType(new BasicHeader(MIME.CONTENT_TYPE, RequestParams.APPLICATION_JSON));
+			stringEntity = stringEntity2;
+        } catch (JSONException e4) {
+            e1 = e4;
+            e1.printStackTrace();
+            if (this.mActivity.registerUrl == null) {
+                NeoAsyncHttpUtil.postJson(this.mActivity, this.mActivity.registerUrl, stringEntity, new JsonHttpResponseHandler() {
+                    public void onFinish() {
+                        Log.i(StepPhone.this.Tag, "onFinish");
+                    }
+
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        super.onSuccess(statusCode, headers, response);
+                        Log.i(StepPhone.this.Tag, "onSuccess ");
+                        try {
+                            StepPhone.this.mActivity.showNeoJsoErrorCodeToast(response);
+                            NeoAsyncHttpUtil.addPersistCookieToGlobaList(StepPhone.this.mActivity);
+                            if (response.getString("errcode").equals(NEO_ERRCODE.NOERROR.toString())) {
+                                StepPhone.this.mIsChange = false;
+                                StepPhone.this.mOnNextActionListener.next();
+                            } else if (response.getString("errcode").equals(NEO_ERRCODE.PHONE_REGISTERED.toString())) {
+                                StepPhone.this.showCustomToast(response.getString("info"));
+                            }
+                        } catch (Exception e) {
+                            Log.e(StepPhone.this.Tag, e.toString());
+                        }
+                    }
+
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                        Log.e(StepPhone.this.Tag, " onFailure" + throwable.toString());
+                        StepPhone.this.mActivity.showAlertDialog("NEO", "exception:" + throwable.toString());
+                    }
+                });
+            } else {
+                this.mActivity.showAlertDialog("NEO", "url is null");
+            }
+        } catch (UnsupportedEncodingException e5) {
+            e = e5;
+            e.printStackTrace();
+            if (this.mActivity.registerUrl == null) {
+                this.mActivity.showAlertDialog("NEO", "url is null");
+            } else {
+                NeoAsyncHttpUtil.postJson(this.mActivity, this.mActivity.registerUrl, stringEntity, new JsonHttpResponseHandler() {
+                    public void onFinish() {
+                        Log.i(StepPhone.this.Tag, "onFinish");
+                    }
+
+                    public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                        super.onSuccess(statusCode, headers, response);
+                        Log.i(StepPhone.this.Tag, "onSuccess ");
+                        try {
+                            StepPhone.this.mActivity.showNeoJsoErrorCodeToast(response);
+                            NeoAsyncHttpUtil.addPersistCookieToGlobaList(StepPhone.this.mActivity);
+                            if (response.getString("errcode").equals(NEO_ERRCODE.NOERROR.toString())) {
+                                StepPhone.this.mIsChange = false;
+                                StepPhone.this.mOnNextActionListener.next();
+                            } else if (response.getString("errcode").equals(NEO_ERRCODE.PHONE_REGISTERED.toString())) {
+                                StepPhone.this.showCustomToast(response.getString("info"));
+                            }
+                        } catch (Exception e) {
+                            Log.e(StepPhone.this.Tag, e.toString());
+                        }
+                    }
+
+                    public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                        Log.e(StepPhone.this.Tag, " onFailure" + throwable.toString());
+                        StepPhone.this.mActivity.showAlertDialog("NEO", "exception:" + throwable.toString());
+                    }
+                });
+            }
+        }
+        if (this.mActivity.registerUrl == null) {
+            this.mActivity.showAlertDialog("NEO", "url is null");
+        } else {
+            NeoAsyncHttpUtil.postJson(this.mActivity, this.mActivity.registerUrl, stringEntity, new JsonHttpResponseHandler() {
+                public void onFinish() {
+                    Log.i(StepPhone.this.Tag, "onFinish");
+                }
+
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    super.onSuccess(statusCode, headers, response);
+                    Log.i(StepPhone.this.Tag, "onSuccess ");
+                    try {
+                        StepPhone.this.mActivity.showNeoJsoErrorCodeToast(response);
+                        NeoAsyncHttpUtil.addPersistCookieToGlobaList(StepPhone.this.mActivity);
+                        if (response.getString("errcode").equals(NEO_ERRCODE.NOERROR.toString())) {
+                            StepPhone.this.mIsChange = false;
+                            StepPhone.this.mOnNextActionListener.next();
+                        } else if (response.getString("errcode").equals(NEO_ERRCODE.PHONE_REGISTERED.toString())) {
+                            StepPhone.this.showCustomToast(response.getString("info"));
+                        }
+                    } catch (Exception e) {
+                        Log.e(StepPhone.this.Tag, e.toString());
+                    }
+                }
+
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    Log.e(StepPhone.this.Tag, " onFailure" + throwable.toString());
+                    StepPhone.this.mActivity.showAlertDialog("NEO", "exception:" + throwable.toString());
+                }
+            });
+        }
+    }
 	@Override
-	public void doNext() {
-		putAsyncTask(new AsyncTask<Void, Void, Boolean>() {
+    public void doNext() {
+        onlinePhoneVerify();
+    }
 
-			@Override
-			protected void onPreExecute() {
-				super.onPreExecute();
-				showLoadingDialog("正在验证手机号,请稍后...");
-			}
-
-			@Override
-			protected Boolean doInBackground(Void... params) {
-				try {
-					Thread.sleep(2000);
-					if (DEFAULT_PHONE.equals(mAreaCode+mPhone)) {
-						return true;
-					}
-				} catch (InterruptedException e) {
-
-				}
-				return false;
-			}
-
-			@Override
-			protected void onPostExecute(Boolean result) {
-				super.onPostExecute(result);
-				dismissLoadingDialog();
-				if (result) {
-					mIsChange = false;
-					mOnNextActionListener.next();
-				} else {
-					showCustomToast("手机号码不可用或已被注册");
-				}
-			}
-		});
-	}
 
 	@Override
 	public boolean validate() {

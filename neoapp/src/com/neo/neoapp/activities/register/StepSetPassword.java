@@ -1,23 +1,25 @@
 package com.neo.neoapp.activities.register;
 
-import com.neo.neoapp.R;
-
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
-
+import com.neo.neoapp.R;
+import cz.msebera.httpclient.android.BuildConfig;
 
 public class StepSetPassword extends RegisterStep implements TextWatcher {
 
 	private EditText mEtPwd;
 	private EditText mEtRePwd;
 
-	private boolean mIsChange = true;
+    private boolean mIsChange;
+    private String mPassword;
 
-	public StepSetPassword(RegisterActivity activity, View contentRootView) {
-		super(activity, contentRootView);
-	}
+    public StepSetPassword(RegisterActivity activity, View contentRootView) {
+        super(activity, contentRootView);
+        this.mPassword = null;
+        this.mIsChange = true;
+    }
 
 	@Override
 	public void initViews() {
@@ -89,4 +91,10 @@ public class StepSetPassword extends RegisterStep implements TextWatcher {
 		mIsChange = true;
 	}
 
+    public String getmPassword() {
+        if (this.mPassword != null) {
+            return this.mPassword;
+        }
+        return BuildConfig.VERSION_NAME;
+    }
 }

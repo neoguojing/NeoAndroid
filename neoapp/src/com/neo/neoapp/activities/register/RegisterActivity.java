@@ -1,15 +1,5 @@
 package com.neo.neoapp.activities.register;
 
-import com.neo.neoandroidlib.FileUtils;
-import com.neo.neoandroidlib.PhotoUtils;
-import com.neo.neoapp.NeoBasicActivity;
-import com.neo.neoapp.NeoBasicApplication;
-import com.neo.neoapp.R;
-import com.neo.neoapp.UI.views.HeaderLayout;
-import com.neo.neoapp.UI.views.HeaderLayout.HeaderStyle;
-import com.neo.neoapp.activities.register.RegisterStep.onNextActionListener;
-import com.neo.neoapp.dialog.BaseDialog;
-
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -19,11 +9,28 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.app.NotificationCompat.WearableExtender;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ViewFlipper;
 
+import com.baidu.navisdk.adapter.BNOuterTTSPlayerCallback;
+import com.neo.neoandroidlib.FileUtils;
+import com.neo.neoandroidlib.PhotoUtils;
+import com.neo.neoapp.NeoAppSetings;
+import com.neo.neoapp.NeoBasicActivity;
+import com.neo.neoapp.NeoBasicApplication;
+import com.neo.neoapp.R;
+import com.neo.neoapp.UI.views.HeaderLayout;
+import com.neo.neoapp.UI.views.HeaderLayout.HeaderStyle;
+import com.neo.neoapp.activities.imageactivity.ImageFactoryCrop;
+import com.neo.neoapp.activities.register.RegisterStep.onNextActionListener;
+import com.neo.neoapp.dialog.BaseDialog;
+
+import cz.msebera.android.httpclient.conn.params.ConnPerRouteBean;
+import cz.msebera.android.httpclient.cookie.ClientCookie;
+import cz.msebera.httpclient.android.BuildConfig;
 
 public class RegisterActivity extends NeoBasicActivity implements OnClickListener,
 		onNextActionListener {
@@ -41,19 +48,29 @@ public class RegisterActivity extends NeoBasicActivity implements OnClickListene
 	private StepBaseInfo mStepBaseInfo;
 	private StepBirthday mStepBirthday;
 	private StepPhoto mStepPhoto;
+    public String picUploadUrl = "";
+    public String registerUrl = "";
 
 	private int mCurrentStepIndex = 1;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+        getActionBar().hide();
 		setContentView(R.layout.activity_register);
 		initViews();
 		mCurrentStep = initStep();
 		initEvents();
 		initBackDialog();
+        initData();
 	}
 
+    private void initData() {
+        if (netWorkCheck()) {
+            this.registerUrl = NeoAppSetings.getRegisterUrl(this.mApplication.mNeoConfig);
+        }
+        this.picUploadUrl = NeoAppSetings.getRegisterPicUrl(this.mApplication.mNeoConfig);
+    }
 	@Override
 	protected void onDestroy() {
 		PhotoUtils.deleteImageFile();
@@ -149,11 +166,12 @@ public class RegisterActivity extends NeoBasicActivity implements OnClickListene
 			if (resultCode == RESULT_OK) {
 				String path = mStepPhoto.getTakePicturePath();
 				Bitmap bitmap = BitmapFactory.decodeFile(path);
-				if (PhotoUtils.bitmapIsLarge(bitmap)) {
-					PhotoUtils.cropPhoto(this, this, path);
-				} else {
-					mStepPhoto.setUserPhoto(bitmap);
-				}
+                    if (PhotoUtils.bitmapIsLarge(bitmap)) {
+                        PhotoUtils.cropPhoto(this, this, path);
+                        return;
+                    }
+                    this.mStepPhoto.setUserPhoto(bitmap);
+                    this.mStepPhoto.setTakePicturePath(path);
 			}
 			break;
 
@@ -163,7 +181,8 @@ public class RegisterActivity extends NeoBasicActivity implements OnClickListene
 				if (path != null) {
 					Bitmap bitmap = BitmapFactory.decodeFile(path);
 					if (bitmap != null) {
-						mStepPhoto.setUserPhoto(bitmap);
+                            this.mStepPhoto.setUserPhoto(bitmap);
+                            this.mStepPhoto.setTakePicturePath(path);
 					}
 				}
 			}
@@ -315,4 +334,45 @@ public class RegisterActivity extends NeoBasicActivity implements OnClickListene
 		return "";
 	}
 
+    protected String getPassword() {
+        if (this.mStepSetPassword != null) {
+            return this.mStepSetPassword.getmPassword();
+        }
+        return BuildConfig.VERSION_NAME;
+    }
+
+    protected int getGender() {
+        if (this.mStepBaseInfo != null) {
+            return this.mStepBaseInfo.getmGender();
+        }
+        return -1;
+    }
+
+    protected String getUsername() {
+        if (this.mStepBaseInfo != null) {
+            return this.mStepBaseInfo.getmUserName();
+        }
+        return BuildConfig.VERSION_NAME;
+    }
+
+    protected String getAge() {
+        if (this.mStepBirthday != null) {
+            return this.mStepBirthday.getAge();
+        }
+        return BuildConfig.VERSION_NAME;
+    }
+
+    protected String getBirthday() {
+        if (this.mStepBirthday != null) {
+            return this.mStepBirthday.getBirthday();
+        }
+        return BuildConfig.VERSION_NAME;
+    }
+
+    protected String getConstellation() {
+        if (this.mStepBirthday != null) {
+            return this.mStepBirthday.getConstellation();
+        }
+        return BuildConfig.VERSION_NAME;
+    }
 }

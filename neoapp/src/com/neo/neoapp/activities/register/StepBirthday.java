@@ -1,5 +1,6 @@
 package com.neo.neoapp.activities.register;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -8,6 +9,7 @@ import com.neo.neoandroidlib.TextUtils;
 import com.neo.neoapp.R;
 import com.neo.neoapp.UI.views.NeoBasicTextView;
 
+import android.annotation.SuppressLint;
 import android.view.View;
 import android.widget.DatePicker;
 import android.widget.DatePicker.OnDateChangedListener;
@@ -32,6 +34,18 @@ public class StepBirthday extends RegisterStep implements OnDateChangedListener 
 
 	}
 
+    public String getAge() {
+        return this.mHtvAge.getText().toString().trim();
+    }
+
+    public String getConstellation() {
+        return this.mHtvConstellation.getText().toString().trim();
+    }
+
+    @SuppressLint({"SimpleDateFormat"})
+    public String getBirthday() {
+        return new SimpleDateFormat("yyyy-MM-dd").format(this.mSelectDate);
+    }
 	private void flushBirthday(Calendar calendar) {
 		String constellation = TextUtils.getConstellation(
 				calendar.get(Calendar.MONTH),

@@ -201,7 +201,7 @@ public abstract class NeoBasicActivity extends FragmentActivity {
 	}
 
 	/** 含有标题和内容的对话框 **/
-	protected AlertDialog showAlertDialog(String title, String message) {
+	public AlertDialog showAlertDialog(String title, String message) {
 		AlertDialog alertDialog = new AlertDialog.Builder(this).setTitle(title)
 				.setMessage(message).show();
 		return alertDialog;
