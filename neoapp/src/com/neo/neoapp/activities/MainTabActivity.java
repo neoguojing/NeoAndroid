@@ -62,7 +62,6 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
 	private final String Tag = "MainTabActivity";
 	private NeoBasicApplication mApplication;
 	
-	private static final String TAG = "MainActivity";
 	private int counter = 1;
 	
 	private ServiceWorkerWithLooper mtMainActivityWorker;
@@ -271,7 +270,7 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
         
         getMe();
         getMyProfile();
-        //getMyHeadpic();
+        getMyHeadpic();
         getNearbyData();
         getFriendData();
         getMyStatusData();
@@ -381,7 +380,7 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
     }
     
     private void getMyHeadpic() {
-    	
+    	getOtherHeadImages(this.mApplication.mMe.getName());
     }
     
     private void getNearbyData() {
@@ -514,7 +513,7 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
                 NeoAsyncHttpUtil.addPersistCookieToGlobaList(MainTabActivity.this);
                 try {
                     if (!response.has("errcode")) {
-                        MainTabActivity.this.getOtherHeadImages(response.getString(Setings.NAME));
+                        MainTabActivity.this.getOtherHeadImages(response.getString(People.NAME));
                         FileUtils.overrideContent(new StringBuilder(String.valueOf(FileUtils.getAppDataPath(MainTabActivity.this))).append(NeoAppSetings.ProfilesDir).append(response.getString(Setings.NAME)).append(".json").toString(), response.toString());
                     } else if (response.getString("errcode").equals(NEO_ERRCODE.DATA_NOEXIST.toString())) {
                         MainTabActivity.this.showAlertDialog("NEO", response.getString("info"));

@@ -67,6 +67,7 @@ public class StepSetPassword extends RegisterStep implements TextWatcher {
 				return false;
 			}
 		}
+		mPassword = mEtRePwd.getText().toString().trim();
 		return true;
 	}
 
