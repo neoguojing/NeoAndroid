@@ -15,11 +15,14 @@ import com.loopj.android.http.RequestParams;
 import cz.msebera.android.httpclient.HttpEntity;
 import cz.msebera.android.httpclient.cookie.Cookie;
 import cz.msebera.android.httpclient.impl.client.BasicCookieStore;
+import cz.msebera.android.httpclient.protocol.HTTP;
 
 public class NeoAsyncHttpUtil {
 	private static String TAG = "NeoAsyncHttpUtil";
     private static  AsyncHttpClient client =new AsyncHttpClient();    //实例话对象
     
+    public static final String[] Image_MIME = 
+    	{"application/x-jpg", "image/png", "image/jpeg","application/octet-stream"};
     public static AsyncHttpClient getClientInstance()
     {
     	if (null==client){

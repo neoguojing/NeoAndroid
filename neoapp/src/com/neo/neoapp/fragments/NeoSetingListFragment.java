@@ -6,6 +6,7 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageView;
 
 import com.neo.neoandroidlib.JsonResolveUtils;
 import com.neo.neoapp.R;
@@ -27,6 +29,7 @@ OnItemClickListener{
 
 	private NeoCommonListView commonList;
 	private NeoCommonListAdapter commonListAdpt;
+    private ImageView headpic;
 	public static List<Setings> mSetingList = new ArrayList<Setings>();
 	
 	public NeoSetingListFragment() {
@@ -49,6 +52,9 @@ OnItemClickListener{
 	@Override
 	protected void initViews() {
 		commonList  = (NeoCommonListView) findViewById(R.id.setings_list);
+        this.headpic = (ImageView) findViewById(R.id.userheader);
+        this.headpic.setImageBitmap(BitmapFactory.decodeFile(
+        		mApplication.mAppDataPath+mApplication.mMe.getName()));
 	}
 
 	@Override

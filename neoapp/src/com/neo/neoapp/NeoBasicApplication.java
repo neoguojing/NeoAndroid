@@ -51,6 +51,7 @@ public class NeoBasicApplication extends Application {
     public PeopleProfile mMyProfile;
     public List<People> mNearByPeoples;
     public NeoConfig mNeoConfig;
+    public String mAppDataPath;
     public Map<String, SoftReference<Bitmap>> mPhotoOriginalCache;
     public Map<String, SoftReference<Bitmap>> mPhotoThumbnailCache;
     public Map<String, SoftReference<Bitmap>> mPortraitCache;
@@ -65,6 +66,7 @@ public class NeoBasicApplication extends Application {
         this.mNearByPeoples = new ArrayList();
         this.mFriends = new ArrayList();
         this.mNeoConfig = null;
+        mAppDataPath = "";
         this.mMe = new People();
         this.mMyProfile = new PeopleProfile();
     }

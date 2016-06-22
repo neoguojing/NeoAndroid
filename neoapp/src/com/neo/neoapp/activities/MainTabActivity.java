@@ -75,37 +75,6 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
 	
 	private List<ChangeColorIconWithTextView> mListViews = 
 			new ArrayList<ChangeColorIconWithTextView>();
-    /* renamed from: com.neo.neoapp.activities.MainTabActivity.5 */
-    class AnonymousClass5 extends BinaryHttpResponseHandler {
-        AnonymousClass5(String[] $anonymous0) {
-            super($anonymous0);
-        }
-
-        public void onFinish() {
-            Log.i(MainTabActivity.this.Tag, "onFinish");
-        }
-
-        public void onFailure(int arg0, Header[] arg1, byte[] response, Throwable throwable) {
-            Log.e(MainTabActivity.this.Tag, " onFailure" + throwable.toString());
-            MainTabActivity.this.showAlertDialog("NEO", throwable.toString());
-        }
-
-        public void onSuccess(int arg0, Header[] arg1, byte[] response) {
-            Log.i(MainTabActivity.this.Tag, "onSuccess" + response.length);
-            NeoAsyncHttpUtil.addPersistCookieToGlobaList(MainTabActivity.this);
-            String filename = BuildConfig.VERSION_NAME;
-            for (int i = 0; i < arg1.length; i++) {
-                if (arg1[i].getName().equals(MIME.CONTENT_DISPOSITION)) {
-                    filename = arg1[i].getValue();
-                }
-                filename = filename.substring(filename.lastIndexOf("=") + 1);
-            }
-            Bitmap bmp = BitmapFactory.decodeByteArray(response, 0, response.length);
-            MainTabActivity.this.showAlertDialog("NEO", filename);
-            PhotoUtils.savePhotoToSDCard(bmp, new StringBuilder(String.valueOf(
-            		FileUtils.getAppDataPath(MainTabActivity.this))).append(NeoAppSetings.HeadPicDir).append(filename).toString());
-        }
-    }
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -380,7 +349,43 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
     }
     
     private void getMyHeadpic() {
-    	getOtherHeadImages(this.mApplication.mMe.getName());
+    	if (FileUtils.isFileExist(getMyApplication().mAppDataPath+
+				getMyApplication().mMe.getName())){
+    		showAlertDialog("NEO", "head pic is exist");
+    		return;
+    	}
+    	NeoAsyncHttpUtil.get((Context) this,
+    			NeoAppSetings.getGetDownLoad(
+    					this.mApplication.mNeoConfig, 
+    					this.mApplication.mMe.getName()+"/"+"1/"),
+    					new BinaryHttpResponseHandler(NeoAsyncHttpUtil.Image_MIME)
+    	 {
+            public void onFinish() {
+                Log.i(MainTabActivity.this.Tag, "onFinish");
+            }
+
+            public void onFailure(int arg0, Header[] arg1, byte[] response, Throwable throwable) {
+                Log.e(MainTabActivity.this.Tag, " onFailure" + throwable.toString());
+                MainTabActivity.this.showAlertDialog("NEO", throwable.toString());
+            }
+
+            public void onSuccess(int arg0, Header[] arg1, byte[] response) {
+                Log.i(MainTabActivity.this.Tag, "onSuccess" + response.length);
+                NeoAsyncHttpUtil.addPersistCookieToGlobaList(MainTabActivity.this);
+                String filename = "";
+                for (int i = 0; i < arg1.length; i++) {
+                    if (arg1[i].getName().equals(MIME.CONTENT_DISPOSITION)) {
+                        filename = arg1[i].getValue();
+                    }
+                    filename = filename.substring(filename.lastIndexOf("=") + 1);
+                }
+                Bitmap bmp = BitmapFactory.decodeByteArray(response, 0, response.length);
+                //MainTabActivity.this.showAlertDialog("NEO", filename);
+                PhotoUtils.savePhotoToSDCard(bmp, 
+                		FileUtils.getAppDataPath(MainTabActivity.this)
+                		+mApplication.mMe.getName());
+            }
+        });
     }
     
     private void getNearbyData() {
@@ -552,7 +557,7 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
                 Log.i(MainTabActivity.this.Tag, "onSuccess ");
-                MainTabActivity.this.showNeoJsoErrorCodeToast(response);
+                //MainTabActivity.this.showNeoJsoErrorCodeToast(response);
                 NeoAsyncHttpUtil.addPersistCookieToGlobaList(MainTabActivity.this);
                 try {
                     if (!response.getString("errcode").equals(NEO_ERRCODE.LOGIN_SUCCESS.toString())) {
@@ -571,11 +576,34 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
 
     private void getOtherHeadImages(String name) {
         NeoAsyncHttpUtil.get((Context) this, 
-		new StringBuilder(String.valueOf(NeoAppSetings.getGetDownLoad(this.mApplication.mNeoConfig, name))).append("/").append("1/").toString(),
-		new AnonymousClass5(new String[]{"application/x-jpg", "image/png", "image/jpeg", HTTP.OCTET_STREAM_TYPE})
-        
-        		
-        );
+        		NeoAppSetings.getGetDownLoad(this.mApplication.mNeoConfig, name)+"/"+"1/",
+        		new BinaryHttpResponseHandler(NeoAsyncHttpUtil.Image_MIME) {
+
+	        public void onFinish() {
+	            Log.i(MainTabActivity.this.Tag, "onFinish");
+	        }
+
+	        public void onFailure(int arg0, Header[] arg1, byte[] response, Throwable throwable) {
+	            Log.e(MainTabActivity.this.Tag, " onFailure" + throwable.toString());
+	            MainTabActivity.this.showAlertDialog("NEO", throwable.toString());
+	        }
+
+	        public void onSuccess(int arg0, Header[] arg1, byte[] response) {
+	            Log.i(MainTabActivity.this.Tag, "onSuccess" + response.length);
+	            NeoAsyncHttpUtil.addPersistCookieToGlobaList(MainTabActivity.this);
+	            String filename = BuildConfig.VERSION_NAME;
+	            for (int i = 0; i < arg1.length; i++) {
+	                if (arg1[i].getName().equals(MIME.CONTENT_DISPOSITION)) {
+	                    filename = arg1[i].getValue();
+	                }
+	                filename = filename.substring(filename.lastIndexOf("=") + 1);
+	            }
+	            Bitmap bmp = BitmapFactory.decodeByteArray(response, 0, response.length);
+	            //MainTabActivity.this.showAlertDialog("NEO", filename);
+	            PhotoUtils.savePhotoToSDCard(bmp, new StringBuilder(String.valueOf(
+	            		FileUtils.getAppDataPath(MainTabActivity.this))).append(NeoAppSetings.HeadPicDir).append(filename).toString());
+	        }
+	    });
     }
 	private void initService(){
 		//�������ط���

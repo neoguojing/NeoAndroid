@@ -293,9 +293,6 @@ public class People extends Entity implements Parcelable {
 		return 0;
 	}
     public static boolean resolveMe(NeoBasicApplication application, Context context) {
-        if (application.mMe != null) {
-            return true;
-        }
         String json = FileUtils.getJson(context, NeoAppSetings.MeFile);
         if (json == null) {
             return false;

@@ -4,13 +4,17 @@ import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.os.Parcelable.Creator;
+
 import com.neo.neoandroidlib.FileUtils;
 import com.neo.neoapp.NeoAppSetings;
 import com.neo.neoapp.NeoBasicApplication;
 import com.neo.neoapp.R;
+
 import cz.msebera.httpclient.android.BuildConfig;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -67,6 +71,7 @@ public class PeopleProfile extends Entity implements Parcelable {
                     }
                     this.signDistance = signObject.getString(SIGN_DIS);
                 }
+                this.photos = new ArrayList<String>();
                 JSONArray photosArray = object.getJSONArray(PHOTOS);
                 for (int i = 0; i < photosArray.length(); i++) {
                     this.photos.add(photosArray.getString(i));
@@ -206,9 +211,7 @@ public class PeopleProfile extends Entity implements Parcelable {
 	}
 
     public static boolean resolveMyProfile(NeoBasicApplication application, Context context) {
-        if (application.mMyProfile != null) {
-            return true;
-        }
+
         String json = FileUtils.getJson(context, NeoAppSetings.MyProfileFile);
         if (json == null) {
             return false;

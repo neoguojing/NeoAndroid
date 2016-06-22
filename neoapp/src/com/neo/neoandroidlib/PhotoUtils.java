@@ -580,4 +580,9 @@ public class PhotoUtils {
 					round, paint);
 			return bitmap;
 		}
+		
+		public static String getPhotoSuffix(String filepath) {
+			
+			return filepath.substring(filepath.lastIndexOf(".")+1);
+		}
 }

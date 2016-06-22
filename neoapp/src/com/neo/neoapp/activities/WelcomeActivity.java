@@ -97,7 +97,9 @@ public class WelcomeActivity extends NeoBasicActivity implements OnClickListener
 
     private void initAppDirs() {
     	String prefix = FileUtils.getAppDataPath(this);
-    	showAlertDialog("NEO", prefix);
+    	getMyApplication().mAppDataPath = prefix;
+    	if (getMyApplication().mAppDataPath=="")
+    		showAlertDialog("NEO", "the app path is empty！");
         FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.HeadPicDir).toString());
         FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.MyPhotosDir).toString());
         FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.MyPhotosOriginalDir).toString());
