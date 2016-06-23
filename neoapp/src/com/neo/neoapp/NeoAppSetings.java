@@ -26,6 +26,9 @@ public class NeoAppSetings {
     private static final String login_suffix = "/site1/android/login/";
     private static final String prefix = "http://";
     private static String register_suffix;
+    
+    //佛如 socket
+    public static final int port = 7000;
 
     public enum LOGIN_STATE {
         LOGIN,
