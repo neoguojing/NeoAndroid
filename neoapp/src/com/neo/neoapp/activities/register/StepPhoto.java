@@ -188,12 +188,12 @@ public class StepPhoto extends RegisterStep implements OnClickListener {
 		            super.onSuccess(statusCode, headers, response);
 		            Log.i(StepPhoto.this.Tag, "onSuccess ");
 		            try {
-		                StepPhoto.this.mActivity.showNeoJsoErrorCodeToast(response);
+		                //StepPhoto.this.mActivity.showNeoJsoErrorCodeToast(response);
 		                NeoAsyncHttpUtil.addPersistCookieToGlobaList(StepPhoto.this.mActivity);
 		                if (response.getString("errcode").equals(NEO_ERRCODE.REGISTER_SUCCESS.toString())) {
-		                    StepPhoto.this.mActivity.showAlertDialog("NEO", "\u6ce8\u518c\u6210\u529f");
+		                    StepPhoto.this.mActivity.showLongToast("注册成功f");
 		                } else {
-		                    StepPhoto.this.mActivity.showAlertDialog("NEO", response.getString("info"));
+		                    StepPhoto.this.mActivity.showLongToast(response.getString("info"));
 		                }
 		            } catch (Exception e) {
 		                Log.e(StepPhoto.this.Tag, e.toString());
@@ -220,12 +220,12 @@ public class StepPhoto extends RegisterStep implements OnClickListener {
                     super.onSuccess(statusCode, headers, response);
                     Log.i(StepPhoto.this.Tag, "onSuccess ");
                     try {
-                        StepPhoto.this.mActivity.showNeoJsoErrorCodeToast(response);
+                        //StepPhoto.this.mActivity.showNeoJsoErrorCodeToast(response);
                         NeoAsyncHttpUtil.addPersistCookieToGlobaList(StepPhoto.this.mActivity);
                         if (response.getString("errcode").equals(NEO_ERRCODE.REGISTER_SUCCESS.toString())) {
-                            StepPhoto.this.mActivity.showAlertDialog("NEO", "\u6ce8\u518c\u6210\u529f");
+                            StepPhoto.this.mActivity.showLongToast("注册成功");
                         } else {
-                            StepPhoto.this.mActivity.showAlertDialog("NEO", response.getString("info"));
+                            StepPhoto.this.mActivity.showLongToast(response.getString("info"));
                         }
                     } catch (Exception e) {
                         Log.e(StepPhoto.this.Tag, e.toString());
@@ -243,7 +243,7 @@ public class StepPhoto extends RegisterStep implements OnClickListener {
     }
 
     private void doHeadPicRegister() {
-        this.mActivity.showAlertDialog("NEO", this.mTakePicturePath);
+        //this.mActivity.showAlertDialog("NEO", this.mTakePicturePath);
         File file = new File(this.mTakePicturePath);
         if (!file.exists() || file.length() <= 0) {
             this.mActivity.showAlertDialog("NEO", "\u95ee\u4ef6\u4e0d\u5b58\u5728");
@@ -264,7 +264,7 @@ public class StepPhoto extends RegisterStep implements OnClickListener {
                         StepPhoto.this.mActivity.finish();
                         return;
                     }
-                    StepPhoto.this.mActivity.showAlertDialog("NEO", response.getString("info"));
+                    StepPhoto.this.mActivity.showLongToast(response.getString("info"));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

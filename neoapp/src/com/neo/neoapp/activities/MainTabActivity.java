@@ -275,13 +275,13 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
                  NeoAsyncHttpUtil.addPersistCookieToGlobaList(MainTabActivity.this);
                  if (response.has("errcode")){
  					try {
- 						showAlertDialog("NEO", response.get("info").toString());
+ 						showLongToast(response.get("info").toString());
  					} catch (JSONException e) {
  						// TODO Auto-generated catch block
  						e.printStackTrace();
  					}
                  }else{
-                	 showAlertDialog("NEO", response.toString());
+                	 //showAlertDialog("NEO", response.toString());
                 	 MainTabActivity.this.mApplication.mMe = new People(response);
                      FileUtils.overrideContent(new StringBuilder(String.valueOf(
                      		FileUtils.getAppDataPath(MainTabActivity.this))).
@@ -326,13 +326,13 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
                  NeoAsyncHttpUtil.addPersistCookieToGlobaList(MainTabActivity.this);
                  if (response.has("errcode")){
  					try {
- 						showAlertDialog("NEO", response.get("info").toString());
+ 						showLongToast(response.get("info").toString());
  					} catch (JSONException e) {
  						// TODO Auto-generated catch block
  						e.printStackTrace();
  					}
                  }else{
-                	 showAlertDialog("NEO", response.toString());
+                	 //showAlertDialog("NEO", response.toString());
                 	 MainTabActivity.this.mApplication.mMyProfile = 
                 			 new PeopleProfile(response);
                      FileUtils.overrideContent(new StringBuilder(String.valueOf(
@@ -351,7 +351,7 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
     private void getMyHeadpic() {
     	if (FileUtils.isFileExist(getMyApplication().mAppDataPath+
 				getMyApplication().mMe.getName())){
-    		showAlertDialog("NEO", "head pic is exist");
+    		showLongToast("head pic is exist");
     		return;
     	}
     	NeoAsyncHttpUtil.get((Context) this,
@@ -432,7 +432,7 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
                 NeoAsyncHttpUtil.addPersistCookieToGlobaList(MainTabActivity.this);
                 if (response.has("errcode"))
 					try {
-						showAlertDialog("NEO", response.get("info").toString());
+						showLongToast(response.get("info").toString());
 					} catch (JSONException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -477,15 +477,11 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
                 Log.i(MainTabActivity.this.Tag, "onSuccess ");
-                MainTabActivity.this.showNeoJsoErrorCodeToast(response);
+                //MainTabActivity.this.showNeoJsoErrorCodeToast(response);
                 NeoAsyncHttpUtil.addPersistCookieToGlobaList(MainTabActivity.this);
-                try {
-                    if (!response.getString("errcode").equals(NEO_ERRCODE.LOGIN_SUCCESS.toString())) {
-                        MainTabActivity.this.showAlertDialog("NEO", response.toString());
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                if ((response.has("errcode"))) {
+				    MainTabActivity.this.showLongToast(response.toString());
+				}
             }
 
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
@@ -561,7 +557,7 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
                 NeoAsyncHttpUtil.addPersistCookieToGlobaList(MainTabActivity.this);
                 try {
                     if (!response.getString("errcode").equals(NEO_ERRCODE.LOGIN_SUCCESS.toString())) {
-                        MainTabActivity.this.showAlertDialog("NEO", response.toString());
+                        //MainTabActivity.this.showAlertDialog("NEO", response.toString());
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

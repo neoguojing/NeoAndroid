@@ -96,17 +96,7 @@ public class WelcomeActivity extends NeoBasicActivity implements OnClickListener
 
 
     private void initAppDirs() {
-    	String prefix = FileUtils.getAppDataPath(this);
-    	getMyApplication().mAppDataPath = prefix;
-    	if (getMyApplication().mAppDataPath=="")
-    		showAlertDialog("NEO", "the app path is empty！");
-        FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.HeadPicDir).toString());
-        FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.MyPhotosDir).toString());
-        FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.MyPhotosOriginalDir).toString());
-        FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.MyPhotosThumbnailDir).toString());
-        FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.ProfilesDir).toString());
-        FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.StatuPhotosDir).toString());
-        FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.StatusDir).toString());
+    	
         putAsyncTask(new AsyncTask<Void, Void, Boolean>() {
             protected void onPreExecute() {
                 super.onPreExecute();
@@ -116,7 +106,17 @@ public class WelcomeActivity extends NeoBasicActivity implements OnClickListener
             protected Boolean doInBackground(Void... params) {
                 try {
                     Boolean rtn = Boolean.valueOf(true);
-                    
+                    String prefix = FileUtils.getAppDataPath(WelcomeActivity.this);
+                	getMyApplication().mAppDataPath = prefix;
+                	if (getMyApplication().mAppDataPath=="")
+                		showAlertDialog("NEO", "the app path is empty！");
+                    FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.HeadPicDir).toString());
+                    FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.MyPhotosDir).toString());
+                    FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.MyPhotosOriginalDir).toString());
+                    FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.MyPhotosThumbnailDir).toString());
+                    FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.ProfilesDir).toString());
+                    FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.StatuPhotosDir).toString());
+                    FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.StatusDir).toString());
                     return rtn;
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -157,7 +157,7 @@ public class WelcomeActivity extends NeoBasicActivity implements OnClickListener
                 super.onPostExecute(result);
                 WelcomeActivity.this.dismissLoadingDialog();
                 if (!result.booleanValue()) {
-                    WelcomeActivity.this.showAlertDialog("NEO", "json file does not exist");
+                	showLongToast("json file does not exist");
                 }
             }
         });
@@ -212,7 +212,7 @@ public class WelcomeActivity extends NeoBasicActivity implements OnClickListener
                     super.onSuccess(statusCode, headers, response);
                     Log.i(WelcomeActivity.this.Tag, "onSuccess ");
                     try {
-                        WelcomeActivity.this.showNeoJsoErrorCodeToast(response);
+                        //WelcomeActivity.this.showNeoJsoErrorCodeToast(response);
                         NeoAsyncHttpUtil.addPersistCookieToGlobaList(WelcomeActivity.this);
                         if (response.getString("errcode").equals(NEO_ERRCODE.LOGIN_SUCCESS.toString())) {
                             WelcomeActivity.this.loginstate = LOGIN_STATE.LOGIN;

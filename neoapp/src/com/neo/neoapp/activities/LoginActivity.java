@@ -244,7 +244,7 @@ public class LoginActivity extends NeoBasicActivity implements OnClickListener,
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                         super.onSuccess(statusCode, headers, response);
                         Log.i(LoginActivity.this.Tag, "onSuccess ");
-                        LoginActivity.this.showNeoJsoErrorCodeToast(response);
+                        //LoginActivity.this.showNeoJsoErrorCodeToast(response);
                         NeoAsyncHttpUtil.addPersistCookieToGlobaList(LoginActivity.this);
                         try {
                             if (response.getString("errcode").equals(NEO_ERRCODE.LOGIN_SUCCESS.toString())) {

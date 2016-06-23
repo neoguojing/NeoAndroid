@@ -122,7 +122,7 @@ public abstract class NeoBasicActivity extends FragmentActivity {
 	}
 
 	/** 长时间显示Toast提示(来自String) **/
-	protected void showLongToast(String text) {
+	public void showLongToast(String text) {
 		Toast.makeText(this, text, Toast.LENGTH_LONG).show();
 	}
 
