@@ -202,7 +202,7 @@ public abstract class BaseMessageActivity extends NeoBasicActivity implements
 
 	protected void initSynchronousDialog() {
 		mSynchronousDialog = BaseDialog.getDialog(BaseMessageActivity.this,
-				"提示", "成为陌陌会员即可同步好友聊天记录", "查看详情",
+				"提示", "成为会员即可同步好友聊天记录", "查看详情",
 				new DialogInterface.OnClickListener() {
 
 					@Override

@@ -211,7 +211,8 @@ public class PeopleProfile extends Entity implements Parcelable {
 	}
 
     public static boolean resolveMyProfile(NeoBasicApplication application, Context context) {
-
+    	
+    	
         String json = FileUtils.getJson(context, NeoAppSetings.MyProfileFile);
         if (json == null) {
             return false;
