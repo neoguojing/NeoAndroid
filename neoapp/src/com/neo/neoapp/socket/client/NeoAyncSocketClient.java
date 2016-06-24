@@ -67,9 +67,7 @@ public class NeoAyncSocketClient {
 			ByteBuffer bf = ByteBuffer.allocate(1024);
 			while(isRunning){
 				try {
-					if (select.select()<=0){
-						continue;
-					}
+					select.select();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

@@ -78,9 +78,8 @@ public class NeoAyncSocketServer {
 			// TODO Auto-generated method stub
 			while(isRunning){
 				try {
-					if (selector.select()<=0){
-						continue;
-					}
+					selector.select();
+
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
