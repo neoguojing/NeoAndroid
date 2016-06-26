@@ -34,6 +34,7 @@ import com.neo.neoapp.activities.register.RegisterActivity;
 import com.neo.neoapp.entity.NeoConfig;
 import com.neo.neoapp.entity.People;
 import com.neo.neoapp.entity.PeopleProfile;
+import com.neo.neoapp.services.NeoAppBackgroundService;
 
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.cookie.ClientCookie;
@@ -69,10 +70,22 @@ public class WelcomeActivity extends NeoBasicActivity implements OnClickListener
         initNetWorkData();
         initData();
         showWelcomeAnimation();
+        
+        initService();
 	}
 
+	private void initService(){
+		Intent bgsvc = new Intent(WelcomeActivity.this,
+				NeoAppBackgroundService.class);
+		startService(bgsvc);
+	}
 	
-
+	private void stopService(){
+		Intent bgsvc = new Intent(WelcomeActivity.this,
+				NeoAppBackgroundService.class);
+		stopService(bgsvc);
+	}
+	
 	@Override
 	protected void initViews() {
 		mLinearCtrlbar = (LinearLayout) findViewById(R.id.welcome_linear_ctrlbar);

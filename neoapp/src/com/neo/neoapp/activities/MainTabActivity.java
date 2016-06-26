@@ -100,7 +100,7 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
     }
 	public void onDestroy(){
 		
-		stopService();
+		//stopService();
 		super.onDestroy();
 	}
 	
@@ -626,7 +626,7 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
 	
 	private void sendNotifications(){
 		//send notifiation
-		NeoAppBroadCastMessages.sendBroadCastTestMsg(this);
+		NeoAppBroadCastMessages.sendStaticBroadCastTestMsg(this,"MainTabActivity.class","MainTabActivity onCreate");
 	}
 	
 	private void setOverflowButtonAlways(){

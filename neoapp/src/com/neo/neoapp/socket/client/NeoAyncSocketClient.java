@@ -4,10 +4,9 @@ import java.io.IOException;
 
 
 import java.net.InetSocketAddress;
-
 import java.net.SocketAddress;
-
 import java.nio.ByteBuffer;
+import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
@@ -15,6 +14,7 @@ import java.nio.channels.SocketChannel;
 import com.neo.neoandroidlib.NeoSocketSerializableUtils;
 import com.neo.neoandroidlib.NeoThreadPool;
 import com.neo.neoapp.NeoAppSetings;
+import com.neo.neoapp.entity.Message;
 
 public class NeoAyncSocketClient {
 
@@ -66,6 +66,7 @@ public class NeoAyncSocketClient {
 			// TODO Auto-generated method stub
 			ByteBuffer bf = ByteBuffer.allocate(1024);
 			while(isRunning){
+				System.out.println("NeoAyncSocketClient:RecvTask runnning");
 				try {
 					select.select();
 				} catch (IOException e) {
@@ -80,14 +81,18 @@ public class NeoAyncSocketClient {
 						bf.clear();
 						try {
 							sc.read(bf);
+							System.out.println(bf.toString());
+							sc.register(select, SelectionKey.OP_READ);
+		
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						Object object = NeoSocketSerializableUtils.byteArrayToObject(new byte[bf.capacity()]);
+						//Object object = NeoSocketSerializableUtils.byteArrayToObject(new byte[bf.capacity()]);
 					}
 				}
 			}
+			System.out.println("NeoAyncSocketClient: RecvTask end");
 		}
 		
 		
@@ -95,6 +100,21 @@ public class NeoAyncSocketClient {
 	
 	public boolean send(Object content){
 		byte[] bytes = NeoSocketSerializableUtils.objectToByteArray(content);
+		
+		if (bytes==null)
+			return false;
+		
+		try {
+			client.write(ByteBuffer.wrap(bytes));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return true;
+	}
+	
+	public boolean send(Message content){
+		byte[] bytes = NeoSocketSerializableUtils.MessageToByteArray(content);
 		
 		if (bytes==null)
 			return false;

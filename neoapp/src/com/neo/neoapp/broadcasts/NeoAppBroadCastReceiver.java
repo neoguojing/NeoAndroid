@@ -1,6 +1,9 @@
 package com.neo.neoapp.broadcasts;
 
+import java.util.HashMap;
+
 import com.neo.neoapp.activities.MainTabActivity;
+import com.neo.neoapp.activities.WelcomeActivity;
 
 import android.R;
 import android.app.Notification;
@@ -17,15 +20,22 @@ public class NeoAppBroadCastReceiver extends BroadcastReceiver {
 	private static String TAG = "NeoAppBroadCastReceiver";
 	NotificationManager mNotificationManager;
 	NotificationCompat.Builder mBuilder;
+	private HashMap<String,Class<?>> clsMap =  new HashMap<String,Class<?>>(){
+		{
+			put("MainTabActivity.class",MainTabActivity.class);
+			put("WelcomeActivity.class",WelcomeActivity.class);
+		}
+	};
 	
 	@Override
 	public void onReceive(Context ctx, Intent intent) {
 		// TODO Auto-generated method stub
-		
 		Log.d(TAG, "onReceive");
-		String message = intent.getStringExtra("testbc");
+		String message = intent.getStringExtra("fortest");
+		String cls = intent.getStringExtra("cls");
+		
 		NeoNotificationParams params = new NeoNotificationParams(message);
-		this.sendNotificationMsg(ctx,params);
+		this.sendNotificationMsg(ctx,clsMap.get(cls),params);
 	}
 
 	public class NeoNotificationParams{
@@ -195,7 +205,8 @@ public class NeoAppBroadCastReceiver extends BroadcastReceiver {
 		private int mId;
 	}
 	
-	public void sendNotificationMsg(Context ctx,NeoNotificationParams params){
+	public void sendNotificationMsg(Context ctx, Class<?> cls,
+			NeoNotificationParams params){
 		
 		mNotificationManager = (NotificationManager)ctx.getSystemService(
 				Context.NOTIFICATION_SERVICE);
@@ -215,7 +226,8 @@ public class NeoAppBroadCastReceiver extends BroadcastReceiver {
 					params.isIndeterminate());
 		}
 		
-		Intent intent = new Intent(ctx,MainTabActivity.class);  
+		//Intent intent = new Intent(ctx,MainTabActivity.class);  
+		Intent intent = new Intent(ctx,cls);  
 		PendingIntent pendingIntent = PendingIntent.getActivity(ctx, 0, intent, 0);  
 		mBuilder.setContentIntent(pendingIntent); 
 		

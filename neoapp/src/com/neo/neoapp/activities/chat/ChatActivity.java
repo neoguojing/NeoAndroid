@@ -1,10 +1,18 @@
 package com.neo.neoapp.activities.chat;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -22,10 +30,12 @@ import com.neo.neoapp.R;
 import com.neo.neoapp.UI.adapters.ChatAdapter;
 import com.neo.neoapp.UI.adapters.CheckListDialogAdapter;
 import com.neo.neoapp.UI.views.HeaderLayout.HeaderStyle;
+import com.neo.neoapp.broadcasts.NeoAppBroadCastMessages;
 import com.neo.neoapp.dialog.SimpleListDialog;
 import com.neo.neoapp.entity.Message;
 import com.neo.neoapp.entity.Message.CONTENT_TYPE;
 import com.neo.neoapp.entity.Message.MESSAGE_TYPE;
+import com.neo.neoapp.socket.client.NeoAyncSocketClient;
 import com.neo.neoapp.UI.views.HeaderLayout;
 import com.neo.neoapp.UI.views.ChatListView;
 import com.neo.neoapp.UI.views.ScrollLayout;
@@ -33,7 +43,9 @@ import com.neo.neoapp.UI.views.EmoteInputView;
 import com.neo.neoapp.UI.views.EmoticonsEditText;
 
 public class ChatActivity extends BaseMessageActivity {
-
+	
+	NeoAyncSocketClient socketClient = null;
+	MsgReceiver msgBroadCastReceiver = null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -65,7 +77,23 @@ public class ChatActivity extends BaseMessageActivity {
 		PhotoUtils.deleteImageFile();
 		super.onDestroy();
 	}
-
+	
+	@Override
+	protected void onResume(){
+		super.onResume();
+		msgBroadCastReceiver = new MsgReceiver();
+		
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(NeoAppBroadCastMessages.broadcastAction);
+		registerReceiver(msgBroadCastReceiver, filter);
+	}
+	
+	@Override
+	protected void onPause(){
+		super.onPause();
+		unregisterReceiver(msgBroadCastReceiver);
+	}
+	
 	@Override
 	protected void initViews() {
 		mHeaderLayout = (HeaderLayout)findViewById(R.id.chat_header);
@@ -133,6 +161,16 @@ public class ChatActivity extends BaseMessageActivity {
 
 		mAdapter = new ChatAdapter(mApplication, ChatActivity.this, mMessages);
 		mClvList.setAdapter(mAdapter);
+		
+		//socket
+	    StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()  
+        .detectDiskReads().detectDiskWrites().detectNetwork()  
+        .penaltyLog().build());  
+	    StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()  
+        .detectLeakedSqlLiteObjects().detectLeakedClosableObjects()  
+        .penaltyLog().penaltyDeath().build()); 
+	    
+		socketClient = new NeoAyncSocketClient();
 	}
 
 	@Override
@@ -191,11 +229,14 @@ public class ChatActivity extends BaseMessageActivity {
 			String content = mEetTextDitorEditer.getText().toString().trim();
 			if (!TextUtils.isEmpty(content)) {
 				mEetTextDitorEditer.setText(null);
-				mMessages.add(new Message("nearby_people_other", System
+				Message sendmsg = new Message("nearby_people_other", System
 						.currentTimeMillis(), "0.12km", content,
-						CONTENT_TYPE.TEXT, MESSAGE_TYPE.SEND));
-				mAdapter.notifyDataSetChanged();
-				mClvList.setSelection(mMessages.size());
+						CONTENT_TYPE.TEXT, MESSAGE_TYPE.SEND);
+				if (socketClient.send(sendmsg)){
+					mMessages.add(sendmsg);
+					mAdapter.notifyDataSetChanged();
+					mClvList.setSelection(mMessages.size());
+				}
 			}
 			break;
 
@@ -382,5 +423,59 @@ public class ChatActivity extends BaseMessageActivity {
 
 	public void refreshAdapter() {
 		mAdapter.notifyDataSetChanged();
+	}
+	
+	private void displayReceiveMsg(String content){
+		Message receiveMsg = new Message("nearby_people_other",
+				System.currentTimeMillis(), "0.12km", content,
+				CONTENT_TYPE.TEXT, MESSAGE_TYPE.RECEIVER);
+		
+		mMessages.add(receiveMsg);
+		mAdapter.notifyDataSetChanged();
+		mClvList.setSelection(mMessages.size());
+	}
+	
+	private void displayReceiveMsg(Message msg){
+		mMessages.add(msg);
+		mAdapter.notifyDataSetChanged();
+		mClvList.setSelection(mMessages.size());
+	}
+	
+	public byte[] MessageToByteArray(Message obj){
+		ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		ObjectOutputStream oos = null;
+		byte[] bytes =null;
+		try {
+			oos = new ObjectOutputStream(bos);
+			oos.writeObject(obj);
+			bytes = bos.toByteArray();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+			try {
+				oos.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return bytes;		
+	}
+	
+	private class MsgReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			String action = intent.getAction();
+			if(action.equals(NeoAppBroadCastMessages.broadcastAction)) {
+				Message msg = (Message) intent.getExtras().getSerializable("msg");
+				if (msg==null)
+					return;
+				displayReceiveMsg(msg);
+			}
+		
+		}
 	}
 }

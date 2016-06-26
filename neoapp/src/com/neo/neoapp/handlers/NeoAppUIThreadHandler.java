@@ -15,13 +15,17 @@ import android.widget.Toast;
 public class NeoAppUIThreadHandler extends Handler {
 	
 	private String TAG = "NeoAppUIThreadHandler";
-	private Context mContext;
+	private Context mContext = null;
 	public NeoAppUIThreadHandler(Looper looper, Context context){
 		super(looper);
 		
 		mContext = context;
 	}
 	
+	public NeoAppUIThreadHandler(Looper mainLooper) {
+		// TODO Auto-generated constructor stub
+	}
+
 	@Override
 	public void handleMessage(Message msg) { 
       super.handleMessage(msg); 
@@ -31,9 +35,10 @@ public class NeoAppUIThreadHandler extends Handler {
       case UI_TEST:
     	  Log.v(TAG, "handleMessage:UI_TEST");
     	  msg.getData();
-    	  Toast.makeText(mContext,  msg.getData().getString("test")
+    	  if (mContext!=null)
+    		  Toast.makeText(mContext,  msg.getData().getString("test")
     			  , Toast.LENGTH_LONG)
-    	  .show();
+    			  .show();
     	  break;
     	  
       default:

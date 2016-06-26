@@ -1,31 +1,41 @@
 package com.neo.neoapp.socket.server;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.StreamCorruptedException;
 import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketAddress;
 import java.nio.ByteBuffer;
+import java.nio.channels.ClosedChannelException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.nio.charset.Charset;
+
+//import android.util.Log;
+
+
+
+
+
+import android.content.Context;
 
 import com.neo.neoandroidlib.NeoSocketSerializableUtils;
 import com.neo.neoandroidlib.NeoThreadPool;
 import com.neo.neoapp.NeoAppSetings;
+import com.neo.neoapp.broadcasts.NeoAppBroadCastMessages;
+import com.neo.neoapp.entity.Message;
+import com.neo.neoapp.handlers.NeoAppUIThreadHandler;
 
 public class NeoAyncSocketServer {
-	
+	private String Tag = "NeoAyncSocketServer";
 	private Selector selector;
 	private ServerSocketChannel server;
 	private boolean isRunning;
-	
-	
-	NeoAyncSocketServer(){
+	//for test
+	private Charset charset=Charset.forName("UTF-8");  
+	private Context mContext = null;
+	public NeoAyncSocketServer(Context context){
 		isRunning = true;
+		mContext = context;
 		try {
 			server = ServerSocketChannel.open();
 			server.configureBlocking(false);
@@ -70,13 +80,16 @@ public class NeoAyncSocketServer {
 
 		public AcceptTask() {
 			// TODO Auto-generated constructor stub
-			
+			System.out.println("AcceptTask()");
 		}
 
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
+			
 			while(isRunning){
+				//Log.v(Tag, "NeoAyncSocketServer run()");
+				System.out.println("NeoAyncSocketServer:running");
 				try {
 					selector.select();
 
@@ -88,12 +101,13 @@ public class NeoAyncSocketServer {
 				for (SelectionKey sk:selector.selectedKeys()){
 					selector.selectedKeys().remove(sk);
 					if (sk.isAcceptable()){
+						System.out.println("NeoAyncSocketServer:there is a connection");
 						ServerSocketChannel serch = (ServerSocketChannel) sk.channel();
 						SocketChannel client;
 						try {
 							client = serch.accept();
 							client.configureBlocking(false);
-							client.write(ByteBuffer.wrap(new String("hello client").getBytes()));
+							//client.write(ByteBuffer.wrap(new String("hello client").getBytes()));
 							client.register(selector, SelectionKey.OP_READ);
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
@@ -103,11 +117,21 @@ public class NeoAyncSocketServer {
 					}
 					
 					if (sk.isReadable()){
+						System.out.println("NeoAyncSocketServer:got a msg");
+						SocketChannel client = (SocketChannel) sk.channel();
 						NeoThreadPool.getThreadPool().execute(
-								new RecvTask((SocketChannel) sk.channel()));
+								new RecvTask(client));
+						try {
+							client.register(selector, SelectionKey.OP_READ);
+						} catch (ClosedChannelException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 				}
 			}
+			
+			System.out.println("NeoAyncSocketServer:terminated");
 		}
 		
 	}
@@ -124,14 +148,33 @@ public class NeoAyncSocketServer {
 			ByteBuffer bf = ByteBuffer.allocate(1024);
 			// TODO Auto-generated method stub
 			bf.clear();
+			
+			/*String content = "";
 			try {
-				this.clent.read(bf);
+				while(clent.read(bf)>0){  
+					clent.read(bf);  
+                    bf.flip();  
+                    content+=charset.decode(bf);  
+                } 
+				System.out.println("msg:"+content);
+				NeoAppBroadCastMessages.sendDynamicBroadCastMsg(mContext, content);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}*/
+			try {
+				int readbytes = clent.read(bf);
+				if (readbytes<=0)
+					return;
+				
+				Message object = NeoSocketSerializableUtils.byteArrayToMessage(bf.array());
+				object.setMessageType(Message.MESSAGE_TYPE.RECEIVER);
+				NeoAppBroadCastMessages.sendDynamicBroadCastMsg(mContext, object);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			Object object = NeoSocketSerializableUtils.byteArrayToObject(new byte[bf.capacity()]);
-		
+			
 		}
 		
 	}

@@ -1,0 +1,141 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  Internal Error (javaClasses.cpp:127), pid=6340, tid=3388
+#  fatal error: Invalid layout of preloaded class
+#
+# JRE version:  (8.0_45-b15) (build )
+# Java VM: Java HotSpot(TM) Client VM (25.45-b02 mixed mode windows-x86 )
+# Failed to write core dump. Minidumps are not enabled by default on client versions of Windows
+#
+# If you would like to submit a bug report, please visit:
+#   http://bugreport.java.com/bugreport/crash.jsp
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x02fac400):  JavaThread "Unknown thread" [_thread_in_vm, id=3388, stack(0x01100000,0x01150000)]
+
+Stack: [0x01100000,0x01150000],  sp=0x0114f2ec,  free space=316k
+Native frames: (J=compiled Java code, j=interpreted, Vv=VM code, C=native code)
+V  [jvm.dll+0x1a4f8b]
+V  [jvm.dll+0x19d846]
+V  [jvm.dll+0x42269]
+V  [jvm.dll+0x4241e]
+V  [jvm.dll+0x5193e]
+V  [jvm.dll+0xa86ae]
+V  [jvm.dll+0xa8972]
+V  [jvm.dll+0x154631]
+V  [jvm.dll+0x17869b]
+V  [jvm.dll+0xe51a1]
+C  [javaw.exe+0x14d3]
+C  [javaw.exe+0x2047]
+C  [javaw.exe+0xadff]
+C  [javaw.exe+0xae89]
+C  [KERNEL32.DLL+0x28624]
+C  [ntdll.dll+0x5bf39]
+C  [ntdll.dll+0x5bf0c]
+C  0x00000000
+
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+
+Other Threads:
+
+=>0x02fac400 (exited) JavaThread "Unknown thread" [_thread_in_vm, id=3388, stack(0x01100000,0x01150000)]
+
+VM state:not at safepoint (not fully initialized)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+GC Heap History (0 events):
+No events
+
+Deoptimization events (0 events):
+No events
+
+Internal exceptions (0 events):
+No events
+
+Events (10 events):
+Event: 0.011 loading class java/lang/CharSequence done
+Event: 0.012 loading class java/lang/String done
+Event: 0.012 loading class java/lang/Class
+Event: 0.012 loading class java/lang/reflect/AnnotatedElement
+Event: 0.012 loading class java/lang/reflect/AnnotatedElement done
+Event: 0.012 loading class java/lang/reflect/GenericDeclaration
+Event: 0.012 loading class java/lang/reflect/GenericDeclaration done
+Event: 0.012 loading class java/lang/reflect/Type
+Event: 0.012 loading class java/lang/reflect/Type done
+Event: 0.012 loading class java/lang/Class done
+
+
+Dynamic libraries:
+0x00e80000 - 0x00eb3000 	C:\Program Files (x86)\Java\jre1.8.0_45\bin\javaw.exe
+0x77570000 - 0x776c7000 	C:\Windows\SYSTEM32\ntdll.dll
+0x766a0000 - 0x767d0000 	C:\Windows\SYSTEM32\KERNEL32.DLL
+0x76090000 - 0x76137000 	C:\Windows\SYSTEM32\KERNELBASE.dll
+0x761a0000 - 0x7624e000 	C:\Windows\SYSTEM32\ADVAPI32.dll
+0x76cd0000 - 0x76de6000 	C:\Windows\SYSTEM32\USER32.dll
+0x73f70000 - 0x74168000 	C:\Windows\WinSxS\x86_microsoft.windows.common-controls_6595b64144ccf1df_6.0.9200.16579_none_8937eec6860750f5\COMCTL32.dll
+0x770c0000 - 0x77171000 	C:\Windows\SYSTEM32\msvcrt.dll
+0x77470000 - 0x774a4000 	C:\Windows\SYSTEM32\sechost.dll
+0x76e10000 - 0x76ebc000 	C:\Windows\SYSTEM32\RPCRT4.dll
+0x76a90000 - 0x76b8d000 	C:\Windows\SYSTEM32\GDI32.dll
+0x74b60000 - 0x74b7d000 	C:\Windows\SYSTEM32\SspiCli.dll
+0x74b50000 - 0x74b59000 	C:\Windows\SYSTEM32\CRYPTBASE.dll
+0x74af0000 - 0x74b41000 	C:\Windows\SYSTEM32\bcryptPrimitives.dll
+0x765f0000 - 0x76610000 	C:\Windows\system32\IMM32.DLL
+0x76b90000 - 0x76c6d000 	C:\Windows\SYSTEM32\MSCTF.dll
+0x74ac0000 - 0x74aea000 	C:\Windows\SYSTEM32\nvinit.dll
+0x74ab0000 - 0x74ab8000 	C:\Windows\SYSTEM32\VERSION.dll
+0x72d80000 - 0x72d86000 	C:\Program Files (x86)\NVIDIA Corporation\CoProcManager\_etoured.dll
+0x72d40000 - 0x72d71000 	C:\Program Files (x86)\NVIDIA Corporation\CoProcManager\nvd3d9wrap.dll
+0x74b80000 - 0x74d2f000 	C:\Windows\SYSTEM32\SETUPAPI.dll
+0x765a0000 - 0x765e6000 	C:\Windows\SYSTEM32\CFGMGR32.dll
+0x76df0000 - 0x76e0e000 	C:\Windows\SYSTEM32\DEVOBJ.dll
+0x72cf0000 - 0x72d10000 	C:\Program Files (x86)\NVIDIA Corporation\CoProcManager\nvdxgiwrap.dll
+0x60aa0000 - 0x60b5f000 	C:\Program Files (x86)\Java\jre1.8.0_45\bin\msvcr100.dll
+0x6eee0000 - 0x6f2a0000 	C:\Program Files (x86)\Java\jre1.8.0_45\bin\client\jvm.dll
+0x72f20000 - 0x72f28000 	C:\Windows\SYSTEM32\WSOCK32.dll
+0x73ba0000 - 0x73bc1000 	C:\Windows\SYSTEM32\WINMM.dll
+0x76250000 - 0x76256000 	C:\Windows\SYSTEM32\PSAPI.DLL
+0x76880000 - 0x768d0000 	C:\Windows\SYSTEM32\WS2_32.dll
+0x73b70000 - 0x73b9a000 	C:\Windows\SYSTEM32\WINMMBASE.dll
+0x771a0000 - 0x771a8000 	C:\Windows\SYSTEM32\NSI.dll
+0x71720000 - 0x7172c000 	C:\Program Files (x86)\Java\jre1.8.0_45\bin\verify.dll
+0x70290000 - 0x702b1000 	C:\Program Files (x86)\Java\jre1.8.0_45\bin\java.dll
+0x71700000 - 0x71713000 	C:\Program Files (x86)\Java\jre1.8.0_45\bin\zip.dll
+0x65d40000 - 0x65e69000 	C:\Windows\SYSTEM32\dbghelp.dll
+
+VM Arguments:
+jvm_args: -Dfile.encoding=UTF-8 -Xbootclasspath:C:\Program Files (x86)\Android\android-sdk\platforms\android-17\android.jar 
+java_command: com.neo.neoapp.socket.server.NeoAyncSocketServer
+java_class_path (initial): F:\redhatrepo\android\neoapp\libs\httpmime-4.1.3.jar;F:\redhatrepo\android\neoapp\libs\IndoorscapeAlbumPlugin.jar;F:\redhatrepo\android\neoapp\libs\android-support-v4.jar;F:\redhatrepo\android\neoapp\libs\commons-io-2.4.jar;F:\redhatrepo\android\neoapp\libs\BaiduLBS_Android.jar;F:\redhatrepo\android\neoapp\libs\httpclient-4.3.6.jar;F:\redhatrepo\android\neoapp\libs\android-async-http-1.4.9.jar;F:\redhatrepo\android\neoapp\bin\classes
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+JAVA_HOME=C:\Program Files (x86)\Java\jdk1.8.0_45
+CLASSPATH=.;C:\Program Files (x86)\Java\jdk1.8.0_45\lib\tools.jar;
+PATH=C:/Program Files (x86)/Java/jre1.8.0_45/bin/client;C:/Program Files (x86)/Java/jre1.8.0_45/bin;C:/Program Files (x86)/Java/jre1.8.0_45/lib/i386;C:\ProgramData\Oracle\Java\javapath;C:\Program Files (x86)\Intel\iCLS Client\;C:\Program Files\Intel\iCLS Client\;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\IPT;c:\Program Files (x86)\Microsoft SQL Server\100\Tools\Binn\;c:\Program Files\Microsoft SQL Server\100\Tools\Binn\;c:\Program Files\Microsoft SQL Server\100\DTS\Binn\;C:\Python27\;C:\Program Files (x86)\VisualSVN\bin;C:\Program Files\TortoiseSVN\bin;C:\Python27\Scripts\django-admin.py;C:/Python27/Lib/site-packages/django;C:/Python27/Scripts;C:\gettext\0.17\bin;C:\Program Files (x86)\Java\jdk1.8.0_45\bin;C:\Program Files (x86)\Android\android-sdk\tools;C:\Program Files (x86)\GtkSharp\2.12\bin;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\gettext\0.17\bin;C:\Program Files (x86)\SSH Communications Security\SSH Secure Shell;C:\Python27\Scripts\django-admin.py;;D:\eclipse;
+USERNAME=neo
+OS=Windows_NT
+PROCESSOR_IDENTIFIER=Intel64 Family 6 Model 42 Stepping 7, GenuineIntel
+
+
+
+---------------  S Y S T E M  ---------------
+
+OS: Windows 8 , 64 bit Build 9200 (6.2.9200.16815)
+
+CPU:total 4 (2 cores per cpu, 2 threads per core) family 6 model 42 stepping 7, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, avx, aes, clmul, ht, tsc, tscinvbit
+
+Memory: 4k page, physical 8233304k(6032432k free), swap 12427608k(10107384k free)
+
+vm_info: Java HotSpot(TM) Client VM (25.45-b02) for windows-x86 JRE (1.8.0_45-b15), built on Apr 30 2015 12:31:00 by "java_re" with MS VC++ 10.0 (VS2010)
+
+time: Sun Jun 26 08:30:07 2016
+elapsed time: 0 seconds (0d 0h 0m 0s)
+

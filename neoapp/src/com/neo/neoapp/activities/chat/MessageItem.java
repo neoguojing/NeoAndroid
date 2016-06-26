@@ -84,6 +84,8 @@ public abstract class MessageItem {
 	private void init(MESSAGE_TYPE messageType) {
 		switch (messageType) {
 		case RECEIVER:
+			mRootView = mInflater.inflate(R.layout.message_group_receive_template,
+					null);
 			mBackground = R.drawable.bg_message_box_receive;
 			break;
 

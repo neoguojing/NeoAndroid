@@ -31,7 +31,7 @@ public class TextMessageItem extends MessageItem implements OnLongClickListener 
 
 	@Override
 	protected void onFillMessage() {
-
+		mEtvContent.setText(mMsg.getContent());
 	}
 
 	@Override

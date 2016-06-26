@@ -1,6 +1,8 @@
 package com.neo.neoapp.entity;
 
-public class Message extends Entity {
+import java.io.Serializable;
+
+public class Message extends Entity implements Serializable {
 
 	private String avatar;
 	private long time;
