@@ -7,6 +7,8 @@ public class NeoAppSetings {
     public static final String ConfigFile = "config.json";
     public static final String HeadPicDir = "headpic/";
     public static final String IpServerUrl = "http://mainapp.applinzi.com/nat/obtain/neo/";
+    public static final String DestIpFetchUrlPrefix = "http://mainapp.applinzi.com/android/fetchip/";
+    public static final String DestIpUpdateUrlPrefix = "http://mainapp.applinzi.com/android/update/";
     public static final String MeFile = "me.json";
     public static final String MyFriendsFile = "myfriends.json";
     public static final String MyHeadPic = "headpic";

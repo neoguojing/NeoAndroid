@@ -4,6 +4,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -16,6 +19,7 @@ import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -24,8 +28,13 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.neo.neoandroidlib.FileUtils;
+import com.neo.neoandroidlib.NeoAsyncHttpUtil;
+import com.neo.neoandroidlib.NetWorkUtils;
 import com.neo.neoandroidlib.PhotoUtils;
+import com.neo.neoandroidlib.NetWorkUtils.NetWorkState;
+import com.neo.neoapp.NeoAppSetings;
 import com.neo.neoapp.R;
 import com.neo.neoapp.UI.adapters.ChatAdapter;
 import com.neo.neoapp.UI.adapters.CheckListDialogAdapter;
@@ -33,6 +42,7 @@ import com.neo.neoapp.UI.views.HeaderLayout.HeaderStyle;
 import com.neo.neoapp.broadcasts.NeoAppBroadCastMessages;
 import com.neo.neoapp.dialog.SimpleListDialog;
 import com.neo.neoapp.entity.Message;
+import com.neo.neoapp.entity.NeoConfig;
 import com.neo.neoapp.entity.Message.CONTENT_TYPE;
 import com.neo.neoapp.entity.Message.MESSAGE_TYPE;
 import com.neo.neoapp.socket.client.NeoAyncSocketClient;
@@ -42,8 +52,11 @@ import com.neo.neoapp.UI.views.ScrollLayout;
 import com.neo.neoapp.UI.views.EmoteInputView;
 import com.neo.neoapp.UI.views.EmoticonsEditText;
 
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.cookie.ClientCookie;
+
 public class ChatActivity extends BaseMessageActivity {
-	
+	private final String Tag = "ChatActivity";
 	NeoAyncSocketClient socketClient = null;
 	MsgReceiver msgBroadCastReceiver = null;
 	@Override
@@ -172,7 +185,46 @@ public class ChatActivity extends BaseMessageActivity {
 	    
 		socketClient = new NeoAyncSocketClient();
 	}
+	
+	 private void getDestIpAddress(String name) {
+	        this.mNetWorkUtils = new NetWorkUtils(getApplicationContext());
+	        if (this.mNetWorkUtils.getConnectState() == NetWorkState.NONE) {
+	            showAlertDialog("NEO", "Please check your NetWork connection!");
+	        } else {
+	            NeoAsyncHttpUtil.get((Context) this, NeoAppSetings.DestIpFetchUrlPrefix+name,
+	            		new JsonHttpResponseHandler() {
+	                public void onSuccess(int statusCode, Header[] headers, JSONArray arg0) {
+	                    Log.i(ChatActivity.this.Tag, new StringBuilder(String.valueOf(arg0.length())).toString());
+	                }
 
+	                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+	                    Log.e(ChatActivity.this.Tag, " onFailure" + throwable.toString());
+	                    ChatActivity.this.showAlertDialog("NEO", "Get Server Address failed" + throwable.toString());
+	                }
+
+	                public void onFinish() {
+	                    Log.i(ChatActivity.this.Tag, "onFinish");
+	                }
+
+	                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+	                    super.onSuccess(statusCode, headers, response);
+	                    Log.i(ChatActivity.this.Tag, "onSuccess ");
+	                    try {
+	                        ChatActivity.this.showLongToast("ip:" + response.getString(NeoConfig.IP) + ";port:" + response.getString(ClientCookie.PORT_ATTR));
+	                        ChatActivity.this.mApplication.mNeoConfig = new NeoConfig(response.getString(NeoConfig.IP), response.getString(ClientCookie.PORT_ATTR), "neo");
+	                        FileUtils.overrideContent(new StringBuilder(String.valueOf(FileUtils.getAppDataPath(ChatActivity.this))).append(NeoAppSetings.ConfigFile).toString(), response.toString());
+	                    } catch (Exception e) {
+	                        Log.e(ChatActivity.this.Tag, e.toString());
+	                    }
+	                }
+
+	                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+	                    Log.e(ChatActivity.this.Tag, " onFailure" + throwable.toString());
+	                }
+	            });
+	        }
+	    }
+	 
 	@Override
 	public void doAction(int whichScreen) {
 		switch (whichScreen) {

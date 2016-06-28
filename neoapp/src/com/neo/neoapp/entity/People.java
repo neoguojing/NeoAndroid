@@ -39,6 +39,8 @@ public class People extends Entity implements Parcelable {
     public static final String UID = "uid";
     public static final String VIP = "vip";
     public static final String WEIBO = "weibo";
+    public static final String IP = "ip";
+    public static final String PORT = "port";
     private int age;
     private String avatar;
     private String birthday;
@@ -61,12 +63,15 @@ public class People extends Entity implements Parcelable {
     private String sign;
     private String time;
     private String uid;
+    private String ip;
+    private int port;
 
     public People(String uid, String avatar, int isVip, int isGroupRole,
     		String industry, int isbindWeibo, int isbindTxWeibo,
     		int isbindRenRen, int device, int isRelation, int isMultipic, 
     		String name, int gender, int age, String distance, String time,
-    		String sign, String birthday, double longitude, double latitude) {
+    		String sign, String birthday, double longitude, double latitude,
+    		String ip,int port) {
         this.uid = uid;
         this.avatar = avatar;
         this.isVip = isVip;
@@ -94,6 +99,8 @@ public class People extends Entity implements Parcelable {
         this.birthday = birthday;
         this.longitude = longitude;
         this.latitude = latitude;
+        this.ip = ip;
+        this.port = port;
     }
 
     public People(JSONObject object) {
@@ -119,6 +126,8 @@ public class People extends Entity implements Parcelable {
                 this.birthday = object.getString(BIRTHDAY);
                 this.latitude = object.getDouble(LATITUDE);
                 this.longitude = object.getDouble(LONGITUDE);
+                this.ip = "";
+                this.port = 0;
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -288,6 +297,23 @@ public class People extends Entity implements Parcelable {
     public void setBirthday(String birthday) {
         this.birthday = birthday;
     }
+    
+    public String getIp() {
+        return this.ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+    
+    public String getPort() {
+        return this.ip;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+    
 	@Override
 	public int describeContents() {
 		return 0;
@@ -309,7 +335,7 @@ public class People extends Entity implements Parcelable {
             		jSONObject.getInt(AGE), jSONObject.getString(DISTANCE),
             		jSONObject.getString(TIME), jSONObject.getString(SIGN),
             		jSONObject.getString(BIRTHDAY), jSONObject.getDouble(LATITUDE),
-            		jSONObject.getDouble(LONGITUDE));
+            		jSONObject.getDouble(LONGITUDE),"",0);
             return true;
         } catch (JSONException e) {
             e.printStackTrace();
@@ -365,6 +391,8 @@ public class People extends Entity implements Parcelable {
         dest.writeString(this.time);
         dest.writeString(this.sign);
         dest.writeString(this.birthday);
+        dest.writeString(this.ip);
+        dest.writeLong(this.port);
     }
 
     public double getLongitude() {
@@ -395,7 +423,7 @@ public class People extends Entity implements Parcelable {
 				   source.readString(), source.readInt(),
 				    source.readInt(), source.readString(), 
 					source.readString(), source.readString(),
-					 BuildConfig.VERSION_NAME, 0.0d, 0.0d);
+					 BuildConfig.VERSION_NAME, 0.0d, 0.0d,"",0);
             }
 
 		@Override

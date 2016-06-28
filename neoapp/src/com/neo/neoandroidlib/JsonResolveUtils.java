@@ -71,7 +71,7 @@ public class JsonResolveUtils {
 							object.getString(People.DISTANCE),
 							object.getString(People.TIME), 
 							object.getString(People.SIGN),
-							"", 0.0d, 0.0d);
+							"", 0.0d, 0.0d,"",0);
                             application.mNearByPeoples.add(people);
                         }
                     } catch (JSONException e) {

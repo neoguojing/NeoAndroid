@@ -20,6 +20,7 @@ import com.neo.neoapp.UI.views.list.NeoRefreshListView.OnCancelListener;
 import com.neo.neoapp.UI.views.list.NeoRefreshListView.OnRefreshListener;
 import com.neo.neoapp.activities.chat.ChatActivity;
 import com.neo.neoapp.entity.People;
+import com.neo.neoapp.entity.PeopleProfile;
 
 public class RefreshListFragment extends NeoBasicFragment implements
 OnItemClickListener, OnRefreshListener, OnCancelListener{
@@ -65,6 +66,7 @@ OnItemClickListener, OnRefreshListener, OnCancelListener{
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		int position = (int) arg3;
 		People people = mApplication.mNearByPeoples.get(position);
+		//PeopleProfile profile = mApplication..get(position);
 		/*String uid = null;
 		String name = null;
 		String avatar = null;
