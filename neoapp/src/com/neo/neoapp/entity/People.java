@@ -136,6 +136,8 @@ public class People extends Entity implements Parcelable {
 
     public People() {
 		// TODO Auto-generated constructor stub
+    	this.ip = "";
+        this.port = 0;
 	}
 
 	public String getUid() {
@@ -306,8 +308,8 @@ public class People extends Entity implements Parcelable {
         this.ip = ip;
     }
     
-    public String getPort() {
-        return this.ip;
+    public int getPort() {
+        return this.port;
     }
 
     public void setPort(int port) {

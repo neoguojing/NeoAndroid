@@ -141,8 +141,14 @@ public class StepPhoto extends RegisterStep implements OnClickListener {
 
     private void writeDataToLocal() {
     	
-        FileUtils.overrideContent(new StringBuilder(String.valueOf(FileUtils.getAppDataPath(this.mActivity))).append(NeoAppSetings.MeFile).toString(), this.mActivity.getMyApplication().mMe.convertToJson().toString());
-        FileUtils.overrideContent(new StringBuilder(String.valueOf(FileUtils.getAppDataPath(this.mActivity))).append(NeoAppSetings.MyProfileFile).toString(), this.mActivity.getMyApplication().mMyProfile.convertToJson().toString());
+        FileUtils.overrideContent(new StringBuilder(
+        		String.valueOf(FileUtils.getAppDataPath(this.mActivity))).
+        		append(NeoAppSetings.MeFile).toString(), 
+        		this.mActivity.getMyApplication().mMe.convertToJson().toString());
+        FileUtils.overrideContent(new StringBuilder(
+        		String.valueOf(FileUtils.getAppDataPath(this.mActivity))).
+        		append(NeoAppSetings.MyProfileFile).toString(), 
+        		this.mActivity.getMyApplication().mMyProfile.convertToJson().toString());
         FileUtils.moveFile(this.mTakePicturePath, 
         		FileUtils.getAppDataPath(this.mActivity)+
         		mActivity.getMyApplication().mMe.getName());
