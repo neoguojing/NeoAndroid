@@ -178,7 +178,7 @@ public class WelcomeActivity extends NeoBasicActivity implements OnClickListener
 
     private void initNetWorkData() {
         this.mNetWorkUtils = new NetWorkUtils(getApplicationContext());
-        if (this.mNetWorkUtils.getConnectState() == NetWorkState.NONE) {
+        if (netWorkCheck()) {
             showAlertDialog("NEO", "Please check your NetWork connection!");
         } else {
             NeoAsyncHttpUtil.get((Context) this, NeoAppSetings.IpServerUrl, new JsonHttpResponseHandler() {

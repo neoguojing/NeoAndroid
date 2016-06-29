@@ -1,8 +1,14 @@
 package com.neo.neoapp.services;
 
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import com.neo.neoapp.NeoBasicApplication;
 import com.neo.neoapp.broadcasts.NeoAppBroadCastMessages;
 import com.neo.neoapp.handlers.NeoAppUIThreadHandler;
 import com.neo.neoapp.socket.server.NeoAyncSocketServer;
+import com.neo.neoapp.socket.server.NeoServerIpUpdateTask;
 import com.neo.neoapp.tasks.ServicieWorker;
 
 import android.R;
@@ -23,6 +29,7 @@ public class NeoAppBackgroundService extends Service {
 	//private ThreadGroup mThreadGroup = new ThreadGroup("ServiceWorker");
 	private NeoAyncSocketServer aServer = null;
 	private NeoAppUIThreadHandler mUIHandler = null;
+	private NeoServerIpUpdateTask tIpUpdateTask = null;
 	@Override
 	public IBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub
@@ -50,6 +57,14 @@ public class NeoAppBackgroundService extends Service {
 				//		TAG).start();
 		displayNotifyMsg("WelcomeActivity.class",TAG+" is running");
 		aServer = new NeoAyncSocketServer(this);
+		
+		//start ip update task
+		tIpUpdateTask = new NeoServerIpUpdateTask((NeoBasicApplication) getApplication(),
+				this);
+		ScheduledExecutorService service = Executors  
+	                .newSingleThreadScheduledExecutor();  
+	    // 第二个参数为首次执行的延时时间，第三个参数为定时执行的间隔时间  
+	    service.scheduleAtFixedRate(tIpUpdateTask, 10, 5*60, TimeUnit.SECONDS); 
 		
 		return START_STICKY;
 	}

@@ -16,6 +16,8 @@ import java.nio.charset.Charset;
 
 
 
+import java.util.HashMap;
+
 import android.content.Context;
 
 import com.neo.neoandroidlib.NeoSocketSerializableUtils;
@@ -32,7 +34,10 @@ public class NeoAyncSocketServer {
 	private boolean isRunning;
 	//for test
 	private Charset charset=Charset.forName("UTF-8");  
+	
 	private Context mContext = null;
+	public static HashMap socketMap = new HashMap<String,SocketChannel>();
+	
 	public NeoAyncSocketServer(Context context){
 		isRunning = true;
 		mContext = context;
@@ -51,7 +56,7 @@ public class NeoAyncSocketServer {
 			
 	}
 	
-	public boolean send(SocketChannel client,Object content){
+	public static boolean send(SocketChannel client,Object content){
 		byte[] bytes = NeoSocketSerializableUtils.objectToByteArray(content);
 		
 		if (bytes==null)
@@ -168,6 +173,8 @@ public class NeoAyncSocketServer {
 					return;
 				
 				Message object = NeoSocketSerializableUtils.byteArrayToMessage(bf.array());
+				if (!socketMap.containsKey(object.getName()))
+					socketMap.put(object.getName(),clent);
 				object.setMessageType(Message.MESSAGE_TYPE.RECEIVER);
 				NeoAppBroadCastMessages.sendDynamicBroadCastMsg(mContext, object);
 			} catch (IOException e) {

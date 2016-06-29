@@ -3,7 +3,8 @@ package com.neo.neoapp.entity;
 import java.io.Serializable;
 
 public class Message extends Entity implements Serializable {
-
+	
+	private String name;
 	private String avatar;
 	private long time;
 	private String distance;
@@ -12,9 +13,10 @@ public class Message extends Entity implements Serializable {
 	private CONTENT_TYPE contentType;
 	private MESSAGE_TYPE messageType;
 
-	public Message(String avatar, long time, String distance, String content,
+	public Message(String name, String avatar, long time, String distance, String content,
 			CONTENT_TYPE contentType, MESSAGE_TYPE messageType) {
 		super();
+		this.name = name;
 		this.avatar = avatar;
 		this.time = time;
 		this.distance = distance;
@@ -22,7 +24,15 @@ public class Message extends Entity implements Serializable {
 		this.contentType = contentType;
 		this.messageType = messageType;
 	}
+	
+	public String getName() {
+		return name;
+	}
 
+	public void setName(String name) {
+		this.name = name;
+	}
+	
 	public String getAvatar() {
 		return avatar;
 	}

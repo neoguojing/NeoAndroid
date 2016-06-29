@@ -390,6 +390,12 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
     
     private void getNearbyData() {
     	
+    	if (FileUtils.isFileExist(getMyApplication().mAppDataPath+
+    			NeoAppSetings.MyNearByFile)){
+    		showLongToast("My nearby file is exsit");
+    		return;
+    	}
+    	
         NeoAsyncHttpUtil.get(this, 
         		new StringBuilder(String.valueOf(
         				NeoAppSetings.getGetUrl(this.mApplication.mNeoConfig,

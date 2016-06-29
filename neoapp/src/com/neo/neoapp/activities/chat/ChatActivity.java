@@ -3,6 +3,7 @@ package com.neo.neoapp.activities.chat;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.nio.channels.SocketChannel;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -46,6 +47,7 @@ import com.neo.neoapp.entity.NeoConfig;
 import com.neo.neoapp.entity.Message.CONTENT_TYPE;
 import com.neo.neoapp.entity.Message.MESSAGE_TYPE;
 import com.neo.neoapp.socket.client.NeoAyncSocketClient;
+import com.neo.neoapp.socket.server.NeoAyncSocketServer;
 import com.neo.neoapp.UI.views.HeaderLayout;
 import com.neo.neoapp.UI.views.ChatListView;
 import com.neo.neoapp.UI.views.ScrollLayout;
@@ -183,47 +185,64 @@ public class ChatActivity extends BaseMessageActivity {
         .detectLeakedSqlLiteObjects().detectLeakedClosableObjects()  
         .penaltyLog().penaltyDeath().build()); 
 	    
-		socketClient = new NeoAyncSocketClient();
+	    //test
+		//socketClient = new NeoAyncSocketClient(this);
+	    //normal
+	    if(!NeoAyncSocketServer.socketMap.containsKey(mPeople.getName())){
+	    	//get the server ip from kunkunsae
+	    	getDestIpAddress(mPeople.getName());
+	    }
+	    
 	}
 	
-	 private void getDestIpAddress(String name) {
-	        this.mNetWorkUtils = new NetWorkUtils(getApplicationContext());
-	        if (this.mNetWorkUtils.getConnectState() == NetWorkState.NONE) {
-	            showAlertDialog("NEO", "Please check your NetWork connection!");
-	        } else {
-	            NeoAsyncHttpUtil.get((Context) this, NeoAppSetings.DestIpFetchUrlPrefix+name,
-	            		new JsonHttpResponseHandler() {
-	                public void onSuccess(int statusCode, Header[] headers, JSONArray arg0) {
-	                    Log.i(ChatActivity.this.Tag, new StringBuilder(String.valueOf(arg0.length())).toString());
-	                }
 
-	                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
-	                    Log.e(ChatActivity.this.Tag, " onFailure" + throwable.toString());
-	                    ChatActivity.this.showAlertDialog("NEO", "Get Server Address failed" + throwable.toString());
-	                }
+	private void getDestIpAddress(String name) {
+		
+        this.mNetWorkUtils = new NetWorkUtils(getApplicationContext());
+        if (netWorkCheck()) {
+            showAlertDialog("NEO", "Please check your NetWork connection!");
+        } else {
+            NeoAsyncHttpUtil.get((Context) this, NeoAppSetings.DestIpFetchUrlPrefix+name,
+            		new JsonHttpResponseHandler() {
+                public void onSuccess(int statusCode, Header[] headers, JSONArray arg0) {
+                    Log.i(ChatActivity.this.Tag, new StringBuilder(String.valueOf(arg0.length())).toString());
+                }
 
-	                public void onFinish() {
-	                    Log.i(ChatActivity.this.Tag, "onFinish");
-	                }
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                    Log.e(ChatActivity.this.Tag, " onFailure" + throwable.toString());
+                    ChatActivity.this.showAlertDialog("NEO", "Get Server Address failed" + throwable.toString());
+                }
 
-	                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-	                    super.onSuccess(statusCode, headers, response);
-	                    Log.i(ChatActivity.this.Tag, "onSuccess ");
-	                    try {
-	                        ChatActivity.this.showLongToast("ip:" + response.getString(NeoConfig.IP) + ";port:" + response.getString(ClientCookie.PORT_ATTR));
-	                        ChatActivity.this.mApplication.mNeoConfig = new NeoConfig(response.getString(NeoConfig.IP), response.getString(ClientCookie.PORT_ATTR), "neo");
-	                        FileUtils.overrideContent(new StringBuilder(String.valueOf(FileUtils.getAppDataPath(ChatActivity.this))).append(NeoAppSetings.ConfigFile).toString(), response.toString());
-	                    } catch (Exception e) {
-	                        Log.e(ChatActivity.this.Tag, e.toString());
-	                    }
-	                }
+                public void onFinish() {
+                    Log.i(ChatActivity.this.Tag, "onFinish");
+                }
 
-	                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-	                    Log.e(ChatActivity.this.Tag, " onFailure" + throwable.toString());
-	                }
-	            });
-	        }
-	    }
+                public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                    super.onSuccess(statusCode, headers, response);
+                    Log.i(ChatActivity.this.Tag, "onSuccess ");
+                    try {
+                    	if (response.has("errcode")){
+                    		 ChatActivity.this.showLongToast(response.getString("info"));
+                    	}else{
+                    		ChatActivity.this.showLongToast("ip:" + response.getString(NeoConfig.IP)
+                            		+ ";port:" + response.getString(ClientCookie.PORT_ATTR));
+                    		mPeople.setIp(response.getString("ip"));
+                    		if (mPeople.getIp()!=null&&!mPeople.getIp().isEmpty())
+                	    		socketClient = new NeoAyncSocketClient(ChatActivity.this,mPeople.getIp());
+                    	}
+                        
+                        
+                    } catch (Exception e) {
+                        Log.e(ChatActivity.this.Tag, e.toString());
+                    }
+                }
+
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    Log.e(ChatActivity.this.Tag, " onFailure" + throwable.toString());
+                }
+            });
+	     }
+	 }
 	 
 	@Override
 	public void doAction(int whichScreen) {
@@ -281,13 +300,24 @@ public class ChatActivity extends BaseMessageActivity {
 			String content = mEetTextDitorEditer.getText().toString().trim();
 			if (!TextUtils.isEmpty(content)) {
 				mEetTextDitorEditer.setText(null);
-				Message sendmsg = new Message("nearby_people_other", System
+				Message sendmsg = new Message(mPeople.getName(),"nearby_people_other", System
 						.currentTimeMillis(), "0.12km", content,
 						CONTENT_TYPE.TEXT, MESSAGE_TYPE.SEND);
-				if (socketClient.send(sendmsg)){
+				if (socketClient!=null&&socketClient.send(sendmsg)){
 					mMessages.add(sendmsg);
 					mAdapter.notifyDataSetChanged();
 					mClvList.setSelection(mMessages.size());
+				}else if(NeoAyncSocketServer.socketMap
+						.containsKey(mPeople.getName())){
+					if(NeoAyncSocketServer.send((SocketChannel) NeoAyncSocketServer.
+							socketMap.get(mPeople.getName()),
+							sendmsg)){
+						mMessages.add(sendmsg);
+						mAdapter.notifyDataSetChanged();
+						mClvList.setSelection(mMessages.size());
+					}
+				}else{
+					
 				}
 			}
 			break;
@@ -317,7 +347,7 @@ public class ChatActivity extends BaseMessageActivity {
 			break;
 
 		case R.id.message_plus_layout_location:
-			mMessages.add(new Message("nearby_people_other", System
+			mMessages.add(new Message(mPeople.getName(),"nearby_people_other", System
 					.currentTimeMillis(), "0.12km", null, CONTENT_TYPE.MAP,
 					MESSAGE_TYPE.SEND));
 			mAdapter.notifyDataSetChanged();
@@ -419,7 +449,7 @@ public class ChatActivity extends BaseMessageActivity {
 							PhotoUtils.cropPhoto(this, this, path);
 						} else {
 							if (path != null) {
-								mMessages.add(new Message(
+								mMessages.add(new Message(mPeople.getName(),
 										"nearby_people_other", System
 												.currentTimeMillis(), "0.12km",
 										path, CONTENT_TYPE.IMAGE,
@@ -449,7 +479,7 @@ public class ChatActivity extends BaseMessageActivity {
 			if (resultCode == RESULT_OK) {
 				String path = data.getStringExtra("path");
 				if (path != null) {
-					mMessages.add(new Message("nearby_people_other", System
+					mMessages.add(new Message(mPeople.getName(),"nearby_people_other", System
 							.currentTimeMillis(), "0.12km", path,
 							CONTENT_TYPE.IMAGE, MESSAGE_TYPE.SEND));
 					mAdapter.notifyDataSetChanged();
@@ -462,7 +492,7 @@ public class ChatActivity extends BaseMessageActivity {
 			if (resultCode == RESULT_OK) {
 				String path = data.getStringExtra("path");
 				if (path != null) {
-					mMessages.add(new Message("nearby_people_other", System
+					mMessages.add(new Message(mPeople.getName(),"nearby_people_other", System
 							.currentTimeMillis(), "0.12km", path,
 							CONTENT_TYPE.IMAGE, MESSAGE_TYPE.SEND));
 					mAdapter.notifyDataSetChanged();
@@ -478,7 +508,7 @@ public class ChatActivity extends BaseMessageActivity {
 	}
 	
 	private void displayReceiveMsg(String content){
-		Message receiveMsg = new Message("nearby_people_other",
+		Message receiveMsg = new Message(mPeople.getName(),"nearby_people_other",
 				System.currentTimeMillis(), "0.12km", content,
 				CONTENT_TYPE.TEXT, MESSAGE_TYPE.RECEIVER);
 		

@@ -11,9 +11,12 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 
+import android.content.Context;
+
 import com.neo.neoandroidlib.NeoSocketSerializableUtils;
 import com.neo.neoandroidlib.NeoThreadPool;
 import com.neo.neoapp.NeoAppSetings;
+import com.neo.neoapp.broadcasts.NeoAppBroadCastMessages;
 import com.neo.neoapp.entity.Message;
 
 public class NeoAyncSocketClient {
@@ -22,9 +25,11 @@ public class NeoAyncSocketClient {
 	private SocketChannel client = null;
 	private Selector select = null;
 	private boolean isRunning = false;
+	private Context mContext;
 	
-	public NeoAyncSocketClient(){
+	public NeoAyncSocketClient(Context context){
 		isRunning = true;
+		mContext = context;
 		try {
 			select = Selector.open();
 			SocketAddress addr = new InetSocketAddress(Localhost,NeoAppSetings.port);
@@ -38,8 +43,9 @@ public class NeoAyncSocketClient {
 		}
 	}
 	
-	public NeoAyncSocketClient(String addr){
+	public NeoAyncSocketClient(Context context, String addr){
 		isRunning = true;
+		mContext = context;
 		try {
 			select = Selector.open();
 			SocketAddress saddr = new InetSocketAddress(addr,NeoAppSetings.port);
@@ -79,16 +85,22 @@ public class NeoAyncSocketClient {
 					if (sk.isReadable()){
 						SocketChannel sc = (SocketChannel) sk.channel();
 						bf.clear();
+						
+						int readbytes;
 						try {
-							sc.read(bf);
-							System.out.println(bf.toString());
+							readbytes = sc.read(bf);
+							if (readbytes<=0)
+								return;
+							
+							Message object = NeoSocketSerializableUtils.byteArrayToMessage(bf.array());
+							object.setMessageType(Message.MESSAGE_TYPE.RECEIVER);
+							NeoAppBroadCastMessages.sendDynamicBroadCastMsg(mContext, object);
 							sc.register(select, SelectionKey.OP_READ);
-		
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-						//Object object = NeoSocketSerializableUtils.byteArrayToObject(new byte[bf.capacity()]);
+						
 					}
 				}
 			}

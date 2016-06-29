@@ -19,6 +19,7 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.mapapi.SDKInitializer;
+import com.neo.neoandroidlib.NetWorkUtils.NetWorkState;
 import com.neo.neoapp.R;
 import com.neo.neoapp.entity.NeoConfig;
 import com.neo.neoapp.entity.People;
@@ -52,6 +53,7 @@ public class NeoBasicApplication extends Application {
     public List<People> mNearByPeoples;
     public NeoConfig mNeoConfig;
     public String mAppDataPath;
+    public NetWorkState netWorkState;
     public Map<String, SoftReference<Bitmap>> mPhotoOriginalCache;
     public Map<String, SoftReference<Bitmap>> mPhotoThumbnailCache;
     public Map<String, SoftReference<Bitmap>> mPortraitCache;

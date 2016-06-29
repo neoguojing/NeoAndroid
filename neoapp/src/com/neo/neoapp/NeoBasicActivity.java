@@ -237,7 +237,8 @@ public abstract class NeoBasicActivity extends FragmentActivity {
 	}
 
     protected boolean netWorkCheck() {
-        if (this.mNetWorkUtils.getConnectState() == NetWorkState.NONE) {
+    	mApplication.netWorkState = this.mNetWorkUtils.getConnectState();
+        if (mApplication.netWorkState == NetWorkState.NONE) {
             showAlertDialog("NEO", "Please check your NetWork connection!");
             return false;
         } else if (this.mApplication.mNeoConfig != null) {

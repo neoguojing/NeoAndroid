@@ -8,7 +8,7 @@ public class NeoAppSetings {
     public static final String HeadPicDir = "headpic/";
     public static final String IpServerUrl = "http://mainapp.applinzi.com/nat/obtain/neo/";
     public static final String DestIpFetchUrlPrefix = "http://mainapp.applinzi.com/android/fetchip/";
-    public static final String DestIpUpdateUrlPrefix = "http://mainapp.applinzi.com/android/update/";
+    public static final String DestIpUpdateUrlPrefix = "http://mainapp.applinzi.com/android/updateip/";
     public static final String MeFile = "me.json";
     public static final String MyFriendsFile = "myfriends.json";
     public static final String MyHeadPic = "headpic";
@@ -56,7 +56,10 @@ public class NeoAppSetings {
         DATA_NOEXIST(12),
         PHONE_REGISTERED(13),
         PIC_UPLOAD_FAIED(14),
-        PIC_DOWNLOAD_ERROR(15);
+        PIC_DOWNLOAD_ERROR(15),
+        
+        
+        USERIP_NOEXIST(100);
         
         private int nCode;
 

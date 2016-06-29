@@ -305,7 +305,7 @@ public class LoginActivity extends NeoBasicActivity implements OnClickListener,
     private void login() {
         AccountType accountType = validateAccount();
         if (accountType != AccountType.INVALID && validatePwd()) {
-            if (this.mNetWorkUtils.getConnectState() == NetWorkState.NONE) {
+            if (netWorkCheck()) {
                 showAlertDialog("NEO", "Please check your NetWork connection!");
             } else {
                 onlineLogin(accountType);
