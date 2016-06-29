@@ -300,7 +300,7 @@ public class ChatActivity extends BaseMessageActivity {
 			String content = mEetTextDitorEditer.getText().toString().trim();
 			if (!TextUtils.isEmpty(content)) {
 				mEetTextDitorEditer.setText(null);
-				Message sendmsg = new Message(mPeople.getName(),"nearby_people_other", System
+				Message sendmsg = new Message(mApplication.mMe.getName(),"nearby_people_other", System
 						.currentTimeMillis(), "0.12km", content,
 						CONTENT_TYPE.TEXT, MESSAGE_TYPE.SEND);
 				if (socketClient!=null&&socketClient.send(sendmsg)){
@@ -347,7 +347,7 @@ public class ChatActivity extends BaseMessageActivity {
 			break;
 
 		case R.id.message_plus_layout_location:
-			mMessages.add(new Message(mPeople.getName(),"nearby_people_other", System
+			mMessages.add(new Message(mApplication.mMe.getName(),"nearby_people_other", System
 					.currentTimeMillis(), "0.12km", null, CONTENT_TYPE.MAP,
 					MESSAGE_TYPE.SEND));
 			mAdapter.notifyDataSetChanged();
@@ -449,7 +449,7 @@ public class ChatActivity extends BaseMessageActivity {
 							PhotoUtils.cropPhoto(this, this, path);
 						} else {
 							if (path != null) {
-								mMessages.add(new Message(mPeople.getName(),
+								mMessages.add(new Message(mApplication.mMe.getName(),
 										"nearby_people_other", System
 												.currentTimeMillis(), "0.12km",
 										path, CONTENT_TYPE.IMAGE,
@@ -479,7 +479,7 @@ public class ChatActivity extends BaseMessageActivity {
 			if (resultCode == RESULT_OK) {
 				String path = data.getStringExtra("path");
 				if (path != null) {
-					mMessages.add(new Message(mPeople.getName(),"nearby_people_other", System
+					mMessages.add(new Message(mApplication.mMe.getName(),"nearby_people_other", System
 							.currentTimeMillis(), "0.12km", path,
 							CONTENT_TYPE.IMAGE, MESSAGE_TYPE.SEND));
 					mAdapter.notifyDataSetChanged();
@@ -492,7 +492,7 @@ public class ChatActivity extends BaseMessageActivity {
 			if (resultCode == RESULT_OK) {
 				String path = data.getStringExtra("path");
 				if (path != null) {
-					mMessages.add(new Message(mPeople.getName(),"nearby_people_other", System
+					mMessages.add(new Message(mApplication.mMe.getName(),"nearby_people_other", System
 							.currentTimeMillis(), "0.12km", path,
 							CONTENT_TYPE.IMAGE, MESSAGE_TYPE.SEND));
 					mAdapter.notifyDataSetChanged();
@@ -508,7 +508,7 @@ public class ChatActivity extends BaseMessageActivity {
 	}
 	
 	private void displayReceiveMsg(String content){
-		Message receiveMsg = new Message(mPeople.getName(),"nearby_people_other",
+		Message receiveMsg = new Message(mApplication.mMe.getName(),"nearby_people_other",
 				System.currentTimeMillis(), "0.12km", content,
 				CONTENT_TYPE.TEXT, MESSAGE_TYPE.RECEIVER);
 		
