@@ -415,7 +415,7 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
                     try {
                         JSONObject object = response.getJSONObject(i);
                         MainTabActivity.this.getNearbyAndFriendProfile(object.getString(People.NAME));
-                        MainTabActivity.this.mApplication.mNearByPeoples.add(new People(object));
+                        MainTabActivity.this.mApplication.mMyNearByPeoples.add(new People(object));
                         i++;
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -452,6 +452,12 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
     }
 
     private void getFriendData() {
+    	if (FileUtils.isFileExist(getMyApplication().mAppDataPath+
+    			NeoAppSetings.MyFriendsFile)){
+    		showLongToast("My nearby file is exsit");
+    		return;
+    	}
+    	
         NeoAsyncHttpUtil.get((Context) this, new StringBuilder(String.valueOf(NeoAppSetings.getGetUrl(this.mApplication.mNeoConfig, this.mApplication.mMe.getName()))).append("/").append("2/").toString(), new JsonHttpResponseHandler() {
             public void onFinish() {
                 Log.i(MainTabActivity.this.Tag, "onFinish");
@@ -466,13 +472,17 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
                     try {
                         JSONObject object = response.getJSONObject(i);
                         MainTabActivity.this.getNearbyAndFriendProfile(object.getString(Setings.NAME));
-                        MainTabActivity.this.mApplication.mFriends.add(new People(object));
+                        MainTabActivity.this.mApplication.mMyFriends.
+                        add(new People(object));
                         i++;
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
-                FileUtils.overrideContent(new StringBuilder(String.valueOf(FileUtils.getAppDataPath(MainTabActivity.this))).append(NeoAppSetings.MyFriendsFile).toString(), response.toString());
+                FileUtils.overrideContent(new StringBuilder(
+                		String.valueOf(FileUtils.getAppDataPath(MainTabActivity.this))).
+                		append(NeoAppSetings.MyFriendsFile).toString(),
+                		response.toString());
             }
 
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {

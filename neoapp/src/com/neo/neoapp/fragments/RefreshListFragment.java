@@ -90,6 +90,7 @@ OnItemClickListener, OnRefreshListener, OnCancelListener{
 	}
 
 	private void getPeoples() {
+		
 		if (mApplication.mNearByPeoples.isEmpty()) {
 			putAsyncTask(new AsyncTask<Void, Void, Boolean>() {
 
@@ -101,7 +102,17 @@ OnItemClickListener, OnRefreshListener, OnCancelListener{
 
 				@Override
 				protected Boolean doInBackground(Void... params) {
-					return JsonResolveUtils.resolveNearbyPeople(mApplication);
+					Boolean rtn = true;
+					rtn = JsonResolveUtils.resolveNearbyPeople(mApplication);
+					rtn = JsonResolveUtils.resolveMyFriends(mApplication, mContext);
+					if (rtn){
+						mApplication.mNearByPeoples.addAll(mApplication.mMyFriends);
+					}
+					rtn = JsonResolveUtils.resolveMyNearbyPeople(mApplication, mContext);
+					if (rtn){
+						mApplication.mNearByPeoples.addAll(mApplication.mMyNearByPeoples);
+					}
+					return rtn;
 				}
 
 				@Override
@@ -110,11 +121,10 @@ OnItemClickListener, OnRefreshListener, OnCancelListener{
 					dismissLoadingDialog();
 					if (!result) {
 						showCustomToast("数据加载失败...");
-					} else {
-						peopleListAdpt = new NeoPeopleListAdapter(mApplication,
-								mContext, mApplication.mNearByPeoples);
-						refreshList.setAdapter(peopleListAdpt);
-					}
+					} 
+					peopleListAdpt = new NeoPeopleListAdapter(mApplication,
+							mContext, mApplication.mNearByPeoples);
+					refreshList.setAdapter(peopleListAdpt);
 				}
 
 			});

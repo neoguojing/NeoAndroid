@@ -43,7 +43,6 @@ public class NeoBasicApplication extends Application {
     public static List<String> mEmoticons_Zem;
     private String Tag;
     private Bitmap mDefaultPortrait;
-    public List<People> mFriends;
     public double mLatitude;
     public BDLocation mLocation;
     public LocationClient mLocationClient;
@@ -51,6 +50,8 @@ public class NeoBasicApplication extends Application {
     public People mMe;
     public PeopleProfile mMyProfile;
     public List<People> mNearByPeoples;
+    public List<People> mMyNearByPeoples;
+    public List<People> mMyFriends;
     public NeoConfig mNeoConfig;
     public String mAppDataPath;
     public NetWorkState netWorkState;
@@ -66,7 +67,8 @@ public class NeoBasicApplication extends Application {
         this.mPhotoThumbnailCache = new HashMap();
         this.mStatusPhotoCache = new HashMap();
         this.mNearByPeoples = new ArrayList();
-        this.mFriends = new ArrayList();
+        this.mMyNearByPeoples = new ArrayList();
+        this.mMyFriends = new ArrayList();
         this.mNeoConfig = null;
         mAppDataPath = "";
         this.mMe = new People();

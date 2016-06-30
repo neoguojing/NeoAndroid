@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.util.Log;
 
+import com.neo.neoapp.NeoAppSetings;
 import com.neo.neoapp.NeoBasicApplication;
 import com.neo.neoapp.R;
 import com.neo.neoapp.entity.Entity;
@@ -36,13 +37,70 @@ public class JsonResolveUtils {
 		
 		private static final String TAG = "JsonResolveUtils";
 		private static final String NearByPeopleProfile = null;
+		
+		public static boolean resolveMyNearbyPeople(NeoBasicApplication application,
+				Context context) {
+			
+			if (application.mAppDataPath.equals("")){
+				return false;
+			}
+			
+	        if (application.mMyNearByPeoples != null) {
+	            if (application.mMyNearByPeoples.isEmpty()) {
+	                String json = FileUtils.getJson(context, 
+	                		NeoAppSetings.MyNearByFile);
+	                if (json != null) {
+	                    try {
+	                        JSONArray array = new JSONArray(json);
+	                        for (int i = 0; i < array.length(); i++) {
+	                            JSONObject object = array.getJSONObject(i);
+	                            People people = new People(object);
+	                            application.mMyNearByPeoples.add(people);
+	                        }
+	                    } catch (JSONException e) {
+	                        application.mMyNearByPeoples.clear();
+	                    }
+	                }
+	            }
+	        }
+	        
+	        if (application.mMyNearByPeoples.isEmpty()) {
+	            return false;
+	        }
+	        return true;
+	    }
+		
+		public static boolean resolveMyFriends(NeoBasicApplication application,
+				Context context) {
+			
+			if (application.mAppDataPath.equals("")){
+				return false;
+			}
+	        
+	        if (application.mMyFriends != null) {
+	            if (application.mMyFriends.isEmpty()) {
+	                String json = FileUtils.getJson(context, 
+	                		NeoAppSetings.MyFriendsFile);
+	                if (json != null) {
+	                    try {
+	                        JSONArray array = new JSONArray(json);
+	                        for (int i = 0; i < array.length(); i++) {
+	                            JSONObject object = array.getJSONObject(i);
+	                            People people = new People(object);
+	                            application.mMyFriends.add(people);
+	                        }
+	                    } catch (JSONException e) {
+	                        application.mMyFriends.clear();
+	                    }
+	                }
+	            }
+	        }
+	        if (application.mMyFriends.isEmpty()) {
+	            return false;
+	        }
+	        return true;
+	    }
 
-		/**
-		 * 解析附近个人Json数据
-		 * 
-		 * @param application
-		 * @return
-		 */
 		public static boolean resolveNearbyPeople(NeoBasicApplication application) {
         if (application.mNearByPeoples != null) {
             if (application.mNearByPeoples.isEmpty()) {

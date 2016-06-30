@@ -169,15 +169,7 @@ public class TextUtils {
 		return age;
 	}
 
-	/**
-	 * 获取Assets中的json文本
-	 * 
-	 * @param context
-	 *            上下文
-	 * @param name
-	 *            文本名称
-	 * @return
-	 */
+	
 	public static String getJson(Context context, String name) {
 		if (name != null) {
 			String path = "json/" + name;
@@ -200,6 +192,7 @@ public class TextUtils {
 		}
 		return null;
 	}
+	
 
 	/**
 	 * 从输入流中获取文本
