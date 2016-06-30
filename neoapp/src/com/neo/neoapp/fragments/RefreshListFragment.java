@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.neo.neoandroidlib.JsonResolveUtils;
+import com.neo.neoapp.NeoBasicActivity;
 import com.neo.neoapp.R;
 import com.neo.neoapp.NeoBasicApplication;
 import com.neo.neoapp.UI.adapters.NeoPeopleListAdapter;
@@ -92,6 +93,7 @@ OnItemClickListener, OnRefreshListener, OnCancelListener{
 	private void getPeoples() {
 		
 		if (mApplication.mNearByPeoples.isEmpty()) {
+
 			putAsyncTask(new AsyncTask<Void, Void, Boolean>() {
 
 				@Override
@@ -133,6 +135,8 @@ OnItemClickListener, OnRefreshListener, OnCancelListener{
 					mApplication.mNearByPeoples);
 			refreshList.setAdapter(peopleListAdpt);
 		}
+		//((NeoBasicActivity) mActivity).showAlertDialog("NEO", 
+			//	"people counte="+mApplication.mMyFriends.size());
 	}
 
 	@Override

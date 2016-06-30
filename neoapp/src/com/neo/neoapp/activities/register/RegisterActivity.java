@@ -66,7 +66,7 @@ public class RegisterActivity extends NeoBasicActivity implements OnClickListene
 	}
 
     private void initData() {
-        if (netWorkCheck()) {
+        if (netWorkCheck(this)) {
             this.registerUrl = NeoAppSetings.getRegisterUrl(this.mApplication.mNeoConfig);
         }
         this.picUploadUrl = NeoAppSetings.getRegisterPicUrl(this.mApplication.mNeoConfig);

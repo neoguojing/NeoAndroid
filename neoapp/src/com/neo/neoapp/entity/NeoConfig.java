@@ -14,10 +14,15 @@ public class NeoConfig extends Entity implements Parcelable {
 	private String name;
 	
 	public NeoConfig(String ip, String port, String name) {
-		super();
 		this.ip = ip;
 		this.port = port;
 		this.name = name;
+	}
+	
+	public NeoConfig() {
+		this.ip = "";
+		this.port = "1000";
+		this.name = "neo";
 	}
 
 	public String getIp() {

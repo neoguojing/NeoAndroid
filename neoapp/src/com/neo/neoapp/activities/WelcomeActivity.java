@@ -177,10 +177,7 @@ public class WelcomeActivity extends NeoBasicActivity implements OnClickListener
     }
 
     private void initNetWorkData() {
-        this.mNetWorkUtils = new NetWorkUtils(getApplicationContext());
-        if (netWorkCheck()) {
-            showAlertDialog("NEO", "Please check your NetWork connection!");
-        } else {
+        if (initNetWorkCheck(this)) {
             NeoAsyncHttpUtil.get((Context) this, NeoAppSetings.IpServerUrl, new JsonHttpResponseHandler() {
                 public void onSuccess(int statusCode, Header[] headers, JSONArray arg0) {
                     Log.i(WelcomeActivity.this.Tag, new StringBuilder(String.valueOf(arg0.length())).toString());
@@ -199,9 +196,14 @@ public class WelcomeActivity extends NeoBasicActivity implements OnClickListener
                     super.onSuccess(statusCode, headers, response);
                     Log.i(WelcomeActivity.this.Tag, "onSuccess ");
                     try {
-                        WelcomeActivity.this.showLongToast("ip:" + response.getString(NeoConfig.IP) + ";port:" + response.getString(ClientCookie.PORT_ATTR));
-                        WelcomeActivity.this.mApplication.mNeoConfig = new NeoConfig(response.getString(NeoConfig.IP), response.getString(ClientCookie.PORT_ATTR), "neo");
-                        FileUtils.overrideContent(new StringBuilder(String.valueOf(FileUtils.getAppDataPath(WelcomeActivity.this))).append(NeoAppSetings.ConfigFile).toString(), response.toString());
+                        WelcomeActivity.this.showLongToast("ip:" + response.getString(NeoConfig.IP) + ";port:" + response.getString(NeoConfig.PORT));
+                        //WelcomeActivity.this.mApplication.mNeoConfig = new NeoConfig(response.getString(NeoConfig.IP), response.getString(ClientCookie.PORT_ATTR), "neo");
+                        mApplication.mNeoConfig.setName("neo");
+                        mApplication.mNeoConfig.setIp(response.getString(NeoConfig.IP));
+                        mApplication.mNeoConfig.setPort(response.getString(NeoConfig.PORT));
+                        FileUtils.overrideContent(new StringBuilder(
+                        		String.valueOf(FileUtils.getAppDataPath(WelcomeActivity.this))).
+                        		append(NeoAppSetings.ConfigFile).toString(), response.toString());
                     } catch (Exception e) {
                         Log.e(WelcomeActivity.this.Tag, e.toString());
                     }
@@ -215,8 +217,9 @@ public class WelcomeActivity extends NeoBasicActivity implements OnClickListener
     }
 
     private LOGIN_STATE checkLoginState() {
-        if (netWorkCheck()) {
-            NeoAsyncHttpUtil.get(this, NeoAppSetings.getLoginCheckUrl(this.mApplication.mNeoConfig), new JsonHttpResponseHandler() {
+        if (netWorkCheck(this)) {
+            NeoAsyncHttpUtil.get(this, NeoAppSetings.getLoginCheckUrl(
+            		this.mApplication.mNeoConfig), new JsonHttpResponseHandler() {
                 public void onFinish() {
                     Log.i(WelcomeActivity.this.Tag, "onFinish");
                 }

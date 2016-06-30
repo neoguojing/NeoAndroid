@@ -1,5 +1,7 @@
 package com.neo.neoapp;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -69,7 +71,7 @@ public class NeoBasicApplication extends Application {
         this.mNearByPeoples = new ArrayList();
         this.mMyNearByPeoples = new ArrayList();
         this.mMyFriends = new ArrayList();
-        this.mNeoConfig = null;
+        this.mNeoConfig = new NeoConfig();
         mAppDataPath = "";
         this.mMe = new People();
         this.mMyProfile = new PeopleProfile();
@@ -135,7 +137,46 @@ public class NeoBasicApplication extends Application {
 		Log.e("BaseApplication", "onTerminate");
 	}
 
-
+	public Bitmap getUserHeadPic(String imagename){
+		if (this.mPortraitCache.containsKey(imagename)) {
+            Reference<Bitmap> reference = (Reference) this.mPortraitCache.get(imagename);
+            if (reference.get() != null && !((Bitmap) reference.get()).isRecycled()) {
+                return (Bitmap) reference.get();
+            }
+            this.mPortraitCache.remove(imagename);
+        }
+		
+		
+		if (mAppDataPath.equals(""))
+			return null;
+		
+		String headPicPath = mAppDataPath+NeoAppSetings.HeadPicDir+imagename;
+		
+		Bitmap rtn = null;
+		FileInputStream fis = null;
+		try {
+			fis = new FileInputStream(new File(headPicPath));
+			rtn = BitmapFactory.decodeStream(fis);
+			if (rtn!=null)
+				this.mPortraitCache.put(imagename, new SoftReference(rtn));
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			rtn = null;
+		}finally{
+			if (fis != null) {
+	            try {
+	            	fis.close();
+	            } catch (IOException e) {
+	            }
+	        }
+		}
+		
+		return rtn;
+		
+	}
+	
     public Bitmap getAvatar(String imageName) {
         if (this.mPortraitCache.containsKey(imageName)) {
             Reference<Bitmap> reference = (Reference) this.mPortraitCache.get(imageName);
@@ -149,7 +190,9 @@ public class NeoBasicApplication extends Application {
             is = getAssets().open(new StringBuilder(PORTRAIT_DIR).append(imageName).toString());
             Bitmap bitmap = BitmapFactory.decodeStream(is);
             if (bitmap == null) {
-                throw new FileNotFoundException(new StringBuilder(String.valueOf(imageName)).append("is not find").toString());
+        		throw new FileNotFoundException(
+            		new StringBuilder(String.valueOf(imageName))
+            		.append("is not find").toString());
             }
             this.mPortraitCache.put(imageName, new SoftReference(bitmap));
             if (is != null) {

@@ -10,6 +10,7 @@ import com.neo.neoapp.dialog.NeoFlippingLoadingDialog;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
@@ -36,7 +37,6 @@ import org.json.JSONObject;
 
 public abstract class NeoBasicActivity extends FragmentActivity {
 	protected NeoBasicApplication mApplication;
-	protected NetWorkUtils mNetWorkUtils;
 	protected NeoFlippingLoadingDialog mLoadingDialog;
 
 	/**
@@ -52,7 +52,6 @@ public abstract class NeoBasicActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mApplication = (NeoBasicApplication) getApplication();
-		mNetWorkUtils = new NetWorkUtils(this);
 		mLoadingDialog = new NeoFlippingLoadingDialog(this, "请求提交中");
 
 		DisplayMetrics metric = new DisplayMetrics();
@@ -236,17 +235,27 @@ public abstract class NeoBasicActivity extends FragmentActivity {
 		super.finish();
 	}
 
-    protected boolean netWorkCheck() {
-    	mApplication.netWorkState = this.mNetWorkUtils.getConnectState();
+    protected boolean netWorkCheck(Context context) {
+    	//mApplication.netWorkState =new  NetWorkUtils(context).getConnectState();
+    	mApplication.netWorkState = NetWorkUtils.getConnectState(context);
         if (mApplication.netWorkState == NetWorkState.NONE) {
             showAlertDialog("NEO", "Please check your NetWork connection!");
             return false;
-        } else if (this.mApplication.mNeoConfig != null) {
+        } else if (!this.mApplication.mNeoConfig.getIp().equals("")) {
             return true;
         } else {
-            showAlertDialog("NEO", "The server info is not exist");
+            showAlertDialog("NEO", "The server info is empty");
             return false;
         }
     }
+    
+    protected boolean initNetWorkCheck(Context context) {
+    	mApplication.netWorkState = NetWorkUtils.getConnectState(context);
+        if (mApplication.netWorkState == NetWorkState.NONE) {
+            showAlertDialog("NEO", "Please check your NetWork connection!");
+            return false;
+        }
+        return true;
 
+    }
 }

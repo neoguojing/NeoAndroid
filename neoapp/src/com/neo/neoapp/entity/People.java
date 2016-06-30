@@ -119,6 +119,13 @@ public class People extends Entity implements Parcelable {
                 this.isMultipic = object.getInt(MULTIPIC);
                 this.name = object.getString(NAME);
                 this.gender = object.getInt(GENDER);
+                if (gender == 0) {
+                    setGenderId(R.drawable.ic_user_famale);
+                    setGenderBgId(R.drawable.bg_gender_famal);
+                } else {
+                    setGenderId(R.drawable.ic_user_male);
+                    setGenderBgId(R.drawable.bg_gender_male);
+                }
                 this.age = object.getInt(AGE);
                 this.distance = object.getString(DISTANCE);
                 this.time = object.getString(TIME);

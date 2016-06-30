@@ -3,6 +3,7 @@ package com.neo.neoapp.UI.adapters;
 import java.util.List;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -68,8 +69,14 @@ public class NeoPeopleListAdapter extends NeoBasicListAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 		People people = (People) getItem(position);
-		holder.mIvAvatar.setImageBitmap(mApplication.getAvatar(people
+		
+		Bitmap headpic = mApplication.getUserHeadPic(people.getAvatar());
+		if (headpic==null){
+			holder.mIvAvatar.setImageBitmap(mApplication.getAvatar(people
 				.getAvatar()));
+		}else{
+			holder.mIvAvatar.setImageBitmap(headpic);
+		}
 		holder.mHtvName.setText(people.getName());
 		holder.mLayoutGender.setBackgroundResource(people.getGenderBgId());
 		holder.mIvGender.setImageResource(people.getGenderId());

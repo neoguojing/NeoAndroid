@@ -186,22 +186,19 @@ public class ChatActivity extends BaseMessageActivity {
         .penaltyLog().penaltyDeath().build()); 
 	    
 	    //test
-		//socketClient = new NeoAyncSocketClient(this);
+		socketClient = new NeoAyncSocketClient(this);
 	    //normal
-	    if(!NeoAyncSocketServer.socketMap.containsKey(mPeople.getName())){
+	    /*if(!NeoAyncSocketServer.socketMap.containsKey(mPeople.getName())){
 	    	//get the server ip from kunkunsae
 	    	getDestIpAddress(mPeople.getName());
-	    }
+	    }*/
 	    
 	}
 	
 
 	private void getDestIpAddress(String name) {
 		
-        this.mNetWorkUtils = new NetWorkUtils(getApplicationContext());
-        if (netWorkCheck()) {
-            showAlertDialog("NEO", "Please check your NetWork connection!");
-        } else {
+        if (netWorkCheck(this)) {
             NeoAsyncHttpUtil.get((Context) this, NeoAppSetings.DestIpFetchUrlPrefix+name,
             		new JsonHttpResponseHandler() {
                 public void onSuccess(int statusCode, Header[] headers, JSONArray arg0) {

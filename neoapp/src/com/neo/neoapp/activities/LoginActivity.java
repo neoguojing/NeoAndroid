@@ -218,7 +218,7 @@ public class LoginActivity extends NeoBasicActivity implements OnClickListener,
 
     private void onlineLogin(AccountType accounttype) {
         try {
-            if (netWorkCheck()) {
+            if (netWorkCheck(this)) {
                 JSONObject jsonObject = new JSONObject();
                 switch (accounttype) {
                     case USERNAME /*1*/:
@@ -305,10 +305,8 @@ public class LoginActivity extends NeoBasicActivity implements OnClickListener,
     private void login() {
         AccountType accountType = validateAccount();
         if (accountType != AccountType.INVALID && validatePwd()) {
-            if (netWorkCheck()) {
-                showAlertDialog("NEO", "Please check your NetWork connection!");
-            } else {
-                onlineLogin(accountType);
+            if (netWorkCheck(this)) {
+            	onlineLogin(accountType);
             }
         }
     }

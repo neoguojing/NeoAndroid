@@ -228,7 +228,7 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
 		mViewPager.addOnPageChangeListener(this);
 	}
     private void initNetWorkData() {
-        if (!netWorkCheck()) {
+        if (!netWorkCheck(this)) {
             return;
         }
         
@@ -614,6 +614,7 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
 	            //MainTabActivity.this.showAlertDialog("NEO", filename);
 	            PhotoUtils.savePhotoToSDCard(bmp, new StringBuilder(String.valueOf(
 	            		FileUtils.getAppDataPath(MainTabActivity.this))).append(NeoAppSetings.HeadPicDir).append(filename).toString());
+
 	        }
 	    });
     }

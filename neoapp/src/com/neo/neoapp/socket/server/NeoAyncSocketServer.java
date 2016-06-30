@@ -36,9 +36,10 @@ public class NeoAyncSocketServer {
 	private Charset charset=Charset.forName("UTF-8");  
 	
 	private Context mContext = null;
-	public static HashMap socketMap = new HashMap<String,SocketChannel>();
+	public static HashMap socketMap =  null;
 	
 	public NeoAyncSocketServer(Context context){
+		socketMap =  new HashMap<String,SocketChannel>();
 		isRunning = true;
 		mContext = context;
 		try {
