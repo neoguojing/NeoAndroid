@@ -14,25 +14,41 @@
         android:id="@+id/message_layout_contentcontainer"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" >
-
-        <RelativeLayout
-            android:id="@+id/message_layout_leftcontainer"
-            android:layout_width="0dip"
+		<RelativeLayout
+            android:id="@+id/message_layout_rightcontainer"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="left" >
+            android:layout_marginStart="4dip"
+            android:gravity="center" >
 
+            <ImageView
+                android:id="@+id/message_iv_userphoto"
+                android:layout_width="40dip"
+                android:layout_height="40dip"
+                android:scaleType="fitXY" />
+        </RelativeLayout>
+        
+        <LinearLayout
+            android:id="@+id/message_layout_leftcontainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start" >
+
+            <!-- 
+            android:layout_weight="1"
             <View
                 android:id="@+id/left_margin_view"
                 android:layout_width="52dip"
                 android:layout_height="1dip" />
+            android:layout_alignStart="@+id/left_margin_view"
+            android:layout_toStartOf="@id/left_margin_view"
+            -->
 
             <LinearLayout
                 android:id="@+id/message_layout_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/left_margin_view"
-                android:layout_marginLeft="3dip"
+                android:layout_marginStart="3dip"
                 android:layout_marginTop="8dip">
 
                 <com.neo.neoapp.UI.views.NeoBasicTextView
@@ -59,27 +75,12 @@
                 android:id="@+id/message_layout_messagecontainer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toLeftOf="@id/left_margin_view"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:padding="10dip" />
 
-        </RelativeLayout>
-
-        <LinearLayout
-            android:id="@+id/message_layout_rightcontainer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="4dip"
-            android:gravity="center" >
-
-            <ImageView
-                android:id="@+id/message_iv_userphoto"
-                android:layout_width="40dip"
-                android:layout_height="40dip"
-                android:scaleType="fitXY" />
         </LinearLayout>
     </LinearLayout>
 
