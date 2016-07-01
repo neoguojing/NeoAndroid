@@ -14,11 +14,12 @@
         android:id="@+id/message_layout_contentcontainer"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" >
-		<RelativeLayout
+		
+        <LinearLayout
             android:id="@+id/message_layout_rightcontainer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dip"
+            android:layout_marginLeft="4dip"
             android:gravity="center" >
 
             <ImageView
@@ -26,28 +27,30 @@
                 android:layout_width="40dip"
                 android:layout_height="40dip"
                 android:scaleType="fitXY" />
-        </RelativeLayout>
+        </LinearLayout>
         
-        <LinearLayout
+       <RelativeLayout
             android:id="@+id/message_layout_leftcontainer"
-            android:layout_width="wrap_content"
+            android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:gravity="start" >
-
-            <!-- 
             android:layout_weight="1"
-            <View
-                android:id="@+id/left_margin_view"
-                android:layout_width="52dip"
-                android:layout_height="1dip" />
-            android:layout_alignStart="@+id/left_margin_view"
-            android:layout_toStartOf="@id/left_margin_view"
-            -->
+            android:gravity="left" >
 
+            <LinearLayout
+                android:id="@+id/message_layout_messagecontainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="10dip" />
+            
             <LinearLayout
                 android:id="@+id/message_layout_status"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/message_layout_messagecontainer"
                 android:layout_marginStart="3dip"
                 android:layout_marginTop="8dip">
 
@@ -71,17 +74,7 @@
                     android:visibility="gone" />
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/message_layout_messagecontainer"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="true"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="10dip" />
-
-        </LinearLayout>
+        </RelativeLayout>
     </LinearLayout>
 
 </LinearLayout>

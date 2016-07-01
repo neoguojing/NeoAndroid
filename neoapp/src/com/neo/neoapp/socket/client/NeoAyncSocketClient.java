@@ -108,8 +108,6 @@ public class NeoAyncSocketClient {
 			}
 			System.out.println("NeoAyncSocketClient: RecvTask end");
 		}
-		
-		
 	}
 	
 	public boolean send(Object content){

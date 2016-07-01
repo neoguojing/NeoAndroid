@@ -172,6 +172,7 @@ public class NeoAyncSocketServer {
 				if (!socketMap.containsKey(object.getName()))
 					socketMap.put(object.getName(),clent);
 				object.setMessageType(Message.MESSAGE_TYPE.RECEIVER);
+				object.setContent("i am coming from server receiver");;
 				NeoAppBroadCastMessages.sendDynamicBroadCastMsg(mContext, object);
 
 			}catch (ClosedChannelException e) {
