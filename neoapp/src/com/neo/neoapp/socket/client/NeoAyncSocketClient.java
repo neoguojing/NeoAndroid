@@ -84,18 +84,20 @@ public class NeoAyncSocketClient {
 					select.selectedKeys().remove(sk);
 					if (sk.isReadable()){
 						SocketChannel sc = (SocketChannel) sk.channel();
-						bf.clear();
+						//bf.clear();
 						
 						int readbytes;
 						try {
 							readbytes = sc.read(bf);
+							bf.flip();
+							sc.register(select, SelectionKey.OP_READ);
 							if (readbytes<=0)
 								return;
 							
 							Message object = NeoSocketSerializableUtils.byteArrayToMessage(bf.array());
 							object.setMessageType(Message.MESSAGE_TYPE.RECEIVER);
 							NeoAppBroadCastMessages.sendDynamicBroadCastMsg(mContext, object);
-							sc.register(select, SelectionKey.OP_READ);
+							
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
