@@ -36,10 +36,9 @@ public class NeoAyncSocketServer {
 	private Charset charset=Charset.forName("UTF-8");  
 	
 	private Context mContext = null;
-	public static HashMap socketMap =  null;
+	public static HashMap socketMap =  new HashMap<String,SocketChannel>();
 	
 	public NeoAyncSocketServer(Context context){
-		socketMap =  new HashMap<String,SocketChannel>();
 		isRunning = true;
 		mContext = context;
 		try {
@@ -127,12 +126,6 @@ public class NeoAyncSocketServer {
 						SocketChannel client = (SocketChannel) sk.channel();
 						NeoThreadPool.getThreadPool().execute(
 								new RecvTask(client));
-						try {
-							client.register(selector, SelectionKey.OP_READ);
-						} catch (ClosedChannelException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
 					}
 				}
 			}
@@ -153,7 +146,7 @@ public class NeoAyncSocketServer {
 		public void run() {
 			ByteBuffer bf = ByteBuffer.allocate(1024);
 			// TODO Auto-generated method stub
-			bf.clear();
+			//bf.clear();
 			
 			/*String content = "";
 			try {
@@ -170,17 +163,24 @@ public class NeoAyncSocketServer {
 			}*/
 			try {
 				int readbytes = clent.read(bf);
-				if (readbytes<=0)
+				clent.register(selector, SelectionKey.OP_READ);
+				if (readbytes<=0){
 					return;
+				}
 				
 				Message object = NeoSocketSerializableUtils.byteArrayToMessage(bf.array());
 				if (!socketMap.containsKey(object.getName()))
 					socketMap.put(object.getName(),clent);
 				object.setMessageType(Message.MESSAGE_TYPE.RECEIVER);
 				NeoAppBroadCastMessages.sendDynamicBroadCastMsg(mContext, object);
+
+			}catch (ClosedChannelException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			}finally{
 			}
 			
 		}

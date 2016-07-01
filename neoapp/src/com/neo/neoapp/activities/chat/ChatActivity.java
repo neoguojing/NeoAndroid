@@ -300,15 +300,18 @@ public class ChatActivity extends BaseMessageActivity {
 				Message sendmsg = new Message(mApplication.mMe.getName(),"nearby_people_other", System
 						.currentTimeMillis(), "0.12km", content,
 						CONTENT_TYPE.TEXT, MESSAGE_TYPE.SEND);
-				if (socketClient!=null&&socketClient.send(sendmsg)){
-					mMessages.add(sendmsg);
-					mAdapter.notifyDataSetChanged();
-					mClvList.setSelection(mMessages.size());
-				}else if(NeoAyncSocketServer.socketMap
+				if (NeoAyncSocketServer.socketMap
 						.containsKey(mPeople.getName())){
 					if(NeoAyncSocketServer.send((SocketChannel) NeoAyncSocketServer.
 							socketMap.get(mPeople.getName()),
 							sendmsg)){
+						mMessages.add(sendmsg);
+						mAdapter.notifyDataSetChanged();
+						mClvList.setSelection(mMessages.size());
+					}
+					
+				}else if(socketClient!=null){
+					if (socketClient.send(sendmsg)){
 						mMessages.add(sendmsg);
 						mAdapter.notifyDataSetChanged();
 						mClvList.setSelection(mMessages.size());
