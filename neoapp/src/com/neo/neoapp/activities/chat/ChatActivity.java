@@ -297,7 +297,7 @@ public class ChatActivity extends BaseMessageActivity {
 			String content = mEetTextDitorEditer.getText().toString().trim();
 			if (!TextUtils.isEmpty(content)) {
 				mEetTextDitorEditer.setText(null);
-				Message sendmsg = new Message(mApplication.mMe.getName(),"nearby_people_other", System
+				Message sendmsg = new Message(mApplication.mMe.getName(),mApplication.mMe.getAvatar(), System
 						.currentTimeMillis(), "0.12km", content,
 						CONTENT_TYPE.TEXT, MESSAGE_TYPE.SEND);
 				if (NeoAyncSocketServer.socketMap

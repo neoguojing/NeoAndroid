@@ -223,7 +223,37 @@ public class NeoBasicApplication extends Application {
         }
 		return mDefaultPortrait;
     }
-
+    
+    public Bitmap getMyHeadPic() {
+    	if (mAppDataPath.equals(""))
+			return null;
+		
+		String headPicPath = mAppDataPath+mMe.getAvatar();
+		
+		Bitmap rtn = null;
+		FileInputStream fis = null;
+		try {
+			fis = new FileInputStream(new File(headPicPath));
+			rtn = BitmapFactory.decodeStream(fis);
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			rtn = null;
+		}finally{
+			if (fis != null) {
+	            try {
+	            	fis.close();
+	            } catch (IOException e) {
+	            }
+	        }
+		}
+		
+		if (rtn==null)
+			return mDefaultPortrait;
+		return rtn;
+    }
+    
 	public Bitmap getPhotoOriginal(String imageName) {
 		if (mPhotoOriginalCache.containsKey(imageName)) {
 			Reference<Bitmap> reference = mPhotoOriginalCache.get(imageName);

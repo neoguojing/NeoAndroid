@@ -126,6 +126,7 @@ public class NeoAyncSocketClient {
 	}
 	
 	public boolean send(Message content){
+		content.setContent("coming from client server");
 		byte[] bytes = NeoSocketSerializableUtils.MessageToByteArray(content);
 		
 		if (bytes==null)

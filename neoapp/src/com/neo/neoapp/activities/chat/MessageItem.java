@@ -9,6 +9,7 @@ import com.neo.neoapp.entity.Message.MESSAGE_TYPE;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -124,11 +125,18 @@ public abstract class MessageItem {
 		onInitViews();
 	}
 
-	public void fillContent() {
+	public void fillContentForSend() {
 		fillTimeStamp();
 		fillStatus();
 		fillMessage();
-		fillPhotoView();
+		fillPhotoViewForSend();
+	}
+	
+	public void fillContentForReceive() {
+		fillTimeStamp();
+		//fillStatus();
+		fillMessage();
+		fillPhotoViewForReceive();
 	}
 
 	protected void fillMessage() {
@@ -154,11 +162,25 @@ public abstract class MessageItem {
 				.setBackgroundResource(R.drawable.bg_message_status_sended);
 		mHtvStatus.setText("送达");
 	}
-
-	protected void fillPhotoView() {
+	
+	protected void fillPhotoViewForSend() {
 		mLayoutRightContainer.setVisibility(View.VISIBLE);
 		mIvPhotoView.setImageBitmap(((NeoBasicApplication) ((Activity) mContext)
-				.getApplication()).getAvatar(mMsg.getAvatar()));
+				.getApplication()).getMyHeadPic());
+	}
+	
+	protected void fillPhotoViewForReceive() {
+		mLayoutRightContainer.setVisibility(View.VISIBLE);
+		Bitmap bm = ((NeoBasicApplication) ((Activity) mContext)
+				.getApplication()).getUserHeadPic(mMsg.getAvatar());
+		
+		if (bm==null){
+			bm = ((NeoBasicApplication) ((Activity) mContext)
+					.getApplication()).getAvatar(mMsg.getAvatar());
+			mIvPhotoView.setImageBitmap(bm);
+		}else{
+			mIvPhotoView.setImageBitmap(bm);
+		}
 	}
 
 	protected void refreshAdapter() {

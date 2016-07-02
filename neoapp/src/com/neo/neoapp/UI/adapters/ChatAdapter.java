@@ -24,7 +24,11 @@ public class ChatAdapter extends BaseObjectListAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		Message msg = (Message) getItem(position);
 		MessageItem messageItem = MessageItem.getInstance(msg, mContext);
-		messageItem.fillContent();
+		if(msg.getMessageType()==Message.MESSAGE_TYPE.SEND){
+			messageItem.fillContentForSend();
+		}else{
+			messageItem.fillContentForReceive();
+		}
 		View view = messageItem.getRootView();
 		return view;
 	}

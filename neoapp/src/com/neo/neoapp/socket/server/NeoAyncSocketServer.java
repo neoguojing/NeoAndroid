@@ -71,6 +71,22 @@ public class NeoAyncSocketServer {
 		return true;
 	}
 	
+	public static boolean send(SocketChannel client,Message content){
+		content.setContent("send from socket server");
+		byte[] bytes = NeoSocketSerializableUtils.objectToByteArray(content);
+		
+		if (bytes==null)
+			return false;
+		
+		try {
+			client.write(ByteBuffer.wrap(bytes));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return true;
+	}
+	
 	public void close(){
 		isRunning = false;
 		try {
@@ -172,7 +188,7 @@ public class NeoAyncSocketServer {
 				if (!socketMap.containsKey(object.getName()))
 					socketMap.put(object.getName(),clent);
 				object.setMessageType(Message.MESSAGE_TYPE.RECEIVER);
-				object.setContent("i am coming from server receiver");;
+				object.setContent("i am coming from server receiver");
 				NeoAppBroadCastMessages.sendDynamicBroadCastMsg(mContext, object);
 
 			}catch (ClosedChannelException e) {
