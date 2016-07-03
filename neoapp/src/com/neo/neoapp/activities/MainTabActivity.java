@@ -243,6 +243,7 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
         getNearbyData();
         getFriendData();
         getMyStatusData();
+        updateServerIp();
     }
     
     private void getMe() {
@@ -618,7 +619,42 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
 	        }
 	    });
     }
-	private void initService(){
+	
+    private void updateServerIp(){
+		
+        NeoAsyncHttpUtil.get(this, NeoAppSetings.DestIpUpdateUrlPrefix+mApplication.mMe.getName(),
+        		new JsonHttpResponseHandler() {
+            public void onSuccess(int statusCode, Header[] headers, JSONArray arg0) {
+                Log.i(Tag, new StringBuilder(String.valueOf(arg0.length())).toString());
+            }
+
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                Log.e(Tag, " onFailure" + throwable.toString());
+            }
+
+            public void onFinish() {
+                Log.i(Tag, "onFinish");
+            }
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                try {
+					Log.i(Tag, "onSuccess"+":"+response.getString("info").toString());
+					MainTabActivity.this.showLongToast(response.getString("info").toString());
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+                
+            }
+
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Log.e(Tag, " onFailure" + throwable.toString());
+            }
+        });
+	}
+
+    private void initService(){
 		//�������ط���
 		Intent bgsvc = new Intent(MainTabActivity.this,
 				NeoAppBackgroundService.class);

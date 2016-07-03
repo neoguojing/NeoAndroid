@@ -88,8 +88,6 @@ OnItemClickListener, OnRefreshListener, OnCancelListener{
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		int position = (int) arg3;
 		People people = mApplication.mNearByPeoples.get(position);
-		((NeoBasicActivity) mActivity).showAlertDialog("NEO",
-				people.getIp());
 		//PeopleProfile profile = mApplication..get(position);
 		/*String uid = null;
 		String name = null;
@@ -134,51 +132,48 @@ OnItemClickListener, OnRefreshListener, OnCancelListener{
 	 
 	private void getPeoples() {
 		
-		if (mApplication.mNearByPeoples.isEmpty()) {
+		putAsyncTask(new AsyncTask<Void, Void, Boolean>() {
 
-			putAsyncTask(new AsyncTask<Void, Void, Boolean>() {
+			@Override
+			protected void onPreExecute() {
+				super.onPreExecute();
+				showLoadingDialog("正在加载,请稍后...");
+			}
 
-				@Override
-				protected void onPreExecute() {
-					super.onPreExecute();
-					showLoadingDialog("正在加载,请稍后...");
-				}
-
-				@Override
-				protected Boolean doInBackground(Void... params) {
-					Boolean rtn = true;
-					rtn = JsonResolveUtils.resolveNearbyPeople(mApplication);
+			@Override
+			protected Boolean doInBackground(Void... params) {
+				Boolean rtn = true;
+				rtn = JsonResolveUtils.resolveNearbyPeople(mApplication);
+				if (mApplication.mMyFriends.isEmpty()){
 					rtn = JsonResolveUtils.resolveMyFriends(mApplication, mContext);
 					if (rtn){
 						mApplication.mNearByPeoples.addAll(mApplication.mMyFriends);
 					}
+				}
+				
+				if (mApplication.mMyNearByPeoples.isEmpty()){
 					rtn = JsonResolveUtils.resolveMyNearbyPeople(mApplication, mContext);
 					if (rtn){
 						mApplication.mNearByPeoples.addAll(mApplication.mMyNearByPeoples);
 					}
-					return rtn;
 				}
+				return rtn;
+			}
 
-				@Override
-				protected void onPostExecute(Boolean result) {
-					super.onPostExecute(result);
-					dismissLoadingDialog();
-					if (!result) {
-						showCustomToast("数据加载失败...");
-					} 
-					peopleListAdpt = new NeoPeopleListAdapter(mApplication,
-							mContext, mApplication.mNearByPeoples);
-					refreshList.setAdapter(peopleListAdpt);
-				}
+			@Override
+			protected void onPostExecute(Boolean result) {
+				super.onPostExecute(result);
+				dismissLoadingDialog();
+				if (!result) {
+					showCustomToast("数据加载失败...");
+				} 
+				peopleListAdpt = new NeoPeopleListAdapter(mApplication,
+						mContext, mApplication.mNearByPeoples);
+				refreshList.setAdapter(peopleListAdpt);
+			}
 
-			});
-		} else {
-			peopleListAdpt = new NeoPeopleListAdapter(mApplication, mContext,
-					mApplication.mNearByPeoples);
-			refreshList.setAdapter(peopleListAdpt);
-		}
-		//((NeoBasicActivity) mActivity).showAlertDialog("NEO", 
-			//	"people counte="+mApplication.mMyFriends.size());
+		});
+		
 	}
 
 	@Override

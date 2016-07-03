@@ -1,6 +1,7 @@
 package com.neo.neoapp.socket.server;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
@@ -11,6 +12,7 @@ import com.neo.neoandroidlib.NeoAsyncHttpUtil;
 import com.neo.neoandroidlib.NetWorkUtils.NetWorkState;
 import com.neo.neoapp.NeoAppSetings;
 import com.neo.neoapp.NeoBasicApplication;
+import com.neo.neoapp.broadcasts.NeoAppBroadCastMessages;
 
 import cz.msebera.android.httpclient.Header;
 
@@ -27,9 +29,11 @@ public class NeoServerIpUpdateTask implements Runnable {
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		if (mApplication.netWorkState == NetWorkState.WIFI||
+		/*if (mApplication.netWorkState == NetWorkState.WIFI||
 				mApplication.netWorkState == NetWorkState.NONE)
-			return;
+			return;*/
+		NeoAppBroadCastMessages.sendStaticBroadCastTestMsg(mContext,
+				"WelcomeActivity.class","update ip success");
 		updateServerIp();
 	}
 	
@@ -51,7 +55,15 @@ public class NeoServerIpUpdateTask implements Runnable {
 
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 super.onSuccess(statusCode, headers, response);
-                Log.i(Tag, "onSuccess ");
+                try {
+					Log.i(Tag, "onSuccess"+":"+response.getString("info").toString());
+					NeoAppBroadCastMessages.sendStaticBroadCastTestMsg(mContext,
+							"WelcomeActivity.class","update ip success");
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+                
             }
 
             public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {

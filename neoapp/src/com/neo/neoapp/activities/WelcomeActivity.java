@@ -31,6 +31,7 @@ import com.neo.neoapp.NeoBasicActivity;
 import com.neo.neoapp.R;
 import com.neo.neoapp.UI.views.NeoBasicTextView;
 import com.neo.neoapp.activities.register.RegisterActivity;
+import com.neo.neoapp.broadcasts.NeoAppBroadCastMessages;
 import com.neo.neoapp.entity.NeoConfig;
 import com.neo.neoapp.entity.People;
 import com.neo.neoapp.entity.PeopleProfile;
@@ -40,6 +41,7 @@ import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.cookie.ClientCookie;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 public class WelcomeActivity extends NeoBasicActivity implements OnClickListener {

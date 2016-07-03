@@ -56,7 +56,7 @@ public class NeoAppBackgroundService extends Service {
 		//		",startId = "+ startId);
 		//new Thread(mThreadGroup,new ServicieWorker (counter),
 				//		TAG).start();
-		displayNotifyMsg("WelcomeActivity.class",TAG+" is running");
+		//displayNotifyMsg("WelcomeActivity.class",TAG+" is running");
 		aServer = new NeoAyncSocketServer(this);
 		
 		//start ip update task
@@ -66,7 +66,6 @@ public class NeoAppBackgroundService extends Service {
 	                .newSingleThreadScheduledExecutor();  
 	    // 第二个参数为首次执行的延时时间，第三个参数为定时执行的间隔时间  
 	    service.scheduleAtFixedRate(tIpUpdateTask, 10, 5*60, TimeUnit.SECONDS); 
-	    service.shutdown();
 		return START_STICKY;
 	}
 	

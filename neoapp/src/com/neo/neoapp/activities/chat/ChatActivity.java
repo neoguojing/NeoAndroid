@@ -208,16 +208,7 @@ public class ChatActivity extends BaseMessageActivity {
 	    //normal
 	    if(!NeoAyncSocketServer.socketMap.containsKey(mPeople.getName())){
 	    	//get the server ip from kunkunsae
-	    	//showAlertDialog("NEO",mPeople.getIp());
-	    	if (mPeople==null){
-	    		showAlertDialog("NEO","mPeople is null");
-	    	}
-	    	
-	    	if (mPeople.getIp()==null){
-	    		showAlertDialog("NEO","mPeople.getIp()= is null");
-	    		return;
-	    	}
-	    	
+	    	//showAlertDialog("NEO",mPeople.getIp());	    	
 	    	if (mPeople.getIp().equals(""))
 	    		getDestIpAddress(mPeople.getName());
 	    	else{

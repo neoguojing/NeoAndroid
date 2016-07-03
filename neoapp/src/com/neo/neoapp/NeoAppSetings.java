@@ -59,7 +59,9 @@ public class NeoAppSetings {
         PIC_DOWNLOAD_ERROR(15),
         
         
-        USERIP_NOEXIST(100);
+        USERIP_NOEXIST(100),
+        USERIP_UPDATE_SUCCESS(101);
+        
         
         private int nCode;
 
