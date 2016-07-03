@@ -96,6 +96,7 @@ public class NeoAyncSocketClient {
 							
 							Message object = NeoSocketSerializableUtils.byteArrayToMessage(bf.array());
 							object.setMessageType(Message.MESSAGE_TYPE.RECEIVER);
+							object.setContent("i am coming from client receiver");
 							NeoAppBroadCastMessages.sendDynamicBroadCastMsg(mContext, object);
 							
 						} catch (IOException e) {

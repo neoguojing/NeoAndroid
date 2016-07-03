@@ -25,7 +25,7 @@ public class ChatAdapter extends BaseObjectListAdapter {
 		Message msg = (Message) getItem(position);
 		MessageItem messageItem = MessageItem.getInstance(msg, mContext);
 		if(msg.getMessageType()==Message.MESSAGE_TYPE.SEND){
-			messageItem.fillContentForSend();
+			messageItem.fillContentForSend(msg);
 		}else{
 			messageItem.fillContentForReceive();
 		}

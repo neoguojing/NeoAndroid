@@ -9,9 +9,11 @@ public class Message extends Entity implements Serializable {
 	private long time;
 	private String distance;
 	private String content;
+	
 
 	private CONTENT_TYPE contentType;
 	private MESSAGE_TYPE messageType;
+	private MESSAGE_STATUS msgStatus;
 
 	public Message(String name, String avatar, long time, String distance, String content,
 			CONTENT_TYPE contentType, MESSAGE_TYPE messageType) {
@@ -23,6 +25,7 @@ public class Message extends Entity implements Serializable {
 		this.content = content;
 		this.contentType = contentType;
 		this.messageType = messageType;
+		this.msgStatus = MESSAGE_STATUS.SENDSUCCESS;
 	}
 	
 	public String getName() {
@@ -80,6 +83,14 @@ public class Message extends Entity implements Serializable {
 	public void setMessageType(MESSAGE_TYPE messageType) {
 		this.messageType = messageType;
 	}
+	
+	public MESSAGE_STATUS getMessageStatu() {
+		return msgStatus;
+	}
+
+	public void setMessageStatu(MESSAGE_STATUS messageStatu) {
+		this.msgStatus = messageStatu;
+	}
 
 	public enum CONTENT_TYPE {
 		TEXT, IMAGE, MAP, VOICE;
@@ -87,5 +98,9 @@ public class Message extends Entity implements Serializable {
 
 	public enum MESSAGE_TYPE {
 		RECEIVER, SEND;
+	}
+	
+	public enum MESSAGE_STATUS {
+		SENDSUCCESS, SENDFAILED;
 	}
 }

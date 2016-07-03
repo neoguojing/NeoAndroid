@@ -140,7 +140,39 @@ public class People extends Entity implements Parcelable {
             }
         }
     }
-
+    
+    People(People people) {
+        this.uid = people.getUid();
+        this.avatar = people.getAvatar();
+        this.isVip = people.getIsVip();
+        this.isGroupRole = people.getIsGroupRole();
+        this.industry = people.getIndustry();
+        this.isbindWeibo = people.getIsbindWeibo();
+        this.isbindTxWeibo = people.getIsbindRenRen();
+        this.isbindRenRen = people.getIsbindRenRen();
+        this.device = people.getDevice();
+        this.isRelation = people.getIsRelation();
+        this.isMultipic = people.getIsMultipic();
+        this.name = people.getName();
+        this.gender = people.getGender();
+        this.age = people.getAge();
+        this.distance = people.getDistance();
+        this.time = people.getTime();
+        this.sign = people.getSign();
+        if (gender == 0) {
+            setGenderId(R.drawable.ic_user_famale);
+            setGenderBgId(R.drawable.bg_gender_famal);
+        } else {
+            setGenderId(R.drawable.ic_user_male);
+            setGenderBgId(R.drawable.bg_gender_male);
+        }
+        this.birthday = people.getBirthday();
+        this.longitude = people.getLongitude();
+        this.latitude = people.getLatitude();
+        this.ip = people.getIp();
+        this.port = people.getPort();
+    }
+    
     public People() {
 		// TODO Auto-generated constructor stub
     	this.ip = "";
@@ -400,8 +432,10 @@ public class People extends Entity implements Parcelable {
         dest.writeString(this.time);
         dest.writeString(this.sign);
         dest.writeString(this.birthday);
+        dest.writeDouble(this.longitude);
+        dest.writeDouble(this.latitude);
         dest.writeString(this.ip);
-        dest.writeLong(this.port);
+        dest.writeInt(this.port);
     }
 
     public double getLongitude() {
@@ -432,7 +466,9 @@ public class People extends Entity implements Parcelable {
 				   source.readString(), source.readInt(),
 				    source.readInt(), source.readString(), 
 					source.readString(), source.readString(),
-					 BuildConfig.VERSION_NAME, 0.0d, 0.0d,"",0);
+					source.readString(), 
+					 source.readDouble(), source.readDouble(),
+					 source.readString(),source.readInt());
             }
 
 		@Override

@@ -5,6 +5,7 @@ import com.neo.neoapp.R;
 import com.neo.neoapp.NeoBasicApplication;
 import com.neo.neoapp.UI.views.NeoBasicTextView;
 import com.neo.neoapp.entity.Message;
+import com.neo.neoapp.entity.Message.MESSAGE_STATUS;
 import com.neo.neoapp.entity.Message.MESSAGE_TYPE;
 
 import android.app.Activity;
@@ -125,9 +126,9 @@ public abstract class MessageItem {
 		onInitViews();
 	}
 
-	public void fillContentForSend() {
+	public void fillContentForSend(Message msg) {
 		fillTimeStamp();
-		fillStatus();
+		fillStatus(msg);
 		fillMessage();
 		fillPhotoViewForSend();
 	}
@@ -156,11 +157,15 @@ public abstract class MessageItem {
 		}
 	}
 
-	protected void fillStatus() {
+	protected void fillStatus(Message msg) {
 		mLayoutLeftContainer.setVisibility(View.VISIBLE);
 		mLayoutStatus
 				.setBackgroundResource(R.drawable.bg_message_status_sended);
-		mHtvStatus.setText("送达");
+		if (msg.getMessageStatu()==MESSAGE_STATUS.SENDSUCCESS){
+			mHtvStatus.setText("送达");
+		}else{
+			mHtvStatus.setText("失败");
+		}
 	}
 	
 	protected void fillPhotoViewForSend() {

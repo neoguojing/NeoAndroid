@@ -30,6 +30,7 @@ public class NeoAppBackgroundService extends Service {
 	private NeoAyncSocketServer aServer = null;
 	private NeoAppUIThreadHandler mUIHandler = null;
 	private NeoServerIpUpdateTask tIpUpdateTask = null;
+	ScheduledExecutorService service = null;
 	@Override
 	public IBinder onBind(Intent arg0) {
 		// TODO Auto-generated method stub
@@ -61,11 +62,11 @@ public class NeoAppBackgroundService extends Service {
 		//start ip update task
 		tIpUpdateTask = new NeoServerIpUpdateTask((NeoBasicApplication) getApplication(),
 				this);
-		ScheduledExecutorService service = Executors  
+		service = Executors  
 	                .newSingleThreadScheduledExecutor();  
 	    // 第二个参数为首次执行的延时时间，第三个参数为定时执行的间隔时间  
 	    service.scheduleAtFixedRate(tIpUpdateTask, 10, 5*60, TimeUnit.SECONDS); 
-		
+	    service.shutdown();
 		return START_STICKY;
 	}
 	
@@ -74,6 +75,9 @@ public class NeoAppBackgroundService extends Service {
 		Log.v(TAG,"in onDestroy");
 		
 		//mThreadGroup.interrupt(); 
+		if (service!=null){
+			service.shutdown();
+		}
 		aServer.close();
 		notifyMgr.cancelAll();
 		super.onDestroy();

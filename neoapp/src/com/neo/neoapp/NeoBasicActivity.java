@@ -235,7 +235,7 @@ public abstract class NeoBasicActivity extends FragmentActivity {
 		super.finish();
 	}
 
-    protected boolean netWorkCheck(Context context) {
+    public boolean netWorkCheck(Context context) {
     	//mApplication.netWorkState =new  NetWorkUtils(context).getConnectState();
     	mApplication.netWorkState = NetWorkUtils.getConnectState(context);
         if (mApplication.netWorkState == NetWorkState.NONE) {

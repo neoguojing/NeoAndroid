@@ -36,6 +36,7 @@ import com.neo.neoandroidlib.NetWorkUtils;
 import com.neo.neoandroidlib.PhotoUtils;
 import com.neo.neoandroidlib.NetWorkUtils.NetWorkState;
 import com.neo.neoapp.NeoAppSetings;
+import com.neo.neoapp.NeoBasicActivity;
 import com.neo.neoapp.R;
 import com.neo.neoapp.UI.adapters.ChatAdapter;
 import com.neo.neoapp.UI.adapters.CheckListDialogAdapter;
@@ -45,6 +46,7 @@ import com.neo.neoapp.dialog.SimpleListDialog;
 import com.neo.neoapp.entity.Message;
 import com.neo.neoapp.entity.NeoConfig;
 import com.neo.neoapp.entity.Message.CONTENT_TYPE;
+import com.neo.neoapp.entity.Message.MESSAGE_STATUS;
 import com.neo.neoapp.entity.Message.MESSAGE_TYPE;
 import com.neo.neoapp.socket.client.NeoAyncSocketClient;
 import com.neo.neoapp.socket.server.NeoAyncSocketServer;
@@ -61,6 +63,7 @@ public class ChatActivity extends BaseMessageActivity {
 	private final String Tag = "ChatActivity";
 	NeoAyncSocketClient socketClient = null;
 	MsgReceiver msgBroadCastReceiver = null;
+	private int mPosition = 0;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -83,6 +86,13 @@ public class ChatActivity extends BaseMessageActivity {
 		} else if (mLayoutScroll.getCurScreen() == 1) {
 			mLayoutScroll.snapToScreen(0);
 		} else {
+			//super.onBackPressed();
+			if (mPosition!=0 && !mPeople.getIp().equals("")){
+				Intent intent = new Intent();
+				intent.putExtra("position", mPosition);
+				intent.putExtra("ip", mPeople.getIp());
+				this.setResult(RESULT_OK, intent);
+			}
 			finish();
 		}
 	}
@@ -90,6 +100,7 @@ public class ChatActivity extends BaseMessageActivity {
 	@Override
 	protected void onDestroy() {
 		PhotoUtils.deleteImageFile();
+		//socketClient.close();
 		super.onDestroy();
 	}
 	
@@ -162,6 +173,8 @@ public class ChatActivity extends BaseMessageActivity {
 	private void init() {
 		//mProfile = getIntent().getParcelableExtra("entity_profile");
 		mPeople = getIntent().getParcelableExtra("entity_people");
+		mPosition = getIntent().getIntExtra("position", 0);
+		
 		mHeaderLayout.setTitleChat(R.drawable.ic_chat_dis_1,
 				R.drawable.bg_chat_dis_active, "与" + mPeople.getName() + "对话",
 				mPeople.getDistance() + " " + mPeople.getTime(),
@@ -185,17 +198,35 @@ public class ChatActivity extends BaseMessageActivity {
         .detectLeakedSqlLiteObjects().detectLeakedClosableObjects()  
         .penaltyLog().penaltyDeath().build()); 
 	    
-	    //test
-		socketClient = new NeoAyncSocketClient(this);
-	    //normal
-	    /*if(!NeoAyncSocketServer.socketMap.containsKey(mPeople.getName())){
-	    	//get the server ip from kunkunsae
-	    	getDestIpAddress(mPeople.getName());
-	    }*/
+	    initClientSocket();
 	    
 	}
 	
-
+	private void initClientSocket(){
+		//test
+		//socketClient = new NeoAyncSocketClient(this);
+	    //normal
+	    if(!NeoAyncSocketServer.socketMap.containsKey(mPeople.getName())){
+	    	//get the server ip from kunkunsae
+	    	//showAlertDialog("NEO",mPeople.getIp());
+	    	if (mPeople==null){
+	    		showAlertDialog("NEO","mPeople is null");
+	    	}
+	    	
+	    	if (mPeople.getIp()==null){
+	    		showAlertDialog("NEO","mPeople.getIp()= is null");
+	    		return;
+	    	}
+	    	
+	    	if (mPeople.getIp().equals(""))
+	    		getDestIpAddress(mPeople.getName());
+	    	else{
+	    		socketClient = new NeoAyncSocketClient(this,mPeople.getIp());
+	    		//socketClient = new NeoAyncSocketClient(this);
+	    	}
+	    }
+	}
+	
 	private void getDestIpAddress(String name) {
 		
         if (netWorkCheck(this)) {
@@ -219,13 +250,16 @@ public class ChatActivity extends BaseMessageActivity {
                     Log.i(ChatActivity.this.Tag, "onSuccess ");
                     try {
                     	if (response.has("errcode")){
-                    		 ChatActivity.this.showLongToast(response.getString("info"));
+                    		 //ChatActivity.this.showLongToast(response.getString("info"));
+                    		 ChatActivity.this.showAlertDialog("NEO", "user is offline or unreachable! ");
                     	}else{
                     		ChatActivity.this.showLongToast("ip:" + response.getString(NeoConfig.IP)
-                            		+ ";port:" + response.getString(ClientCookie.PORT_ATTR));
+                            		+ ";port:" + response.getString(NeoConfig.PORT));
                     		mPeople.setIp(response.getString("ip"));
-                    		if (mPeople.getIp()!=null&&!mPeople.getIp().isEmpty())
+                    		if (mPeople.getIp()!=null&&!mPeople.getIp().isEmpty()){
                 	    		socketClient = new NeoAyncSocketClient(ChatActivity.this,mPeople.getIp());
+                	    		//socketClient = new NeoAyncSocketClient(this);
+                    		}
                     	}
                         
                         
@@ -268,6 +302,7 @@ public class ChatActivity extends BaseMessageActivity {
 
 	@Override
 	public void onClick(View v) {
+		
 		switch (v.getId()) {
 		case R.id.chat_textditor_ib_plus:
 			if (!mLayoutMessagePlusBar.isShown()) {
@@ -300,25 +335,31 @@ public class ChatActivity extends BaseMessageActivity {
 				Message sendmsg = new Message(mApplication.mMe.getName(),mApplication.mMe.getAvatar(), System
 						.currentTimeMillis(), "0.12km", content,
 						CONTENT_TYPE.TEXT, MESSAGE_TYPE.SEND);
+				//for test the client receiver
+				/*Message sendmsg = new Message("test1",mApplication.mMe.getAvatar(), System
+						.currentTimeMillis(), "0.12km", content,
+						CONTENT_TYPE.TEXT, MESSAGE_TYPE.SEND);*/
 				if (NeoAyncSocketServer.socketMap
 						.containsKey(mPeople.getName())){
-					if(NeoAyncSocketServer.send((SocketChannel) NeoAyncSocketServer.
+					if(!NeoAyncSocketServer.send((SocketChannel) NeoAyncSocketServer.
 							socketMap.get(mPeople.getName()),
 							sendmsg)){
-						mMessages.add(sendmsg);
-						mAdapter.notifyDataSetChanged();
-						mClvList.setSelection(mMessages.size());
+						sendmsg.setMessageStatu(MESSAGE_STATUS.SENDFAILED);
 					}
 					
 				}else if(socketClient!=null){
-					if (socketClient.send(sendmsg)){
-						mMessages.add(sendmsg);
-						mAdapter.notifyDataSetChanged();
-						mClvList.setSelection(mMessages.size());
+					if (!socketClient.send(sendmsg)){
+						sendmsg.setMessageStatu(MESSAGE_STATUS.SENDFAILED);
 					}
 				}else{
 					
+					showLongToast("user is offline of unreachable");
+					sendmsg.setMessageStatu(MESSAGE_STATUS.SENDFAILED);
 				}
+				
+				mMessages.add(sendmsg);
+				mAdapter.notifyDataSetChanged();
+				mClvList.setSelection(mMessages.size());
 			}
 			break;
 
