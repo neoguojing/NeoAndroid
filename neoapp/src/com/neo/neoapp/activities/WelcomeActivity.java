@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.neo.neoandroidlib.FileUtils;
+import com.neo.neoandroidlib.JsonResolveUtils;
 import com.neo.neoandroidlib.NeoAsyncHttpUtil;
 import com.neo.neoandroidlib.NetWorkUtils;
 import com.neo.neoandroidlib.NetWorkUtils.NetWorkState;
@@ -179,7 +180,7 @@ public class WelcomeActivity extends NeoBasicActivity implements OnClickListener
     }
 
     private void initNetWorkData() {
-        if (initNetWorkCheck(this)) {
+        if (initNetWorkCheck(this)) {        	
             NeoAsyncHttpUtil.get((Context) this, NeoAppSetings.IpServerUrl, new JsonHttpResponseHandler() {
                 public void onSuccess(int statusCode, Header[] headers, JSONArray arg0) {
                     Log.i(WelcomeActivity.this.Tag, new StringBuilder(String.valueOf(arg0.length())).toString());
@@ -255,6 +256,7 @@ public class WelcomeActivity extends NeoBasicActivity implements OnClickListener
             });
             return this.loginstate;
         }
+        
         LOGIN_STATE login_state = LOGIN_STATE.OFFLINE;
         this.loginstate = login_state;
         return login_state;

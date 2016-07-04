@@ -532,7 +532,11 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
                 try {
                     if (!response.has("errcode")) {
                         MainTabActivity.this.getOtherHeadImages(response.getString(People.NAME));
-                        FileUtils.overrideContent(new StringBuilder(String.valueOf(FileUtils.getAppDataPath(MainTabActivity.this))).append(NeoAppSetings.ProfilesDir).append(response.getString(Setings.NAME)).append(".json").toString(), response.toString());
+                        FileUtils.overrideContent(new StringBuilder(
+                        		String.valueOf(FileUtils.getAppDataPath(MainTabActivity.this)))
+                        .append(NeoAppSetings.ProfilesDir).
+                        append(response.getString(Setings.NAME)).append(".json").toString(),
+                        response.toString());
                     } else if (response.getString("errcode").equals(NEO_ERRCODE.DATA_NOEXIST.toString())) {
                         MainTabActivity.this.showAlertDialog("NEO", response.getString("info"));
                     } else if (response.getString("errcode").equals(NEO_ERRCODE.UER_NOLOGIN.toString())) {

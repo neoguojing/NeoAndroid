@@ -191,8 +191,12 @@ public class PeopleDetailActivity extends NeoBasicActivity implements
 				@Override
 				protected Boolean doInBackground(Void... params) {
 					mProfile = new PeopleProfile();
-					return JsonResolveUtils.resolveNearbyProfile(
-							PeopleDetailActivity.this, mProfile, mUid);
+					if (!JsonResolveUtils.resolveNearbyProfile(
+							PeopleDetailActivity.this, mProfile, mUid)){
+						return JsonResolveUtils.resolveNearbyProfile(
+								PeopleDetailActivity.this, mProfile, mName);
+					}
+					return true;
 				}
 
 				@Override

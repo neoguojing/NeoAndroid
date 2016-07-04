@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.neo.neoandroidlib.FileUtils;
+import com.neo.neoandroidlib.JsonResolveUtils;
 import com.neo.neoandroidlib.NetWorkUtils;
 import com.neo.neoapp.UI.views.NeoBasicTextView;
 import com.neo.neoapp.dialog.NeoFlippingLoadingDialog;
@@ -236,17 +238,25 @@ public abstract class NeoBasicActivity extends FragmentActivity {
 	}
 
     public boolean netWorkCheck(Context context) {
+    	boolean rtn = true;
     	//mApplication.netWorkState =new  NetWorkUtils(context).getConnectState();
     	mApplication.netWorkState = NetWorkUtils.getConnectState(context);
         if (mApplication.netWorkState == NetWorkState.NONE) {
             showAlertDialog("NEO", "Please check your NetWork connection!");
-            return false;
+            rtn = false;
         } else if (!this.mApplication.mNeoConfig.getIp().equals("")) {
-            return true;
-        } else {
-            showAlertDialog("NEO", "The server info is empty");
-            return false;
+        	rtn = true;
+        } else if (FileUtils.isFileExist(getMyApplication().mAppDataPath+
+        			NeoAppSetings.ConfigFile)){
+    		rtn = JsonResolveUtils.resolveNeoConfig(mApplication,this);
+    		if (!rtn)
+    			showAlertDialog("NEO", "resolveNeoConfig faied");
         }
+        
+        if (mApplication.mNeoConfig.getIp().equals(""))
+        	showAlertDialog("NEO", "The server info is empty");
+        
+        return rtn;
     }
     
     protected boolean initNetWorkCheck(Context context) {

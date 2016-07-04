@@ -16,6 +16,7 @@ import com.neo.neoapp.R;
 import com.neo.neoapp.entity.Entity;
 import com.neo.neoapp.entity.Feed;
 import com.neo.neoapp.entity.FeedComment;
+import com.neo.neoapp.entity.NeoConfig;
 import com.neo.neoapp.entity.People;
 import com.neo.neoapp.entity.PeopleProfile;
 import com.neo.neoapp.entity.Setings;
@@ -37,6 +38,35 @@ public class JsonResolveUtils {
 		
 		private static final String TAG = "JsonResolveUtils";
 		private static final String NearByPeopleProfile = null;
+		
+		public static boolean resolveNeoConfig(NeoBasicApplication application,
+				Context context) {
+			
+			if (application.mAppDataPath.equals("")){
+				return false;
+			}
+	        
+
+            if (application.mNeoConfig.getIp().equals("")) {
+                String json = FileUtils.getJson(context, 
+                		NeoAppSetings.ConfigFile);
+                if (json != null) {
+                    try {
+                            JSONObject object = new JSONObject(json);
+                            application.mNeoConfig.setName("neo");
+                            application.mNeoConfig.setIp(object.getString(NeoConfig.IP));
+                            application.mNeoConfig.setPort(object.getString(NeoConfig.PORT));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        return false;
+                    }
+
+                }else{
+                	return false;
+                }
+            }
+	        return true;
+	    }
 		
 		public static boolean resolveMyNearbyPeople(NeoBasicApplication application,
 				Context context) {
@@ -170,76 +200,78 @@ public class JsonResolveUtils {
         if (!android.text.TextUtils.isEmpty(uid)) {
             String json = TextUtils.getJson(context, new StringBuilder(PROFILE).append(uid).append(SUFFIX).toString());
             if (json != null) {
-                try {
-                    int genderId;
-                    int genderBgId;
-                    JSONObject object = new JSONObject(json);
-                    String userId = object.getString(Setings.UID);
-                    String avatar = object.getString(PeopleProfile.AVATAR);
-                    String name = object.getString(Setings.NAME);
-                    int gender = object.getInt(PeopleProfile.GENDER);
-                    if (gender == 0) {
-                        genderId = R.drawable.ic_user_famale;
-                        genderBgId = R.drawable.bg_gender_famal;
-                    } else {
-                        genderId = R.drawable.ic_user_male;
-                        genderBgId = R.drawable.bg_gender_male;
-                    }
-                    int age = object.getInt(PeopleProfile.AGE);
-                    String constellation = object.getString(PeopleProfile.CONSTELLATION);
-                    String distance = object.getString(PeopleProfile.DISTANCE);
-                    String time = object.getString(PeopleProfile.TIME);
-                    boolean isHasSign = false;
-                    String sign = null;
-                    String signPic = null;
-                    String signDis = null;
-                    if (object.has(PeopleProfile.SIGNATURE)) {
-                        isHasSign = true;
-                        JSONObject signObject = object.getJSONObject(PeopleProfile.SIGNATURE);
-                        sign = signObject.getString(PeopleProfile.SIGN);
-                        if (signObject.has(PeopleProfile.SIGN_PIC)) {
-                            signPic = signObject.getString(PeopleProfile.SIGN_PIC);
-                        }
-                        signDis = signObject.getString(PeopleProfile.SIGN_DIS);
-                    }
-                    JSONArray photosArray = object.getJSONArray(PeopleProfile.PHOTOS);
-                    List<String> photos = new ArrayList();
-                    for (int i = 0; i < photosArray.length(); i++) {
-                        photos.add(photosArray.getString(i));
-                    }
-                    profile.setUid(userId);
-                    profile.setAvatar(avatar);
-                    profile.setName(name);
-                    profile.setGender(gender);
-                    profile.setGenderId(genderId);
-                    profile.setGenderBgId(genderBgId);
-                    profile.setAge(age);
-                    profile.setConstellation(constellation);
-                    profile.setDistance(distance);
-                    profile.setTime(time);
-                    profile.setHasSign(isHasSign);
-                    profile.setSign(sign);
-                    profile.setSignPicture(signPic);
-                    profile.setSignDistance(signDis);
-                    profile.setPhotos(photos);
-                    return true;
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    return false;
-                }
+            	return resolvePeopleProfile(profile,json);
+            }else{
+            	//uid is actually name in this part
+            	String name = uid;
+            	json = FileUtils.getJson(context,NeoAppSetings.ProfilesDir+name+SUFFIX);
+            	if (json != null){
+            		return resolvePeopleProfile(profile,json);
+            	}
             }
         }
         return false;
     }
 
-		/**
-		 * 解析附近个人状态
-		 * 
-		 * @param context
-		 * @param feeds
-		 * @param uid
-		 * @return
-		 */
+	private static boolean resolvePeopleProfile(PeopleProfile profile,String json){
+		try {
+            int genderId;
+            int genderBgId;
+            JSONObject object = new JSONObject(json);
+            String userId = object.getString(Setings.UID);
+            String avatar = object.getString(PeopleProfile.AVATAR);
+            String name = object.getString(Setings.NAME);
+            int gender = object.getInt(PeopleProfile.GENDER);
+            if (gender == 0) {
+                genderId = R.drawable.ic_user_famale;
+                genderBgId = R.drawable.bg_gender_famal;
+            } else {
+                genderId = R.drawable.ic_user_male;
+                genderBgId = R.drawable.bg_gender_male;
+            }
+            int age = object.getInt(PeopleProfile.AGE);
+            String constellation = object.getString(PeopleProfile.CONSTELLATION);
+            String distance = object.getString(PeopleProfile.DISTANCE);
+            String time = object.getString(PeopleProfile.TIME);
+            boolean isHasSign = false;
+            String sign = null;
+            String signPic = null;
+            String signDis = null;
+            if (object.has(PeopleProfile.SIGNATURE)) {
+                isHasSign = true;
+                JSONObject signObject = object.getJSONObject(PeopleProfile.SIGNATURE);
+                sign = signObject.getString(PeopleProfile.SIGN);
+                if (signObject.has(PeopleProfile.SIGN_PIC)) {
+                    signPic = signObject.getString(PeopleProfile.SIGN_PIC);
+                }
+                signDis = signObject.getString(PeopleProfile.SIGN_DIS);
+            }
+            JSONArray photosArray = object.getJSONArray(PeopleProfile.PHOTOS);
+            List<String> photos = new ArrayList();
+            for (int i = 0; i < photosArray.length(); i++) {
+                photos.add(photosArray.getString(i));
+            }
+            profile.setUid(userId);
+            profile.setAvatar(avatar);
+            profile.setName(name);
+            profile.setGender(gender);
+            profile.setGenderId(genderId);
+            profile.setGenderBgId(genderBgId);
+            profile.setAge(age);
+            profile.setConstellation(constellation);
+            profile.setDistance(distance);
+            profile.setTime(time);
+            profile.setHasSign(isHasSign);
+            profile.setSign(sign);
+            profile.setSignPicture(signPic);
+            profile.setSignDistance(signDis);
+            profile.setPhotos(photos);
+            return true;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return false;
+        }
+	}
 		public static boolean resolveNearbyStatus(Context context,
 				List<Feed> feeds, String uid) {
 			if (!android.text.TextUtils.isEmpty(uid)) {
