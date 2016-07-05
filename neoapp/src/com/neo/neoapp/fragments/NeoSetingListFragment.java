@@ -17,9 +17,11 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
 
 import com.neo.neoandroidlib.JsonResolveUtils;
+import com.neo.neoandroidlib.NeoImageUtil;
 import com.neo.neoapp.R;
 import com.neo.neoapp.NeoBasicApplication;
 import com.neo.neoapp.UI.adapters.NeoCommonListAdapter;
+import com.neo.neoapp.UI.views.NeoBasicTextView;
 import com.neo.neoapp.UI.views.list.NeoCommonListView;
 import com.neo.neoapp.entity.People;
 import com.neo.neoapp.entity.Setings;
@@ -30,6 +32,7 @@ OnItemClickListener{
 	private NeoCommonListView commonList;
 	private NeoCommonListAdapter commonListAdpt;
     private ImageView headpic;
+    private NeoBasicTextView myName;
 	public static List<Setings> mSetingList = new ArrayList<Setings>();
 	
 	public NeoSetingListFragment() {
@@ -53,8 +56,13 @@ OnItemClickListener{
 	protected void initViews() {
 		commonList  = (NeoCommonListView) findViewById(R.id.setings_list);
         this.headpic = (ImageView) findViewById(R.id.userheader);
-        this.headpic.setImageBitmap(BitmapFactory.decodeFile(
-        		mApplication.mAppDataPath+mApplication.mMe.getName()));
+        this.headpic.setImageBitmap(NeoImageUtil.compressTheImageToDestSize(
+        		mApplication.mAppDataPath+mApplication.mMe.getName(),
+        		NeoImageUtil.dip2px(mContext,80f),
+        		NeoImageUtil.dip2px(mContext,80f)));
+        
+        this.myName = (NeoBasicTextView) findViewById(R.id.myname);
+        myName.setText(mApplication.mMe.getName());
 	}
 
 	@Override

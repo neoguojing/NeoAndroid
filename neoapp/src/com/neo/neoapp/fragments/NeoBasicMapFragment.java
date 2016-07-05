@@ -94,7 +94,7 @@ public class NeoBasicMapFragment extends NeoBasicFragment{
 	}
 	
 	protected void showMyLocation(){
-		LatLng centerPoint = new LatLng(mApplication.mLongitude,mApplication.mLatitude);
+		LatLng centerPoint = new LatLng(mApplication.mLatitude,mApplication.mLongitude);
 		
 		//define map status
 		MapStatus mapStatu = new MapStatus.Builder().target(centerPoint)

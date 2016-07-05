@@ -16,7 +16,8 @@
 
             <FrameLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content" 
+                android:layout_marginStart="10dp">
 
                 <ImageView
                     android:id="@+id/ImageView01"
@@ -48,7 +49,7 @@
                 android:orientation="vertical" >
 
                 <com.neo.neoapp.UI.views.NeoBasicTextView
-                    android:id="@+id/TextView02"
+                    android:id="@+id/myname"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="10"
@@ -64,12 +65,12 @@
                 android:orientation="vertical" >
 
                 <com.neo.neoapp.UI.views.NeoBasicTextView
-                    android:id="@+id/TextView01"
+                    android:id="@+id/mylevel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:gravity="left"
-                    android:text="Jesus—neo" />
+                    android:text="Level1" />
             </LinearLayout>
         </LinearLayout>
 
@@ -83,6 +84,7 @@
 
             <ImageView
                 android:id="@+id/imageView1"
+                android:layout_marginEnd="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
                 android:src="@drawable/ic_common_arrow" />

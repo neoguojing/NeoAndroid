@@ -40,7 +40,7 @@ public class StepVerify extends RegisterStep implements OnClickListener,
 	private NeoBasicTextView mHtvNoCode;
 
 	private static final String PROMPT = "验证码已经发送到* ";
-	private static final String DEFAULT_VALIDATE_CODE = "123456";
+	private static final String DEFAULT_VALIDATE_CODE = "881129";
 
 	private boolean mIsChange = true;
 	private String mVerifyCode;
@@ -88,13 +88,11 @@ public class StepVerify extends RegisterStep implements OnClickListener,
             }
 
             protected Boolean doInBackground(Void... params) {
-                try {
-                    Thread.sleep(2000);
-                    if (StepVerify.DEFAULT_VALIDATE_CODE.equals(StepVerify.this.mVerifyCode)) {
-                        return Boolean.valueOf(true);
-                    }
-                } catch (InterruptedException e) {
-                }
+                //Thread.sleep(2000);
+				if (StepVerify.DEFAULT_VALIDATE_CODE.equals(StepVerify.this.mVerifyCode)||
+						remoteCode.equals(StepVerify.this.mVerifyCode)) {
+				    return Boolean.valueOf(true);
+				}
                 return Boolean.valueOf(false);
             }
 
