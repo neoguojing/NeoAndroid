@@ -8,7 +8,7 @@
 	<android.support.v4.view.ViewPager
         android:id="@+id/Brand_Scroll"
         android:layout_width="fill_parent"    
-        android:layout_height="200dp">
+        android:layout_height="161dp">
         
 	    <!--  <android.support.v4.view.PagerTitleStrip  
             android:id="@+id/pagertitle"    
@@ -20,7 +20,7 @@
     
     <RelativeLayout    
         android:layout_width="fill_parent"    
-        android:layout_height="200dp"   
+        android:layout_height="161dp"   
         android:orientation="vertical" >    
     
         <LinearLayout    

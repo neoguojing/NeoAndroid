@@ -47,7 +47,7 @@ public class NeoMutiImageScrollUtil {
             img.setImageResource(imgMutiIdArray[i]);  
             TextView txt = (TextView) view  
                     .findViewById(R.id.muti_scroll_title);  
-            txt.setText("some info ");  
+            txt.setText("");  
             mGallery.addView(view);  
         }
 	}

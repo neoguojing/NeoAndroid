@@ -26,8 +26,9 @@ public class NeoGridViewUtil implements OnItemClickListener {
     private List<Map<String, Object>> data_list;  
     private SimpleAdapter  mAdapter;
     int[] icon = new int[]{R.drawable.ic_amuse, R.drawable.ic_food, R.drawable.ic_hotel,
-			R.drawable.ic_movie,R.drawable.ic_sight,R.drawable.ic_takeout}; 
-    String[] iconName = { "娱乐", "餐饮", "酒店", "电影", "景观", "外卖"};
+			R.drawable.ic_movie,R.drawable.ic_sight,R.drawable.ic_takeout,
+			R.drawable.ic_sight,R.drawable.ic_takeout}; 
+    String[] iconName = { "娱乐", "餐饮", "酒店", "电影", "景观", "外卖","景观", "外卖"};
 	
 	NeoGridViewUtil(Context ctx,NeoBasicFragment frag)
 	{
@@ -78,8 +79,8 @@ public class NeoGridViewUtil implements OnItemClickListener {
 						mFrag.showCustomToast("数据加载失败...");
 					} else{
 						String [] from ={"image","text"};
-				        int [] to = {R.id.muti_scroll_image,R.id.muti_scroll_title};
-				        mAdapter = new SimpleAdapter(mContext, data_list, R.layout.scroll_item_of_image_text, from, to);
+				        int [] to = {R.id.grid_image,R.id.grid_title};
+				        mAdapter = new SimpleAdapter(mContext, data_list, R.layout.grid_item_of_image_text, from, to);
 				        //配置适配器
 				        gview.setAdapter(mAdapter);
 						
@@ -91,8 +92,8 @@ public class NeoGridViewUtil implements OnItemClickListener {
         }else
         {
         	String [] from ={"image","text"};
-	        int [] to = {R.id.muti_scroll_image,R.id.muti_scroll_title};
-	        mAdapter = new SimpleAdapter(mContext, data_list, R.layout.scroll_item_of_image_text, from, to);
+	        int [] to = {R.id.grid_image,R.id.grid_title};
+	        mAdapter = new SimpleAdapter(mContext, data_list, R.layout.grid_item_of_image_text, from, to);
 	        //配置适配器
 	        gview.setAdapter(mAdapter);
         }
