@@ -25,9 +25,9 @@ public class NeoGridViewUtil implements OnItemClickListener {
 	private NeoNoScrollGridView gview;
     private List<Map<String, Object>> data_list;  
     private SimpleAdapter  mAdapter;
-    int[] icon = new int[]{R.drawable.ic_userinfo_apple, R.drawable.ic_userinfo_apple, R.drawable.ic_userinfo_apple,
-			R.drawable.ic_userinfo_apple,R.drawable.ic_userinfo_apple,R.drawable.ic_userinfo_apple}; 
-    String[] iconName = { "通讯录", "日历", "照相机", "时钟", "游戏", "短信"};
+    int[] icon = new int[]{R.drawable.ic_amuse, R.drawable.ic_food, R.drawable.ic_hotel,
+			R.drawable.ic_movie,R.drawable.ic_sight,R.drawable.ic_takeout}; 
+    String[] iconName = { "娱乐", "餐饮", "酒店", "电影", "景观", "外卖"};
 	
 	NeoGridViewUtil(Context ctx,NeoBasicFragment frag)
 	{

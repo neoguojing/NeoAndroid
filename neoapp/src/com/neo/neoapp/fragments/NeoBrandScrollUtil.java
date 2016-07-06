@@ -67,7 +67,7 @@ public class NeoBrandScrollUtil implements OnPageChangeListener, Runnable{
 		 
 		mViewPager = (ViewPager)mFrag.findViewById(R.id.Brand_Scroll);
 		group = (ViewGroup)mFrag.findViewById(R.id.scroll_image_Group);  
-		imgIdArray = new int[]{R.drawable.mm, R.drawable.mm, R.drawable.mm};  		
+		imgIdArray = new int[]{R.drawable.pic_brand1, R.drawable.pic_brand2, R.drawable.pic_brand2};  		
 		tips = new ArrayList<ImageView>();
 		mImageViews = new ArrayList<ImageView>(); 
 		

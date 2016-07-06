@@ -17,8 +17,8 @@ public class NeoMutiImageScrollUtil {
 	private NeoBasicFragment mFrag;
     
     private LinearLayout mGallery;
-    private int[] imgMutiIdArray =new int[]{R.drawable.mm, R.drawable.mm, R.drawable.mm,
-			R.drawable.mm,R.drawable.mm,R.drawable.mm};
+    private int[] imgMutiIdArray =new int[]{R.drawable.pic_adv1, R.drawable.pic_adv2, R.drawable.pic_adv3,
+			R.drawable.pic_adv4,R.drawable.pic_adv5,R.drawable.pic_adv6};
 	
 	NeoMutiImageScrollUtil(Context ctx,NeoBasicFragment frag)
 	{
