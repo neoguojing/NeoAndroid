@@ -17,9 +17,12 @@ import android.view.Window;
 
 import com.loopj.android.http.BinaryHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
 import com.neo.neoandroidlib.FileUtils;
 import com.neo.neoandroidlib.NeoAsyncHttpUtil;
 import com.neo.neoandroidlib.NeoIntentFactiory;
+import com.neo.neoandroidlib.NetWorkUtils;
+import com.neo.neoandroidlib.NetWorkUtils.NetWorkState;
 import com.neo.neoandroidlib.PhotoUtils;
 import com.neo.neoapp.NeoAppSetings;
 import com.neo.neoapp.NeoAppSetings.NEO_ERRCODE;
@@ -43,9 +46,12 @@ import com.neo.neoapp.services.NeoAppBackgroundService;
 import com.neo.neoapp.tasks.ServiceWorkerWithLooper;
 
 import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.entity.StringEntity;
+import cz.msebera.android.httpclient.message.BasicHeader;
 import cz.msebera.android.httpclient.protocol.HTTP;
 import cz.msebera.httpclient.android.BuildConfig;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -243,7 +249,8 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
         getNearbyData();
         getFriendData();
         getMyStatusData();
-        updateServerIp();
+        //updateServerIp();
+        updateServerIpWithPost();
     }
     
     private void getMe() {
@@ -623,6 +630,77 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
 	        }
 	    });
     }
+    
+    /*{
+	    "name":"erjung",
+	    "uid":0,
+	    "ip":"101.80.178.57",
+	    "port":7000,
+	    "localip":"",
+	    "netstate":0
+	}*/
+    
+    private void updateServerIpWithPost(){
+    	if (!netWorkCheck(this)) {
+    		return;
+    	}
+        JSONObject jsonObject = new JSONObject();
+        StringEntity stringEntity = null;
+
+        try {
+			jsonObject.put("name", mApplication.mMe.getName());
+			jsonObject.put("uid",  mApplication.mMe.getUid());
+			if (mApplication.netWorkState==NetWorkState.WIFI){
+				jsonObject.put("ip", "");
+				jsonObject.put("localip", NetWorkUtils.getWifiIpAddress(this));
+				jsonObject.put("netstate", 0);
+			}else if (mApplication.netWorkState==NetWorkState.MOBILE){
+				jsonObject.put("ip", NetWorkUtils.getGPRSIpAddress());
+				jsonObject.put("localip", "");
+				jsonObject.put("netstate", 1);
+			}
+			jsonObject.put("port", 7000);
+			stringEntity = new StringEntity(jsonObject.toString());
+	        stringEntity.setContentType(new BasicHeader(MIME.CONTENT_TYPE, RequestParams.APPLICATION_JSON));
+		} catch (JSONException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+        NeoAsyncHttpUtil.postJson(this, NeoAppSetings.DestIpUpdateUrlPrefix,stringEntity,
+        		new JsonHttpResponseHandler() {
+            public void onSuccess(int statusCode, Header[] headers, JSONArray arg0) {
+                Log.i(Tag, new StringBuilder(String.valueOf(arg0.length())).toString());
+            }
+
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONArray errorResponse) {
+                Log.e(Tag, " onFailure" + throwable.toString());
+            }
+
+            public void onFinish() {
+                Log.i(Tag, "onFinish");
+            }
+
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                super.onSuccess(statusCode, headers, response);
+                try {
+					Log.i(Tag, "onSuccess"+":"+response.getString("info").toString());
+					MainTabActivity.this.showLongToast(response.getString("info").toString());
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+                
+            }
+
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Log.e(Tag, " onFailure" + throwable.toString());
+            }
+        });
+	}
 	
     private void updateServerIp(){
 		

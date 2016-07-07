@@ -219,7 +219,16 @@ public class ChatActivity extends BaseMessageActivity {
 	}
 	
 	private void getDestIpAddress(String name) {
-		
+		/*
+		 * {
+			    "name":"erjung",
+			    "uid":0,
+			    "ip":"101.80.178.57",
+			    "port":7000,
+			    "localip":"",
+			    "netstate":0
+			}
+		 * */
         if (netWorkCheck(this)) {
             NeoAsyncHttpUtil.get((Context) this, NeoAppSetings.DestIpFetchUrlPrefix+name,
             		new JsonHttpResponseHandler() {
@@ -246,7 +255,11 @@ public class ChatActivity extends BaseMessageActivity {
                     	}else{
                     		ChatActivity.this.showLongToast("ip:" + response.getString(NeoConfig.IP)
                             		+ ";port:" + response.getString(NeoConfig.PORT));
-                    		mPeople.setIp(response.getString("ip"));
+                    		if (response.getInt("netstate")==0)
+                    			mPeople.setIp(response.getString("localip"));
+                    		else
+                    			mPeople.setIp(response.getString("ip"));
+                    		
                     		if (mPeople.getIp()!=null&&!mPeople.getIp().isEmpty()){
                 	    		socketClient = new NeoAyncSocketClient(ChatActivity.this,mPeople.getIp());
                 	    		//socketClient = new NeoAyncSocketClient(this);
