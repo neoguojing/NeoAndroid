@@ -67,6 +67,18 @@ OnItemClickListener, OnRefreshListener, OnCancelListener{
 		return super.onCreateView(inflater, container, savedInstanceState);
 	}
 	
+	 @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            //相当于Fragment的onResume
+        	getPeoples();
+        } else {
+            //相当于Fragment的onPause
+        	clearMypeopleAndFriend();
+        }
+    }
+	
 	@Override
 	protected void initViews() {
 		refreshList = (NeoRefreshListView) findViewById(R.id.people_list);
@@ -144,19 +156,7 @@ OnItemClickListener, OnRefreshListener, OnCancelListener{
 			protected Boolean doInBackground(Void... params) {
 				Boolean rtn = true;
 				rtn = JsonResolveUtils.resolveNearbyPeople(mApplication);
-				if (mApplication.mMyFriends.isEmpty()){
-					rtn = JsonResolveUtils.resolveMyFriends(mApplication, mContext);
-					if (rtn){
-						mApplication.mNearByPeoples.addAll(mApplication.mMyFriends);
-					}
-				}
-				
-				if (mApplication.mMyNearByPeoples.isEmpty()){
-					rtn = JsonResolveUtils.resolveMyNearbyPeople(mApplication, mContext);
-					if (rtn){
-						mApplication.mNearByPeoples.addAll(mApplication.mMyNearByPeoples);
-					}
-				}
+				rtn &= getMypeopleAndFriend();
 				return rtn;
 			}
 
@@ -188,18 +188,16 @@ OnItemClickListener, OnRefreshListener, OnCancelListener{
 
 			@Override
 			protected Boolean doInBackground(Void... params) {
-				try {
-					Thread.sleep(2000);
-				} catch (InterruptedException e) {
-
-				}
-				return null;
+				Boolean rtn = true;
+				rtn = getMypeopleAndFriend();
+				return rtn;
 			}
 
 			@Override
 			protected void onPostExecute(Boolean result) {
 				super.onPostExecute(result);
 				refreshList.onRefreshComplete();
+				peopleListAdpt.notifyDataSetChanged();
 			}
 		});
 	}
@@ -207,5 +205,35 @@ OnItemClickListener, OnRefreshListener, OnCancelListener{
 	public void onManualRefresh() {
 		refreshList.onManualRefresh();
 	}
+	
+	private boolean getMypeopleAndFriend(){
+		boolean rtn =true;
+		if (mApplication.mMyFriends.isEmpty()){
+			rtn = JsonResolveUtils.resolveMyFriends(mApplication, mContext);
+			if (rtn&&!mApplication.mNearByPeoples.containsAll(
+					mApplication.mMyFriends)){
+				mApplication.mNearByPeoples.addAll(mApplication.mMyFriends);
+			}
+		}
+		
+		if (mApplication.mMyNearByPeoples.isEmpty()){
+			rtn = JsonResolveUtils.resolveMyNearbyPeople(mApplication, mContext);
+			if (rtn&&!mApplication.mNearByPeoples.containsAll(
+					mApplication.mMyNearByPeoples)){
+				mApplication.mNearByPeoples.addAll(mApplication.mMyNearByPeoples);
+			}
+		}
+		return rtn;
+	}
+	
+	private void clearMypeopleAndFriend(){
+		if (!mApplication.mNearByPeoples.containsAll(
+				mApplication.mMyFriends))
+			mApplication.mMyFriends.clear();
+		if (!mApplication.mNearByPeoples.containsAll(
+				mApplication.mMyNearByPeoples))
+			mApplication.mMyNearByPeoples.clear();
+	}
+		
 	
 }

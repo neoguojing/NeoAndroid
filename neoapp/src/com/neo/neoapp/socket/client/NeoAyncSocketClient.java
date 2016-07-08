@@ -118,7 +118,10 @@ public class NeoAyncSocketClient {
 			return false;
 		
 		try {
-			client.write(ByteBuffer.wrap(bytes));
+			if (client!=null)
+				client.write(ByteBuffer.wrap(bytes));
+			else
+				return false;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -134,7 +137,10 @@ public class NeoAyncSocketClient {
 			return false;
 		
 		try {
-			client.write(ByteBuffer.wrap(bytes));
+			if (client!=null)
+				client.write(ByteBuffer.wrap(bytes));
+			else
+				return false;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -146,7 +152,8 @@ public class NeoAyncSocketClient {
 		try {
 			
 			isRunning = false;
-			client.close();
+			if (client!=null)
+				client.close();
 			select.close();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

@@ -7,6 +7,7 @@ import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.util.Log;
 
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.neo.neoapp.entity.Message;
 
 import cz.msebera.httpclient.android.BuildConfig;
 
@@ -405,19 +406,9 @@ public class FileUtils {
     }
     
     @SuppressWarnings("unchecked")
-	public static <T> T readObjectFromFile(String path,Class<T> c){
+	public static <T> T readObjectFromFile(String path,T object){
     	FileInputStream fis = null;
     	ObjectInputStream ois = null;
-    	T object = null;
-		try {
-			object = c.newInstance();
-		} catch (InstantiationException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IllegalAccessException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 		
     	try {
 			fis = new FileInputStream(path);
@@ -446,6 +437,41 @@ public class FileUtils {
 			
 		}
 		return object;
+    	
+    }
+    
+    @SuppressWarnings("unchecked")
+	public static List<Message> readMessageListFromFile(String path){
+    	FileInputStream fis = null;
+    	ObjectInputStream ois = null;
+    	List<Message> msgList = null;
+    	try {
+			fis = new FileInputStream(path);
+			ois = new ObjectInputStream(fis);
+			msgList =  (List<Message>) ois.readObject();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (StreamCorruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+			try {
+				ois.close();
+				fis.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		return msgList;
     	
     }
     

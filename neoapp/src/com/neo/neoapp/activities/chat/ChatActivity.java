@@ -16,6 +16,7 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.MediaStore;
@@ -42,6 +43,7 @@ import com.neo.neoapp.R;
 import com.neo.neoapp.UI.adapters.ChatAdapter;
 import com.neo.neoapp.UI.adapters.CheckListDialogAdapter;
 import com.neo.neoapp.UI.views.HeaderLayout.HeaderStyle;
+import com.neo.neoapp.activities.WelcomeActivity;
 import com.neo.neoapp.broadcasts.NeoAppBroadCastMessages;
 import com.neo.neoapp.dialog.SimpleListDialog;
 import com.neo.neoapp.entity.Message;
@@ -193,23 +195,7 @@ public class ChatActivity extends BaseMessageActivity {
 		initPopupWindow();
 		initSynchronousDialog();
 		
-		String msgFile = mApplication.mAppDataPath+NeoAppSetings.UserMsgDir+mPeople.getName();
-		if (FileUtils.isFileExist(msgFile)){
-			List<Message> msgList = null;
-			try {
-				msgList = (List<Message>) FileUtils.readObjectFromFile(
-						msgFile,
-						Class.forName("List<Message>"));
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			if (msgList!=null)
-				mMessages.addAll(msgList);
-		}
-		mAdapter = new ChatAdapter(mApplication, ChatActivity.this, mMessages);
-		mClvList.setAdapter(mAdapter);
-		
+		loadMessage();
 		//socket
 	    StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()  
         .detectDiskReads().detectDiskWrites().detectNetwork()  
@@ -222,6 +208,48 @@ public class ChatActivity extends BaseMessageActivity {
 	    
 	}
 	
+	private void loadMessage(){
+		 putAsyncTask(new AsyncTask<Void, Void, Boolean>() {
+	            protected void onPreExecute() {
+	                super.onPreExecute();
+	                showLoadingDialog("\u8bf7\u7a0d\u540e,\u6b63\u5728\u521d\u59cb\u5316...");
+	            }
+
+	            protected Boolean doInBackground(Void... params) {
+	                try {
+	                    Boolean rtn = Boolean.valueOf(true);
+	                    String msgFile = mApplication.mAppDataPath+NeoAppSetings.UserMsgDir+mPeople.getName();
+	            		if (FileUtils.isFileExist(msgFile)){
+	            			List<Message> msgList = null;
+	            			//msgList = (List<Message>) FileUtils.readMessageListFromFile(msgFile);
+	            			msgList = FileUtils.readObjectFromFile(msgFile,msgList);
+	            			if (msgList!=null){
+	            				mMessages.addAll(msgList);
+	            			}
+	            			else{
+	            				showAlertDialog("NEO", "load message faild ");
+	            				rtn = false;
+	            			}
+	            		}
+	                    return rtn;
+	                } catch (Exception e) {
+	                    e.printStackTrace();
+	                    return Boolean.valueOf(false);
+	                }
+	            }
+
+	            protected void onPostExecute(Boolean result) {
+	                super.onPostExecute(result);
+	                dismissLoadingDialog();
+	                if (!result.booleanValue()) {
+	                    showAlertDialog("NEO", "load message faied");
+	                }else{
+	                	mAdapter = new ChatAdapter(mApplication, ChatActivity.this, mMessages);
+	            		mClvList.setAdapter(mAdapter);
+	                }
+	            }
+	        });
+	}
 	private void initClientSocket(){
 		//test
 		//socketClient = new NeoAyncSocketClient(this);
@@ -283,6 +311,7 @@ public class ChatActivity extends BaseMessageActivity {
                     		if (mPeople.getIp()!=null&&!mPeople.getIp().isEmpty()){
                 	    		socketClient = new NeoAyncSocketClient(ChatActivity.this,mPeople.getIp());
                 	    		//socketClient = new NeoAyncSocketClient(this);
+                	    		
                     		}
                     	}
                         
