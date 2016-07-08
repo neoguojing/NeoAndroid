@@ -21,6 +21,7 @@ public class NeoAppSetings {
     public static final String ProfilesDir = "profile/";
     public static final String StatuPhotosDir = "statusphoto/";
     public static final String StatusDir = "status/";
+    public static final String UserMsgDir = "messages/";
     private static String download_suffix = null;
     private static String getsvc_suffix = null;
     private static String headpic_suffix = null;

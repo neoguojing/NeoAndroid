@@ -124,15 +124,17 @@ public class WelcomeActivity extends NeoBasicActivity implements OnClickListener
                     Boolean rtn = Boolean.valueOf(true);
                     String prefix = FileUtils.getAppDataPath(WelcomeActivity.this);
                 	getMyApplication().mAppDataPath = prefix;
-                	if (getMyApplication().mAppDataPath.equals(""))
-                		showAlertDialog("NEO", "the app path is empty！");
-                    FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.HeadPicDir).toString());
-                    FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.MyPhotosDir).toString());
-                    FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.MyPhotosOriginalDir).toString());
-                    FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.MyPhotosThumbnailDir).toString());
-                    FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.ProfilesDir).toString());
-                    FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.StatuPhotosDir).toString());
-                    FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.StatusDir).toString());
+                	if (getMyApplication().mAppDataPath.equals("")){
+                		return false;
+                	}
+                	rtn &= FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.HeadPicDir).toString());
+                	rtn &= FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.MyPhotosDir).toString());
+                	rtn &= FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.MyPhotosOriginalDir).toString());
+                	rtn &= FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.MyPhotosThumbnailDir).toString());
+                	rtn &= FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.ProfilesDir).toString());
+                	rtn &= FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.StatuPhotosDir).toString());
+                	rtn &= FileUtils.createDirFile(new StringBuilder(String.valueOf(prefix)).append(NeoAppSetings.StatusDir).toString());
+                	rtn &= FileUtils.createDirFile(prefix+NeoAppSetings.UserMsgDir);
                     return rtn;
                 } catch (Exception e) {
                     e.printStackTrace();

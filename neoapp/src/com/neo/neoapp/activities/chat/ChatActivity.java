@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.nio.channels.SocketChannel;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -73,6 +74,10 @@ public class ChatActivity extends BaseMessageActivity {
 
 	@Override
 	public void onBackPressed() {
+		String msgFile = mApplication.mAppDataPath+NeoAppSetings.UserMsgDir+mPeople.getName();
+		if(!FileUtils.writeObjectToFile(msgFile, mMessages)){
+			showAlertDialog("NEO", "save message faild ");
+		}
 		if (mLayoutMessagePlusBar.isShown()) {
 			hidePlusBar();
 		} else if (mInputView.isShown()) {
@@ -170,6 +175,7 @@ public class ChatActivity extends BaseMessageActivity {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	private void init() {
 		//mProfile = getIntent().getParcelableExtra("entity_profile");
 		mPeople = getIntent().getParcelableExtra("entity_people");
@@ -186,7 +192,21 @@ public class ChatActivity extends BaseMessageActivity {
 		initRounds();
 		initPopupWindow();
 		initSynchronousDialog();
-
+		
+		String msgFile = mApplication.mAppDataPath+NeoAppSetings.UserMsgDir+mPeople.getName();
+		if (FileUtils.isFileExist(msgFile)){
+			List<Message> msgList = null;
+			try {
+				msgList = (List<Message>) FileUtils.readObjectFromFile(
+						msgFile,
+						Class.forName("List<Message>"));
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if (msgList!=null)
+				mMessages.addAll(msgList);
+		}
 		mAdapter = new ChatAdapter(mApplication, ChatActivity.this, mMessages);
 		mClvList.setAdapter(mAdapter);
 		

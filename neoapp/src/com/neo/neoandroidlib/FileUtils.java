@@ -13,13 +13,19 @@ import cz.msebera.httpclient.android.BuildConfig;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.StreamCorruptedException;
 import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Context;
 import android.net.Uri;
@@ -78,11 +84,12 @@ public class FileUtils {
 		return false;
 	}
 
-	public static void createDirFile(String path) {
+	public static boolean createDirFile(String path) {
 		File dir = new File(path);
 		if (!dir.exists()) {
-			dir.mkdirs();
+			return dir.mkdirs();
 		}
+		return true;
 	}
 
 	public static File createNewFile(String path) {
@@ -368,5 +375,88 @@ public class FileUtils {
             return false;
         }
         return true;
+    }
+    
+    public static <T> boolean writeObjectToFile(String path, T object){
+    	FileOutputStream fos = null;
+    	ObjectOutputStream oos = null;
+    	try {
+			fos = new FileOutputStream(path);
+			oos = new ObjectOutputStream(fos);
+			oos.writeObject(object);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}finally{
+			try {
+				oos.close();
+				fos.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return true;
+    }
+    
+    @SuppressWarnings("unchecked")
+	public static <T> T readObjectFromFile(String path,Class<T> c){
+    	FileInputStream fis = null;
+    	ObjectInputStream ois = null;
+    	T object = null;
+		try {
+			object = c.newInstance();
+		} catch (InstantiationException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IllegalAccessException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+    	try {
+			fis = new FileInputStream(path);
+			ois = new ObjectInputStream(fis);
+			object = (T) ois.readObject();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (StreamCorruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+			try {
+				ois.close();
+				fis.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		return object;
+    	
+    }
+    
+    private static  void test(){
+    	List<String> list = new ArrayList<String>();
+    	writeObjectToFile(".",list);
+    	try {
+			readObjectFromFile(".",Class.forName("List<String>"));
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 }
