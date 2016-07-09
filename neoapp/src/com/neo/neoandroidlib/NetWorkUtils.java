@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.NetworkInfo.State;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -119,11 +120,15 @@ public class NetWorkUtils {
 	public NetWorkState getConnectState() {
 		ConnectivityManager manager = (ConnectivityManager) mContext
 				.getSystemService(Context.CONNECTIVITY_SERVICE);
-		manager.getActiveNetworkInfo();
-		wifiState = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI)
-				.getState();
-		mobileState = manager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE)
-				.getState();
+		//manager.getActiveNetworkInfo();
+		NetworkInfo ni =null;
+		ni = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+		if (ni!=null)
+			wifiState = ni.getState();
+		ni = manager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+		if (ni!=null)
+			mobileState = ni.getState();
+		
 		if (wifiState != null && mobileState != null
 				&& State.CONNECTED != wifiState
 				&& State.CONNECTED == mobileState) {
@@ -141,11 +146,15 @@ public class NetWorkUtils {
 	public static NetWorkState getConnectState(Context context) {
 		ConnectivityManager manager = (ConnectivityManager) context
 				.getSystemService(Context.CONNECTIVITY_SERVICE);
-		manager.getActiveNetworkInfo();
-		wifiState = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI)
-				.getState();
-		mobileState = manager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE)
-				.getState();
+		//NetworkInfo ni = manager.getActiveNetworkInfo();
+		NetworkInfo ni =null;
+		ni = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+		if (ni!=null)
+			wifiState = ni.getState();
+		ni = manager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+		if (ni!=null)
+			mobileState = ni.getState();
+
 		if (wifiState != null && mobileState != null
 				&& State.CONNECTED != wifiState
 				&& State.CONNECTED == mobileState) {
@@ -159,4 +168,11 @@ public class NetWorkUtils {
 		}
 		return NetWorkState.NONE;
 	}
+	
+	public static boolean isNetworkConnected(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) 
+        		context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo ni = cm.getActiveNetworkInfo();
+        return ni != null && ni.isConnectedOrConnecting();
+    }
 }

@@ -72,7 +72,7 @@ public class NeoAyncSocketServer {
 	}
 	
 	public static boolean send(SocketChannel client,Message content){
-		content.setContent("send from socket server");
+		//content.setContent("send from socket server");
 		byte[] bytes = NeoSocketSerializableUtils.objectToByteArray(content);
 		
 		if (bytes==null)
@@ -188,7 +188,7 @@ public class NeoAyncSocketServer {
 				if (!socketMap.containsKey(object.getName()))
 					socketMap.put(object.getName(),clent);
 				object.setMessageType(Message.MESSAGE_TYPE.RECEIVER);
-				object.setContent("i am coming from server receiver");
+				//object.setContent("i am coming from server receiver");
 				NeoAppBroadCastMessages.sendDynamicBroadCastMsg(mContext, object);
 
 			}catch (ClosedChannelException e) {

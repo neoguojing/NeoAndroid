@@ -96,7 +96,7 @@ public class NeoAyncSocketClient {
 							
 							Message object = NeoSocketSerializableUtils.byteArrayToMessage(bf.array());
 							object.setMessageType(Message.MESSAGE_TYPE.RECEIVER);
-							object.setContent("i am coming from client receiver");
+							//object.setContent("i am coming from client receiver");
 							NeoAppBroadCastMessages.sendDynamicBroadCastMsg(mContext, object);
 							
 						} catch (IOException e) {
@@ -130,7 +130,7 @@ public class NeoAyncSocketClient {
 	}
 	
 	public boolean send(Message content){
-		content.setContent("coming from client server");
+		//content.setContent("coming from client server");
 		byte[] bytes = NeoSocketSerializableUtils.MessageToByteArray(content);
 		
 		if (bytes==null)
