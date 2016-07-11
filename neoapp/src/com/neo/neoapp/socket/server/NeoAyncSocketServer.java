@@ -185,8 +185,13 @@ public class NeoAyncSocketServer {
 				}
 				
 				Message object = NeoSocketSerializableUtils.byteArrayToMessage(bf.array());
-				if (!socketMap.containsKey(object.getName()))
-					socketMap.put(object.getName(),clent);
+				if (object==null)
+					return;
+				
+				synchronized(this){
+					if (!socketMap.containsKey(object.getName()))
+						socketMap.put(object.getName(),clent);
+				}
 				object.setMessageType(Message.MESSAGE_TYPE.RECEIVER);
 				//object.setContent("i am coming from server receiver");
 				NeoAppBroadCastMessages.sendDynamicBroadCastMsg(mContext, object);

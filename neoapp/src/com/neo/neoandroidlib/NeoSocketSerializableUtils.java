@@ -24,7 +24,8 @@ public class NeoSocketSerializableUtils {
 			e.printStackTrace();
 		}finally{
 			try {
-				oos.close();
+				if (oos!=null)
+					oos.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -46,7 +47,8 @@ public class NeoSocketSerializableUtils {
 			e.printStackTrace();
 		}finally{
 			try {
-				oos.close();
+				if (oos!=null)
+					oos.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -74,7 +76,8 @@ public class NeoSocketSerializableUtils {
 			e.printStackTrace();
 		}finally{
 			try {
-				ois.close();
+				if (ois!=null)
+					ois.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -105,7 +108,8 @@ public class NeoSocketSerializableUtils {
 		}finally{
 			try {
 				bis.close();
-				ois.close();
+				if (ois!=null)
+					ois.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

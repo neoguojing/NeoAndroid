@@ -83,9 +83,15 @@ public class NeoPeopleListAdapter extends NeoBasicListAdapter {
 	        		NeoImageUtil.dip2px(mContext,77f));
 			
 		}
-		holder.mIvAvatar.setImageBitmap(
-				NeoImageUtil.drawTextOntBitMap(headpic,
-						getUnreadMessageCount(people.getName())));
+		
+		String countStr = getUnreadMessageCount(people.getName());
+		if (countStr.equals("0"))
+			holder.mIvAvatar.setImageBitmap(headpic);
+		else{
+			holder.mIvAvatar.setImageBitmap(
+					NeoImageUtil.drawTextOntBitMap(headpic,
+							getUnreadMessageCount(people.getName())));
+		}
 		
 		holder.mHtvName.setText(people.getName());
 		holder.mLayoutGender.setBackgroundResource(people.getGenderBgId());

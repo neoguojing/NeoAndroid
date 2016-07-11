@@ -79,19 +79,31 @@ OnItemClickListener, OnRefreshListener, OnCancelListener{
         if (isVisibleToUser) {
             //相当于Fragment的onResume
         	getPeoples();
-        	//init the msg receiver
-        	msgBroadCastReceiver = new MsgReceiver();
-    		
-    		IntentFilter filter = new IntentFilter();
-    		filter.addAction(NeoAppBroadCastMessages.broadcastAction);
-    		mContext.registerReceiver(msgBroadCastReceiver, filter);
+        	
         } else {
             //相当于Fragment的onPause
         	clearMypeopleAndFriend();
-        	mContext.unregisterReceiver(msgBroadCastReceiver);
         }
     }
 	
+	 @Override
+	public void onResume(){
+		super.onResume();
+		//init the msg receiver
+    	msgBroadCastReceiver = new MsgReceiver();
+		
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(NeoAppBroadCastMessages.broadcastAction);
+		mContext.registerReceiver(msgBroadCastReceiver, filter);
+	}
+	
+	@Override
+	public void onPause(){
+		super.onPause();
+		if (msgBroadCastReceiver!=null)
+    		mContext.unregisterReceiver(msgBroadCastReceiver);
+	}
+	 
 	@Override
 	protected void initViews() {
 		refreshList = (NeoRefreshListView) findViewById(R.id.people_list);
@@ -129,6 +141,8 @@ OnItemClickListener, OnRefreshListener, OnCancelListener{
 		intent.putExtra("name", name);
 		intent.putExtra("avatar", avatar);
 		intent.putExtra("entity_people", people);*/
+		peopleListAdpt.setUnreadMessageCount(people.getName(), 0);
+		peopleListAdpt.notifyDataSetChanged();
 		
 		Intent intent = new Intent(mContext, ChatActivity.class);
 		intent.putExtra("entity_people", people);

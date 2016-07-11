@@ -157,10 +157,10 @@ public class NeoImageUtil {
         
         Paint textPaint=new Paint(Paint.ANTI_ALIAS_FLAG|Paint.DEV_KERN_TEXT_FLAG);  
         textPaint.setColor(Color.WHITE);  
-        textPaint.setTextSize(80f);  
+        textPaint.setTextSize(20f);  
         textPaint.setTypeface(Typeface.DEFAULT_BOLD); 
         
-        canvas.drawText(text, bitmap.getWidth()-20, 20, textPaint);
+        canvas.drawText(text, bitmap.getWidth()-25, 25, textPaint);
         return rtn;
 	}
 };
