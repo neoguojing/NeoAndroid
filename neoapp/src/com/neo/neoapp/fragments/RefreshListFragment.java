@@ -36,6 +36,7 @@ import com.neo.neoapp.UI.adapters.NeoPeopleListAdapter;
 import com.neo.neoapp.UI.views.list.NeoRefreshListView;
 import com.neo.neoapp.UI.views.list.NeoRefreshListView.OnCancelListener;
 import com.neo.neoapp.UI.views.list.NeoRefreshListView.OnRefreshListener;
+import com.neo.neoapp.activities.MainTabActivity;
 import com.neo.neoapp.activities.chat.ChatActivity;
 import com.neo.neoapp.broadcasts.NeoAppBroadCastMessages;
 import com.neo.neoapp.definitions.ENeoUIThreadMessges;
@@ -141,8 +142,9 @@ OnItemClickListener, OnRefreshListener, OnCancelListener{
 		intent.putExtra("name", name);
 		intent.putExtra("avatar", avatar);
 		intent.putExtra("entity_people", people);*/
-		peopleListAdpt.setUnreadMessageCount(people.getName(), 0);
-		peopleListAdpt.notifyDataSetChanged();
+		updateMsgFlag(people.getName(), 0);
+		//peopleListAdpt.setUnreadMessageCount(people.getName(), 0);
+		//peopleListAdpt.notifyDataSetChanged();
 		
 		Intent intent = new Intent(mContext, ChatActivity.class);
 		intent.putExtra("entity_people", people);
@@ -261,7 +263,12 @@ OnItemClickListener, OnRefreshListener, OnCancelListener{
 				mApplication.mMyNearByPeoples))
 			mApplication.mMyNearByPeoples.clear();
 	}
-		
+	
+	public void updateMsgFlag(String name, int count){
+		peopleListAdpt.setUnreadMessageCount(name,count);
+		peopleListAdpt.notifyDataSetChanged();
+	}
+	
 	private class MsgReceiver extends BroadcastReceiver {
 
 		@Override
@@ -273,10 +280,9 @@ OnItemClickListener, OnRefreshListener, OnCancelListener{
 				if (msg==null)
 					return;
 				NeoSocketMessageCacheUtil.getIntance().addMessage(msg.getName(), msg);
-				peopleListAdpt.setUnreadMessageCount(msg.getName(),
+				updateMsgFlag(msg.getName(),
 						NeoSocketMessageCacheUtil.getIntance().
 						getMessageCount(msg.getName()));
-				peopleListAdpt.notifyDataSetChanged();
 			}
 		
 		}

@@ -1,15 +1,19 @@
 package com.neo.neoapp.UI;
 
+import com.neo.neoandroidlib.NeoImageUtil;
 import com.neo.neoapp.R; 
+
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Looper;
@@ -30,10 +34,12 @@ public class ChangeColorIconWithTextView extends View {
 	private Bitmap bitmap;//图形
 	private Paint paint;//画笔
 	
-	private float maplha;//透明�?
+	private float maplha;//透明�?
 	private Rect iconRect;//图形矩形
-	private Rect textBound;//文字矩形�?
+	private Rect textBound;//文字矩形�?
 	private Paint textPaint;//画文字的画笔
+	
+	private int msgCount = 0;
 	
 	public ChangeColorIconWithTextView(Context context) {
 		//super(context);
@@ -48,7 +54,7 @@ public class ChangeColorIconWithTextView extends View {
 	}
 
 	/**
-	 * 获取自定义属性的�?
+	 * 获取自定义属性的�?
 	 * @param context
 	 * @param attrs
 	 * @param defStyleAttr
@@ -57,13 +63,13 @@ public class ChangeColorIconWithTextView extends View {
 			int defStyleAttr) {
 		super(context, attrs, defStyleAttr);
 		// TODO Auto-generated constructor stub
-		//获得自定义的属�?�的数组
+		//获得自定义的属�?�的数组
 		TypedArray typeArray=context.obtainStyledAttributes(attrs,
 				R.styleable.ChangeColorIconWithText);
-		//获得数组的长�?
+		//获得数组的长�?
 		int n=typeArray.getIndexCount();
 		for(int i=0;i<n;i++){
-			//得到当前属�?�的index
+			//得到当前属�?�的index
 			int attr=typeArray.getIndex(i);
 			switch(attr){
 			case R.styleable.ChangeColorIconWithText_icon:
@@ -100,9 +106,9 @@ public class ChangeColorIconWithTextView extends View {
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 		int iconWidth=Math.min(getMeasuredWidth()-getPaddingLeft()-getPaddingRight(), 
 				getMeasuredHeight()-getPaddingTop()-getPaddingBottom()-textBound.height());
-		//�?术左边的位置
+		//�?术左边的位置
 		int left=getMeasuredWidth()/2-iconWidth/2;
-		//计算距离顶部的位�?
+		//计算距离顶部的位�?
 		int top=(getMeasuredHeight()-textBound.height())/2-iconWidth/2;
 		//创建图形的矩形框
 		iconRect=new Rect(left,top,left+iconWidth,top+iconWidth);
@@ -113,20 +119,46 @@ public class ChangeColorIconWithTextView extends View {
 		// TODO Auto-generated method stub
 		canvas.drawBitmap(iconBitmap, null, iconRect, null);
 		
-		// 内存去准备bitmap , setAlpha , 纯色 ，xfermode �? 图标
+		// 内存去准备bitmap , setAlpha , 纯色 ，xfermode �? 图标
 		int alpha=(int) Math.ceil(maplha*255);
 		setupTargetBitmap(alpha);
 		
-		// 1、绘制原文本 �? 2、绘制变色的文本
+		// 1、绘制原文本 �? 2、绘制变色的文本
 		drawSourceText(canvas, alpha);
 		drawTargetText(canvas, alpha);
 		canvas.drawBitmap(bitmap, 0, 0, null);
+		
+		if (getMsgCount()!=0)
+			drawMsgCount(canvas,bitmap,String.valueOf(getMsgCount()));
 		super.onDraw(canvas);
 	}
-
+	
+	public void setMsgCount(int msgcount){
+		this.msgCount = msgcount;
+	}
+	
+	public int getMsgCount(){
+		return this.msgCount;
+	}
+	
+	private void drawMsgCount(Canvas canvas,Bitmap bitmap,String text){
+		
+		//启用抗锯齿和使用设备的文本字距  
+        Paint countPaint=new Paint(Paint.ANTI_ALIAS_FLAG|Paint.DEV_KERN_TEXT_FLAG);  
+        countPaint.setColor(Color.RED);  
+		
+        canvas.drawCircle(bitmap.getWidth()-50, 20, 20, countPaint);
+        
+        Paint textPaint=new Paint(Paint.ANTI_ALIAS_FLAG|Paint.DEV_KERN_TEXT_FLAG);  
+        textPaint.setColor(Color.WHITE);  
+        textPaint.setTextSize(20f);  
+        textPaint.setTypeface(Typeface.DEFAULT_BOLD); 
+        
+        canvas.drawText(text, bitmap.getWidth()-55, 25, textPaint);
+	}
 	
 	/**
-	 * 绘制变色的文�?
+	 * 绘制变色的文�?
 	 * @param canvas
 	 * @param alpha
 	 */
@@ -141,7 +173,7 @@ public class ChangeColorIconWithTextView extends View {
 
 	/**
 	 * 
-	 * 绘制原文�?
+	 * 绘制原文�?
 	 * @param canvas
 	 * @param alpha
 	 */
@@ -164,8 +196,8 @@ public class ChangeColorIconWithTextView extends View {
 		mcanvas=new Canvas(bitmap);
 		paint=new Paint();
 		paint.setColor(color);
-		paint.setAntiAlias(true);//防锯�?
-		paint.setDither(true);//防抖�?
+		paint.setAntiAlias(true);//防锯�?
+		paint.setDither(true);//防抖�?
 		paint.setAlpha(alpha);
 		mcanvas.drawRect(iconRect, paint);//在图形上绘制纯色
 		paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));

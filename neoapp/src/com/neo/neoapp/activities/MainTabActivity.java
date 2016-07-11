@@ -1,7 +1,9 @@
 package com.neo.neoapp.activities;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -21,6 +23,7 @@ import com.loopj.android.http.RequestParams;
 import com.neo.neoandroidlib.FileUtils;
 import com.neo.neoandroidlib.NeoAsyncHttpUtil;
 import com.neo.neoandroidlib.NeoIntentFactiory;
+import com.neo.neoandroidlib.NeoSocketMessageCacheUtil;
 import com.neo.neoandroidlib.NetWorkUtils;
 import com.neo.neoandroidlib.NetWorkUtils.NetWorkState;
 import com.neo.neoandroidlib.PhotoUtils;
@@ -83,6 +86,10 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
 	
 	private List<ChangeColorIconWithTextView> mListViews = 
 			new ArrayList<ChangeColorIconWithTextView>();
+	
+	private ChangeColorIconWithTextView one = null;
+	private MsgReceiver msgBroadCastReceiver = null;
+	RefreshListFragment refreshList = null;
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -178,7 +185,7 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
 		
 		mViewPager = (ViewPager)findViewById(R.id.id_viewpager);
 		
-		ChangeColorIconWithTextView one=(ChangeColorIconWithTextView) findViewById(R.id.id_indicator_one);
+		one=(ChangeColorIconWithTextView) findViewById(R.id.id_indicator_one);
 		ChangeColorIconWithTextView two=(ChangeColorIconWithTextView) findViewById(R.id.id_indicator_two);
 		ChangeColorIconWithTextView three=(ChangeColorIconWithTextView) findViewById(R.id.id_indicator_three);
 		ChangeColorIconWithTextView four=(ChangeColorIconWithTextView) findViewById(R.id.id_indicator_four);
@@ -200,7 +207,7 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
 	
 	private void initDatas(){
 		
-		RefreshListFragment refreshList = 
+		refreshList = 
 				new RefreshListFragment(mApplication,this,this);
 		mListFragments.add(refreshList);
 		
@@ -793,7 +800,7 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
 	
 	private void onTabClick(View view){
 		resetOthersTab();
-		
+		resetOneMsgFlag();
 		switch(view.getId()){
 		case R.id.id_indicator_one:
 			mListViews.get(0).setIconAlpha(1.0f);
@@ -844,5 +851,47 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
 	public void onPageSelected(int arg0) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	@Override
+	public void onResume(){
+		super.onResume();
+		//init the msg receiver
+    	msgBroadCastReceiver = new MsgReceiver();
+		
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(NeoAppBroadCastMessages.broadcastAction);
+		registerReceiver(msgBroadCastReceiver, filter);
+	}
+	
+	@Override
+	public void onPause(){
+		super.onPause();
+		if (msgBroadCastReceiver!=null)
+    		unregisterReceiver(msgBroadCastReceiver);
+	}
+	
+	public void resetOneMsgFlag(){
+		one.setMsgCount(NeoSocketMessageCacheUtil.getIntance().getAllMessageCount());
+		one.invalidate();
+	}
+	
+	private class MsgReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			String action = intent.getAction();
+			if(action.equals(NeoAppBroadCastMessages.broadcastAction)) {
+				Message msg = (Message) intent.getExtras().getSerializable("msg");
+				if (msg==null)
+					return;
+				if (mViewPager.getCurrentItem()!=0)
+					NeoSocketMessageCacheUtil.getIntance().
+					addMessage(msg.getName(), msg);
+				resetOneMsgFlag();
+			}
+		
+		}
 	}
 }
