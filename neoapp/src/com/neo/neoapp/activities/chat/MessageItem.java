@@ -1,6 +1,7 @@
 package com.neo.neoapp.activities.chat;
 
 import com.neo.neoandroidlib.DateUtils;
+import com.neo.neoandroidlib.NeoImageUtil;
 import com.neo.neoapp.R;
 import com.neo.neoapp.NeoBasicApplication;
 import com.neo.neoapp.UI.views.NeoBasicTextView;
@@ -170,8 +171,12 @@ public abstract class MessageItem {
 	
 	protected void fillPhotoViewForSend() {
 		mLayoutRightContainer.setVisibility(View.VISIBLE);
-		mIvPhotoView.setImageBitmap(((NeoBasicApplication) ((Activity) mContext)
-				.getApplication()).getMyHeadPic());
+		Bitmap bm = ((NeoBasicApplication) ((Activity) mContext)
+				.getApplication()).getMyHeadPic();
+		bm = NeoImageUtil.compressTheImageToDestSize(bm,
+        		NeoImageUtil.dip2px(mContext,40f),
+        		NeoImageUtil.dip2px(mContext,40f));
+		mIvPhotoView.setImageBitmap(bm);
 	}
 	
 	protected void fillPhotoViewForReceive() {
@@ -184,6 +189,9 @@ public abstract class MessageItem {
 					.getApplication()).getAvatar(mMsg.getAvatar());
 			mIvPhotoView.setImageBitmap(bm);
 		}else{
+			bm = NeoImageUtil.compressTheImageToDestSize(bm,
+	        		NeoImageUtil.dip2px(mContext,40f),
+	        		NeoImageUtil.dip2px(mContext,40f));
 			mIvPhotoView.setImageBitmap(bm);
 		}
 	}
