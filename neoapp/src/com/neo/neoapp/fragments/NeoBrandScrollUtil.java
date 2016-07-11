@@ -37,7 +37,7 @@ public class NeoBrandScrollUtil implements OnPageChangeListener, Runnable{
 
     private List<ImageView> tips;  
     private List<ImageView> mImageViews;  
-    private int[] imgIdArray ;  
+    private int[] imgIdArray;  
     
     public int currentItemOfBrandScroll = 0;
     
@@ -61,7 +61,7 @@ public class NeoBrandScrollUtil implements OnPageChangeListener, Runnable{
 	public NeoBrandScrollUtil() {
 		// TODO Auto-generated constructor stub
 	}
-
+	
 	public void InitView()
 	{
 		 
@@ -73,77 +73,108 @@ public class NeoBrandScrollUtil implements OnPageChangeListener, Runnable{
 		mImageViews = new ArrayList<ImageView>(); 
 		
 		if (mImageViews.isEmpty()) {
-			mFrag.putAsyncTask(new AsyncTask<Void, Void, Boolean>() {
-
-				@Override
-				protected void onPreExecute() {
-					super.onPreExecute();
-					//showLoadingDialog("正在加载,请稍后...");
+			for(int i =0; i<imgIdArray.length;++i)
+			{
+				
+				ImageView tIV = new ImageView(mContext);
+				tIV.setLayoutParams(new LayoutParams(10,10));
+				tips.add(tIV);
+				
+				if (i == 0)
+				{
+					tips.get(i).setBackgroundResource(R.drawable.scrollwhite);				
+				}else
+				{
+					tips.get(i).setBackgroundResource(R.drawable.scrollblackl);	
 				}
-
-				@Override
-				protected Boolean doInBackground(Void... params) {
-					for(int i =0; i<imgIdArray.length;++i)
-					{
-						
-						ImageView tIV = new ImageView(mContext);
-						tIV.setLayoutParams(new LayoutParams(10,10));
-						tips.add(tIV);
-						
-						if (i == 0)
-						{
-							tips.get(i).setBackgroundResource(R.drawable.scrollwhite);				
-						}else
-						{
-							tips.get(i).setBackgroundResource(R.drawable.scrollblackl);	
-						}
-						
-						LinearLayout.LayoutParams layoutparm = new LinearLayout.LayoutParams(
-								new ViewGroup.LayoutParams(LayoutParams.WRAP_CONTENT, 
-										LayoutParams.WRAP_CONTENT));
-						layoutparm.leftMargin = 5;
-						layoutparm.rightMargin = 5;
-						group.addView(tIV,layoutparm);
-					}
-					
-					 
-			        for(int i=0; i<imgIdArray.length; i++){  
-			            ImageView imageView = new ImageView(mContext); 
-			            imageView.setImageResource(imgIdArray[i]); 
-			            imageView.setScaleType(ScaleType.FIT_XY);
-			            mImageViews.add(imageView); 
-			        }  
-			      						 
-			        
-			        return true;
-				}
-
-				@Override
-				protected void onPostExecute(Boolean result) {
-					super.onPostExecute(result);
-					//dismissLoadingDialog();
-					if (!result) {
-						mFrag.showCustomToast("数据加载失败...");
-					} else{
-						mfPagerAdapter = new NeoScrollImageAdapter(mImageViews);
-						mViewPager.setAdapter(mfPagerAdapter);
-						mViewPager.setCurrentItem((mImageViews.size()) * 100);  
-						//mViewPager.setOnPageChangeListener(this); 
-						
-					}
-
-				}
-			});
+				
+				LinearLayout.LayoutParams layoutparm = new LinearLayout.LayoutParams(
+						new ViewGroup.LayoutParams(LayoutParams.WRAP_CONTENT, 
+								LayoutParams.WRAP_CONTENT));
+				layoutparm.leftMargin = 5;
+				layoutparm.rightMargin = 5;
+				group.addView(tIV,layoutparm);
+			}
 			
-		} else{
+			 
+	        for(int i=0; i<imgIdArray.length; i++){  
+	            ImageView imageView = new ImageView(mContext); 
+	            imageView.setImageResource(imgIdArray[i]); 
+	            imageView.setScaleType(ScaleType.FIT_XY);
+	            mImageViews.add(imageView); 
+	        }  
 			
-			 mfPagerAdapter = new NeoScrollImageAdapter(mImageViews);
-			 mViewPager.setAdapter(mfPagerAdapter);
-			 mViewPager.setCurrentItem((mImageViews.size()) * 100);   
-			 //mViewPager.setOnPageChangeListener(this); 
 		}
+			
+		 mfPagerAdapter = new NeoScrollImageAdapter(mImageViews);
+		 mViewPager.setAdapter(mfPagerAdapter);
+		 mViewPager.setCurrentItem((mImageViews.size()) * 100);   
+		 //mViewPager.setOnPageChangeListener(this); 
 	}
 	
+	private void initViewInBackground(){
+		mFrag.putAsyncTask(new AsyncTask<Void, Void, Boolean>() {
+
+			@Override
+			protected void onPreExecute() {
+				super.onPreExecute();
+				//showLoadingDialog("正在加载,请稍后...");
+			}
+
+			@Override
+			protected Boolean doInBackground(Void... params) {
+				for(int i =0; i<imgIdArray.length;++i)
+				{
+					
+					ImageView tIV = new ImageView(mContext);
+					tIV.setLayoutParams(new LayoutParams(10,10));
+					tips.add(tIV);
+					
+					if (i == 0)
+					{
+						tips.get(i).setBackgroundResource(R.drawable.scrollwhite);				
+					}else
+					{
+						tips.get(i).setBackgroundResource(R.drawable.scrollblackl);	
+					}
+					
+					LinearLayout.LayoutParams layoutparm = new LinearLayout.LayoutParams(
+							new ViewGroup.LayoutParams(LayoutParams.WRAP_CONTENT, 
+									LayoutParams.WRAP_CONTENT));
+					layoutparm.leftMargin = 5;
+					layoutparm.rightMargin = 5;
+					group.addView(tIV,layoutparm);
+				}
+				
+				 
+		        for(int i=0; i<imgIdArray.length; i++){  
+		            ImageView imageView = new ImageView(mContext); 
+		            imageView.setImageResource(imgIdArray[i]); 
+		            imageView.setScaleType(ScaleType.FIT_XY);
+		            mImageViews.add(imageView); 
+		        }  
+		      						 
+		        
+		        return true;
+			}
+
+			@Override
+			protected void onPostExecute(Boolean result) {
+				super.onPostExecute(result);
+				//dismissLoadingDialog();
+				if (!result) {
+					mFrag.showCustomToast("数据加载失败...");
+				} else{
+					mfPagerAdapter = new NeoScrollImageAdapter(mImageViews);
+					mViewPager.setAdapter(mfPagerAdapter);
+					mViewPager.setCurrentItem((mImageViews.size()) * 100);  
+					//mViewPager.setOnPageChangeListener(this); 
+					
+				}
+
+			}
+		});
+	}
 	public void InitEvent()
 	{
 		mViewPager.setOnPageChangeListener(this);
