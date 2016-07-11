@@ -34,6 +34,7 @@ import android.widget.LinearLayout;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.neo.neoandroidlib.FileUtils;
 import com.neo.neoandroidlib.NeoAsyncHttpUtil;
+import com.neo.neoandroidlib.NeoSocketMessageCacheUtil;
 import com.neo.neoandroidlib.NetWorkUtils;
 import com.neo.neoandroidlib.PhotoUtils;
 import com.neo.neoandroidlib.NetWorkUtils.NetWorkState;
@@ -231,6 +232,11 @@ public class ChatActivity extends BaseMessageActivity {
 	            				rtn = false;
 	            			}
 	            		}
+	            		
+	            		//add the message in cache and clear it.
+	            		mMessages.addAll(NeoSocketMessageCacheUtil.getIntance().
+	            				getMessageList(mPeople.getName()));
+	            		NeoSocketMessageCacheUtil.getIntance().clearMessageList(mPeople.getName());
 	                    return rtn;
 	                } catch (Exception e) {
 	                    e.printStackTrace();

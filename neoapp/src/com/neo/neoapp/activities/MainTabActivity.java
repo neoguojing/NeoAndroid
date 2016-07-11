@@ -33,6 +33,7 @@ import com.neo.neoapp.UI.ChangeColorIconWithTextView;
 import com.neo.neoapp.UI.NeoViewPagerAdapter;
 import com.neo.neoapp.UI.views.photo.PhotoViewAttacher;
 import com.neo.neoapp.broadcasts.NeoAppBroadCastMessages;
+import com.neo.neoapp.entity.Message;
 import com.neo.neoapp.entity.People;
 import com.neo.neoapp.entity.PeopleProfile;
 import com.neo.neoapp.entity.Setings;
@@ -55,6 +56,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.http.entity.mime.MIME;

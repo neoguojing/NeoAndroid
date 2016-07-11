@@ -1,5 +1,6 @@
 package com.neo.neoapp.UI.adapters;
 
+import java.util.HashMap;
 import java.util.List;
 
 import android.content.Context;
@@ -11,13 +12,15 @@ import android.widget.LinearLayout;
 
 import com.neo.neoapp.R;
 import com.neo.neoapp.UI.views.NeoBasicTextView;
+import com.neo.neoandroidlib.NeoImageUtil;
 import com.neo.neoandroidlib.PhotoUtils;
 import com.neo.neoapp.NeoBasicApplication;
 import com.neo.neoapp.entity.Entity;
 import com.neo.neoapp.entity.People;
 
 public class NeoPeopleListAdapter extends NeoBasicListAdapter {
-
+	private HashMap<String,String> unReadMessageCount = new HashMap<String,String>();
+	
 	public NeoPeopleListAdapter(NeoBasicApplication application,
 			Context context, List<? extends Entity> datas) {
 		super(application, context, datas);
@@ -72,11 +75,18 @@ public class NeoPeopleListAdapter extends NeoBasicListAdapter {
 		
 		Bitmap headpic = mApplication.getUserHeadPic(people.getAvatar());
 		if (headpic==null){
-			holder.mIvAvatar.setImageBitmap(mApplication.getAvatar(people
-				.getAvatar()));
+			headpic = mApplication.getAvatar(people
+					.getAvatar());
 		}else{
-			holder.mIvAvatar.setImageBitmap(headpic);
+			headpic = NeoImageUtil.compressTheImageToDestSize(headpic,
+	        		NeoImageUtil.dip2px(mContext,77f),
+	        		NeoImageUtil.dip2px(mContext,77f));
+			
 		}
+		holder.mIvAvatar.setImageBitmap(
+				NeoImageUtil.drawTextOntBitMap(headpic,
+						getUnreadMessageCount(people.getName())));
+		
 		holder.mHtvName.setText(people.getName());
 		holder.mLayoutGender.setBackgroundResource(people.getGenderBgId());
 		holder.mIvGender.setImageResource(people.getGenderId());
@@ -146,6 +156,16 @@ public class NeoPeopleListAdapter extends NeoBasicListAdapter {
 			holder.mIvMultipic.setVisibility(View.GONE);
 		}
 		return convertView;
+	}
+
+	public String getUnreadMessageCount(String name) {
+		if (!unReadMessageCount.containsKey(name))
+			return "0";
+		return unReadMessageCount.get(name);
+	}
+
+	public void setUnreadMessageCount(String name,int count) {
+		this.unReadMessageCount.put(name, String.valueOf(count));
 	}
 
 	class ViewHolder {

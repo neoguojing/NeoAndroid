@@ -4,8 +4,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -24,6 +26,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.neo.neoandroidlib.FileUtils;
 import com.neo.neoandroidlib.JsonResolveUtils;
 import com.neo.neoandroidlib.NeoAsyncHttpUtil;
+import com.neo.neoandroidlib.NeoSocketMessageCacheUtil;
 import com.neo.neoandroidlib.PhotoUtils;
 import com.neo.neoapp.NeoAppSetings;
 import com.neo.neoapp.NeoBasicActivity;
@@ -34,7 +37,9 @@ import com.neo.neoapp.UI.views.list.NeoRefreshListView;
 import com.neo.neoapp.UI.views.list.NeoRefreshListView.OnCancelListener;
 import com.neo.neoapp.UI.views.list.NeoRefreshListView.OnRefreshListener;
 import com.neo.neoapp.activities.chat.ChatActivity;
+import com.neo.neoapp.broadcasts.NeoAppBroadCastMessages;
 import com.neo.neoapp.definitions.ENeoUIThreadMessges;
+import com.neo.neoapp.entity.Message;
 import com.neo.neoapp.entity.NeoConfig;
 import com.neo.neoapp.entity.People;
 import com.neo.neoapp.entity.PeopleProfile;
@@ -49,6 +54,7 @@ OnItemClickListener, OnRefreshListener, OnCancelListener{
 	
 	private NeoRefreshListView refreshList;
 	private NeoPeopleListAdapter peopleListAdpt;
+	private MsgReceiver msgBroadCastReceiver = null;
 	
 	public RefreshListFragment() {
 		super();
@@ -73,9 +79,16 @@ OnItemClickListener, OnRefreshListener, OnCancelListener{
         if (isVisibleToUser) {
             //相当于Fragment的onResume
         	getPeoples();
+        	//init the msg receiver
+        	msgBroadCastReceiver = new MsgReceiver();
+    		
+    		IntentFilter filter = new IntentFilter();
+    		filter.addAction(NeoAppBroadCastMessages.broadcastAction);
+    		mContext.registerReceiver(msgBroadCastReceiver, filter);
         } else {
             //相当于Fragment的onPause
         	clearMypeopleAndFriend();
+        	mContext.unregisterReceiver(msgBroadCastReceiver);
         }
     }
 	
@@ -235,5 +248,23 @@ OnItemClickListener, OnRefreshListener, OnCancelListener{
 			mApplication.mMyNearByPeoples.clear();
 	}
 		
-	
+	private class MsgReceiver extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			// TODO Auto-generated method stub
+			String action = intent.getAction();
+			if(action.equals(NeoAppBroadCastMessages.broadcastAction)) {
+				Message msg = (Message) intent.getExtras().getSerializable("msg");
+				if (msg==null)
+					return;
+				NeoSocketMessageCacheUtil.getIntance().addMessage(msg.getName(), msg);
+				peopleListAdpt.setUnreadMessageCount(msg.getName(),
+						NeoSocketMessageCacheUtil.getIntance().
+						getMessageCount(msg.getName()));
+				peopleListAdpt.notifyDataSetChanged();
+			}
+		
+		}
+	}
 }
