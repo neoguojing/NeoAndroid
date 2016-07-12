@@ -1,52 +1,29 @@
 package com.neo.neoapp.fragments;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.neo.neoandroidlib.FileUtils;
 import com.neo.neoandroidlib.JsonResolveUtils;
-import com.neo.neoandroidlib.NeoAsyncHttpUtil;
 import com.neo.neoandroidlib.NeoSocketMessageCacheUtil;
-import com.neo.neoandroidlib.PhotoUtils;
-import com.neo.neoapp.NeoAppSetings;
-import com.neo.neoapp.NeoBasicActivity;
 import com.neo.neoapp.R;
 import com.neo.neoapp.NeoBasicApplication;
 import com.neo.neoapp.UI.adapters.NeoPeopleListAdapter;
 import com.neo.neoapp.UI.views.list.NeoRefreshListView;
 import com.neo.neoapp.UI.views.list.NeoRefreshListView.OnCancelListener;
 import com.neo.neoapp.UI.views.list.NeoRefreshListView.OnRefreshListener;
-import com.neo.neoapp.activities.MainTabActivity;
 import com.neo.neoapp.activities.chat.ChatActivity;
 import com.neo.neoapp.broadcasts.NeoAppBroadCastMessages;
-import com.neo.neoapp.definitions.ENeoUIThreadMessges;
 import com.neo.neoapp.entity.Message;
-import com.neo.neoapp.entity.NeoConfig;
 import com.neo.neoapp.entity.People;
-import com.neo.neoapp.entity.PeopleProfile;
-import com.neo.neoapp.socket.client.NeoAyncSocketClient;
-
-import cz.msebera.android.httpclient.Header;
 
 public class RefreshListFragment extends NeoBasicFragment implements
 OnItemClickListener, OnRefreshListener, OnCancelListener{
@@ -56,6 +33,7 @@ OnItemClickListener, OnRefreshListener, OnCancelListener{
 	private NeoRefreshListView refreshList;
 	private NeoPeopleListAdapter peopleListAdpt;
 	private MsgReceiver msgBroadCastReceiver = null;
+	private People people = null;
 	
 	public RefreshListFragment() {
 		super();
@@ -96,6 +74,11 @@ OnItemClickListener, OnRefreshListener, OnCancelListener{
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(NeoAppBroadCastMessages.broadcastAction);
 		mContext.registerReceiver(msgBroadCastReceiver, filter);
+		
+		if (people!=null)
+			updateMsgFlag(people.getName(),
+					NeoSocketMessageCacheUtil.getIntance().
+					getMessageCount(people.getName()));
 	}
 	
 	@Override
@@ -125,7 +108,7 @@ OnItemClickListener, OnRefreshListener, OnCancelListener{
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		int position = (int) arg3;
-		People people = mApplication.mNearByPeoples.get(position);
+		people = mApplication.mNearByPeoples.get(position);
 		//PeopleProfile profile = mApplication..get(position);
 		/*String uid = null;
 		String name = null;
