@@ -23,7 +23,8 @@ public class NeoMeProfileSettingsActivity extends NeoBasicActivity
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_me_profile_settings);
-		
+		initViews();
+		initEvents();
 	}
 	@Override
 	protected void initViews() {

@@ -116,6 +116,14 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name=".activities.NeoMeProfileSettingsActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name=".activities.NeoAppSettingsActivity"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name=".activities.PeopleStateProfileActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustUnspecified|adjustResize" >

@@ -49,6 +49,7 @@ OnItemClickListener, OnRefreshListener, OnCancelListener{
 			Bundle savedInstanceState) {
 		mView = inflater.inflate(R.layout.fragment_peoples, container,
 				false);
+		
 		return super.onCreateView(inflater, container, savedInstanceState);
 	}
 	
@@ -58,6 +59,10 @@ OnItemClickListener, OnRefreshListener, OnCancelListener{
         if (isVisibleToUser) {
             //相当于Fragment的onResume
         	getPeoples();
+        	if (people!=null)
+    			updateMsgFlag(people.getName(),
+    					NeoSocketMessageCacheUtil.getIntance().
+    					getMessageCount(people.getName()));
         	
         } else {
             //相当于Fragment的onPause
