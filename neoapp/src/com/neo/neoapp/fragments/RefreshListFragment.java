@@ -33,7 +33,6 @@ OnItemClickListener, OnRefreshListener, OnCancelListener{
 	private NeoRefreshListView refreshList;
 	private NeoPeopleListAdapter peopleListAdpt;
 	private MsgReceiver msgBroadCastReceiver = null;
-	private People people = null;
 	
 	public RefreshListFragment() {
 		super();
@@ -49,7 +48,6 @@ OnItemClickListener, OnRefreshListener, OnCancelListener{
 			Bundle savedInstanceState) {
 		mView = inflater.inflate(R.layout.fragment_peoples, container,
 				false);
-		
 		return super.onCreateView(inflater, container, savedInstanceState);
 	}
 	
@@ -59,10 +57,6 @@ OnItemClickListener, OnRefreshListener, OnCancelListener{
         if (isVisibleToUser) {
             //相当于Fragment的onResume
         	getPeoples();
-        	if (people!=null)
-    			updateMsgFlag(people.getName(),
-    					NeoSocketMessageCacheUtil.getIntance().
-    					getMessageCount(people.getName()));
         	
         } else {
             //相当于Fragment的onPause
@@ -80,10 +74,7 @@ OnItemClickListener, OnRefreshListener, OnCancelListener{
 		filter.addAction(NeoAppBroadCastMessages.broadcastAction);
 		mContext.registerReceiver(msgBroadCastReceiver, filter);
 		
-		if (people!=null)
-			updateMsgFlag(people.getName(),
-					NeoSocketMessageCacheUtil.getIntance().
-					getMessageCount(people.getName()));
+		updateAllPeopleMsgState();
 	}
 	
 	@Override
@@ -113,7 +104,7 @@ OnItemClickListener, OnRefreshListener, OnCancelListener{
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		int position = (int) arg3;
-		people = mApplication.mNearByPeoples.get(position);
+		People people = mApplication.mNearByPeoples.get(position);
 		//PeopleProfile profile = mApplication..get(position);
 		/*String uid = null;
 		String name = null;
@@ -257,8 +248,37 @@ OnItemClickListener, OnRefreshListener, OnCancelListener{
 		peopleListAdpt.notifyDataSetChanged();
 	}
 	
-	private class MsgReceiver extends BroadcastReceiver {
+	private void updateAllPeopleMsgState(){
+		
+		putAsyncTask(new AsyncTask<Void, Void, Boolean>() {
 
+			@Override
+			protected Boolean doInBackground(Void... params) {
+				Boolean rtn = true;
+				
+				if (peopleListAdpt==null)
+					peopleListAdpt = new NeoPeopleListAdapter(mApplication,
+							mContext, mApplication.mNearByPeoples);
+				
+				for (People p:mApplication.mNearByPeoples){
+					peopleListAdpt.setUnreadMessageCount(p.getName(),
+							NeoSocketMessageCacheUtil.getIntance().
+							getMessageCount(p.getName()));
+				}
+				return rtn;
+			}
+
+			@Override
+			protected void onPostExecute(Boolean result) {
+				super.onPostExecute(result);
+				if (result)
+					refreshList.setAdapter(peopleListAdpt);
+					//peopleListAdpt.notifyDataSetChanged();
+			}
+		});
+	}
+	
+	private class MsgReceiver extends BroadcastReceiver {
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			// TODO Auto-generated method stub

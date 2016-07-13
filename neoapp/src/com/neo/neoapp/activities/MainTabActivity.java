@@ -800,7 +800,7 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
 	
 	private void onTabClick(View view){
 		resetOthersTab();
-		resetOneMsgFlag();
+		updateOneMsgFlag();
 		switch(view.getId()){
 		case R.id.id_indicator_one:
 			mListViews.get(0).setIconAlpha(1.0f);
@@ -862,6 +862,8 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(NeoAppBroadCastMessages.broadcastAction);
 		registerReceiver(msgBroadCastReceiver, filter);
+		
+		updateOneMsgFlag();
 	}
 	
 	@Override
@@ -871,7 +873,7 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
     		unregisterReceiver(msgBroadCastReceiver);
 	}
 	
-	public void resetOneMsgFlag(){
+	public void updateOneMsgFlag(){
 		one.setMsgCount(NeoSocketMessageCacheUtil.getIntance().getAllMessageCount());
 		one.invalidate();
 	}
@@ -889,7 +891,7 @@ public class MainTabActivity extends NeoBasicActivity implements OnClickListener
 				if (mViewPager.getCurrentItem()!=0)
 					NeoSocketMessageCacheUtil.getIntance().
 					addMessage(msg.getName(), msg);
-				resetOneMsgFlag();
+				updateOneMsgFlag();
 			}
 		
 		}
