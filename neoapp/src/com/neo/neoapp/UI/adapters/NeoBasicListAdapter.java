@@ -32,7 +32,13 @@ public class NeoBasicListAdapter extends BaseAdapter {
 			mDatas = datas;
 		}
 	}
-
+	
+	public NeoBasicListAdapter(NeoBasicApplication application, Context context) {
+		mApplication = application;
+		mContext = context;
+		mInflater = LayoutInflater.from(context);
+	}
+	
 	@Override
 	public int getCount() {
 		return mDatas.size();

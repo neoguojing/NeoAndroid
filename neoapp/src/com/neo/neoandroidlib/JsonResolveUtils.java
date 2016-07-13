@@ -182,7 +182,9 @@ public class JsonResolveUtils {
                     JSONArray array = new JSONArray(json);
                     for (int i = 0; i < array.length(); i++) {
                         JSONObject object = array.getJSONObject(i);
-                        datas.add(new Setings(object.getString(Setings.UID), object.getString(Setings.IMAGE), object.getString(Setings.NAME)));
+                        datas.add(new Setings(object.getString(Setings.UID), 
+                        		object.getString(Setings.IMAGE), 
+                        		object.getString(Setings.NAME)));
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

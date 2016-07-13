@@ -6,15 +6,16 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.neo.neoandroidlib.JsonResolveUtils;
 import com.neo.neoandroidlib.NeoImageUtil;
@@ -23,12 +24,14 @@ import com.neo.neoapp.NeoBasicApplication;
 import com.neo.neoapp.UI.adapters.NeoCommonListAdapter;
 import com.neo.neoapp.UI.views.NeoBasicTextView;
 import com.neo.neoapp.UI.views.list.NeoCommonListView;
+import com.neo.neoapp.activities.NeoMeProfileSettingsActivity;
 import com.neo.neoapp.entity.People;
 import com.neo.neoapp.entity.Setings;
 
 public class NeoSetingListFragment extends NeoBasicFragment implements
-OnItemClickListener{
-
+OnItemClickListener, OnClickListener{
+	
+	private LinearLayout meGroup = null;
 	private NeoCommonListView commonList;
 	private NeoCommonListAdapter commonListAdpt;
     private ImageView headpic;
@@ -54,6 +57,7 @@ OnItemClickListener{
 	
 	@Override
 	protected void initViews() {
+		meGroup = (LinearLayout)findViewById(R.id.meViewGroup);
 		commonList  = (NeoCommonListView) findViewById(R.id.setings_list);
         this.headpic = (ImageView) findViewById(R.id.userheader);
         this.headpic.setImageBitmap(NeoImageUtil.compressTheImageToDestSize(
@@ -67,6 +71,7 @@ OnItemClickListener{
 
 	@Override
 	protected void initEvents() {
+		meGroup.setOnClickListener(this);
 		commonList .setOnItemClickListener(this);
 
 	}
@@ -122,6 +127,7 @@ OnItemClickListener{
 				} else {
 					commonListAdpt = new NeoCommonListAdapter(mApplication,
 							mContext, mSetingList);
+					commonListAdpt.setLayOutId(R.layout.list_item_of_setings);
 					commonList.setAdapter(commonListAdpt);
 				}
 			}
@@ -142,6 +148,20 @@ OnItemClickListener{
 
 	public void onManualRefresh() {
 
+	}
+
+	@Override
+	public void onClick(View arg0) {
+		// TODO Auto-generated method stub
+		switch(arg0.getId()){
+		
+		case R.id.meViewGroup:
+			Intent intent = new Intent(mContext,NeoMeProfileSettingsActivity.class);
+			startActivity(intent);
+			break;
+		default:
+			break;
+		}
 	}
 	
 }
