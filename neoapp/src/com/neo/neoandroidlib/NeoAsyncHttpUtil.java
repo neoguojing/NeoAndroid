@@ -35,7 +35,7 @@ public class NeoAsyncHttpUtil {
             BasicCookieStore bcs = new BasicCookieStore();  
             bcs.addCookies(NeoCookieListUtil.getCookies().toArray(  
                     new Cookie[NeoCookieListUtil.getCookies().size()]));  
-            client.setCookieStore(bcs);  
+            client.setCookieStore(bcs); 
         } 
     	return client;
     }

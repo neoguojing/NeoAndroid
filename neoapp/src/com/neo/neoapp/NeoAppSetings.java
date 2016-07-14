@@ -1,9 +1,16 @@
 package com.neo.neoapp;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import android.net.Uri;
+
+import com.neo.neoandroidlib.NetWorkUtils;
 import com.neo.neoapp.entity.NeoConfig;
 
 public class NeoAppSetings {
+	public static final String Local_Server_HostName = "neo-Lenovo-G450";
+	
     public static final String ConfigFile = "config.json";
     public static final String HeadPicDir = "headpic/";
     public static final String IpServerUrl = "http://mainapp.applinzi.com/nat/obtain/neo/";
@@ -87,6 +94,9 @@ public class NeoAppSetings {
     }
 
     private static String getServerUrlString(NeoConfig config) {
+    	if (!config.getLocalip().equals("")){
+    		return getLocalServerUrlString(config);
+    	}
         return new StringBuilder(prefix).append(config.getIp()).append(":").append(config.getPort()).toString();
     }
 
@@ -112,5 +122,24 @@ public class NeoAppSetings {
 
     public static String getGetDownLoad(NeoConfig config, String name) {
         return getServerUrlString(config) + download_suffix + name;
+    }
+    
+	public static String getLocalServerIp(){
+		
+		String patten = "((?:(?:25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d)))\\.)"+
+				 "{3}(?:25[0-5]|2[0-4]\\d|((1\\d{2})|([1-9]?\\d))))";
+		String pingResult = NetWorkUtils.neoPing(Local_Server_HostName);
+		if (pingResult==null){
+			return "";
+		}
+		Matcher m = Pattern.compile(patten).matcher(pingResult);
+		if (m.find())
+			return m.group();
+		return "";
+	}
+	
+	private static String getLocalServerUrlString(NeoConfig config) {
+        return new StringBuilder(prefix).append(config.getLocalip()).
+        		append(":").append(config.getLocalport()).toString();
     }
 }

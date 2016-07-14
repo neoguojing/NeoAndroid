@@ -1,5 +1,8 @@
 package com.neo.neoandroidlib;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -175,4 +178,53 @@ public class NetWorkUtils {
         NetworkInfo ni = cm.getActiveNetworkInfo();
         return ni != null && ni.isConnectedOrConnecting();
     }
+	
+	public static String neoPing(String hostname){
+		Process p = null;
+		int status = 0;
+		try {
+			p = Runtime.getRuntime().exec("ping -c "+
+			"1" + " " + hostname);
+			status = p.waitFor(); 
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} // 10.83.50.111  m_strForNetAddress
+		catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+
+        if (status != 0) {  
+            return null; 
+        }    
+ 
+        BufferedReader buf = new BufferedReader(
+        		new InputStreamReader(p.getInputStream()));
+        
+        String str = new String();  
+        StringBuffer output = new StringBuffer();
+        //读出所有信息并显示                    
+        try {
+			while((str=buf.readLine())!=null){  
+				output.append(str);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}finally{
+			try {
+				if (buf!=null)
+					buf.close();
+				if (p!=null)
+					p.destroy();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+        return output.toString();
+	}
+	
 }

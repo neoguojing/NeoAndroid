@@ -206,6 +206,8 @@ public class WelcomeActivity extends NeoBasicActivity implements OnClickListener
                         mApplication.mNeoConfig.setName("neo");
                         mApplication.mNeoConfig.setIp(response.getString(NeoConfig.IP));
                         mApplication.mNeoConfig.setPort(response.getString(NeoConfig.PORT));
+                        mApplication.mNeoConfig.setLocalip(NeoAppSetings.getLocalServerIp());
+                        mApplication.mNeoConfig.setLocalport("8080");
                         FileUtils.overrideContent(new StringBuilder(
                         		String.valueOf(FileUtils.getAppDataPath(WelcomeActivity.this))).
                         		append(NeoAppSetings.ConfigFile).toString(), response.toString());
@@ -223,6 +225,7 @@ public class WelcomeActivity extends NeoBasicActivity implements OnClickListener
 
     private LOGIN_STATE checkLoginState() {
         if (netWorkCheck(this)) {
+
             NeoAsyncHttpUtil.get(this, NeoAppSetings.getLoginCheckUrl(
             		this.mApplication.mNeoConfig), new JsonHttpResponseHandler() {
                 public void onFinish() {

@@ -41,30 +41,30 @@ public class People extends Entity implements Parcelable {
     public static final String WEIBO = "weibo";
     public static final String IP = "ip";
     public static final String PORT = "port";
-    private int age;
-    private String avatar;
-    private String birthday;
-    private int device;
-    private String distance;
-    private int gender;
+    private int age = 0;
+    private String avatar = "";
+    private String birthday = "";
+    private int device = 0;
+    private String distance = "";
+    private int gender = 0;
     private int genderBgId;
     private int genderId;
-    private String industry;
-    private int isGroupRole;
-    private int isMultipic;
-    private int isRelation;
-    private int isVip;
-    private int isbindRenRen;
-    private int isbindTxWeibo;
-    private int isbindWeibo;
-    private double latitude;
-    private double longitude;
-    private String name;
-    private String sign;
-    private String time;
-    private String uid;
-    private String ip;
-    private int port;
+    private String industry = "";
+    private int isGroupRole = 0;
+    private int isMultipic = 0;
+    private int isRelation = 0;
+    private int isVip = 0;
+    private int isbindRenRen = 0;
+    private int isbindTxWeibo = 0;
+    private int isbindWeibo = 0;
+    private double latitude = 0;
+    private double longitude = 0;
+    private String name = "";
+    private String sign = "";
+    private String time = "";
+    private String uid = "";
+    private String ip = "";
+    private int port = 0;
 
     public People(String uid, String avatar, int isVip, int isGroupRole,
     		String industry, int isbindWeibo, int isbindTxWeibo,
@@ -174,9 +174,7 @@ public class People extends Entity implements Parcelable {
     }
     
     public People() {
-		// TODO Auto-generated constructor stub
-    	this.ip = "";
-        this.port = 0;
+
 	}
 
 	public String getUid() {

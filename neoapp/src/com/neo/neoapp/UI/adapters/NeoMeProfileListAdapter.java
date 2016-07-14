@@ -43,18 +43,23 @@ public class NeoMeProfileListAdapter extends NeoBasicListAdapter {
 		//mApplication.mMe.
 		viewList.add(new ViewItem(People.AVATAR,mApplication.mMe.getAvatar(),
 				ViewType.STRING_IMAGE));
-		viewList.add(new ViewItem(People.AGE,mApplication.mMe.getAge(),
-				ViewType.STRING_STRING));
-		viewList.add(new ViewItem(People.BIRTHDAY,mApplication.mMe.getBirthday(),
-				ViewType.STRING_STRING));
-		viewList.add(new ViewItem(People.GENDER,mApplication.mMe.getGender(),
-				ViewType.STRING_STRING));
-		viewList.add(new ViewItem(People.INDUSTRY,mApplication.mMe.getIndustry(),
-				ViewType.STRING_STRING));
 		viewList.add(new ViewItem(People.NAME,mApplication.mMe.getName(),
 				ViewType.STRING_STRING));
 		viewList.add(new ViewItem(People.SIGN,mApplication.mMe.getSign(),
 				ViewType.STRING_STRING));
+		viewList.add(new ViewItem(People.AGE,mApplication.mMe.getAge(),
+				ViewType.STRING_STRING));
+		viewList.add(new ViewItem(People.BIRTHDAY,mApplication.mMe.getBirthday(),
+				ViewType.STRING_STRING));
+		if (mApplication.mMe.getGender()==0)
+			viewList.add(new ViewItem(People.GENDER,"female",
+				ViewType.STRING_STRING));
+		else
+			viewList.add(new ViewItem(People.GENDER,"male",
+					ViewType.STRING_STRING));
+		viewList.add(new ViewItem(People.INDUSTRY,mApplication.mMe.getIndustry(),
+				ViewType.STRING_STRING));
+		
 		viewList.add(new ViewItem("地址","beijing",
 				ViewType.STRING_STRING));
 		viewList.add(new ViewItem("修改","",

@@ -56,6 +56,8 @@ public class JsonResolveUtils {
                             application.mNeoConfig.setName("neo");
                             application.mNeoConfig.setIp(object.getString(NeoConfig.IP));
                             application.mNeoConfig.setPort(object.getString(NeoConfig.PORT));
+                            application.mNeoConfig.setLocalip(NeoAppSetings.getLocalServerIp());
+                            application.mNeoConfig.setLocalport("8080");
                     } catch (JSONException e) {
                         e.printStackTrace();
                         return false;

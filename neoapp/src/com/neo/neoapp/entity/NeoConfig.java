@@ -8,10 +8,15 @@ public class NeoConfig extends Entity implements Parcelable {
 	public static final String IP = "ip";
 	public static final String PORT = "port";
 	public static final String NAME = "name";
+	public static final String LOCALIP = "localip";
+	public static final String LOCALPORT = "localport";
+	
 	
 	private String ip;
 	private String port;
 	private String name;
+	private String localip = "";
+	private String localport = "8080";
 	
 	public NeoConfig(String ip, String port, String name) {
 		this.ip = ip;
@@ -21,7 +26,7 @@ public class NeoConfig extends Entity implements Parcelable {
 	
 	public NeoConfig() {
 		this.ip = "";
-		this.port = "1000";
+		this.port = "10000";
 		this.name = "neo";
 	}
 
@@ -63,6 +68,22 @@ public class NeoConfig extends Entity implements Parcelable {
 		dest.writeString(name);
 	}
 	
+	public String getLocalip() {
+		return localip;
+	}
+
+	public void setLocalip(String localip) {
+		this.localip = localip;
+	}
+
+	public String getLocalport() {
+		return localport;
+	}
+
+	public void setLocalport(String localport) {
+		this.localport = localport;
+	}
+
 	public static final Parcelable.Creator<NeoConfig> CREATOR = new Parcelable.Creator<NeoConfig>() {
 
 		@Override

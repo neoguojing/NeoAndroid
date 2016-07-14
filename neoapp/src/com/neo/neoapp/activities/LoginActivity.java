@@ -259,7 +259,9 @@ public class LoginActivity extends NeoBasicActivity implements OnClickListener,
 
                     public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
                         Log.e(LoginActivity.this.Tag, " onFailure" + throwable.toString());
-                        LoginActivity.this.showAlertDialog("NEO", "Get Server Address failed" + errorResponse.toString());
+                        LoginActivity.this.showAlertDialog("NEO", "Server is not avaliable"
+                        + errorResponse.toString());
+                        offlineLogin();
                     }
                 });
             }
@@ -269,7 +271,22 @@ public class LoginActivity extends NeoBasicActivity implements OnClickListener,
             e2.printStackTrace();
         }
     }
-
+    
+    private void offlineLogin(){
+    	showAlertDialog("NEO","you are in offline state!");
+    	if (mApplication.mMe.getName().equals("")){
+    		showAlertDialog("NEO","you have not login before!");
+    	}
+    		
+    	if (this.mAccount.equals(mApplication.mMe.getName())){
+    		LoginActivity.this.startActivity(
+    				new Intent(LoginActivity.this, MainTabActivity.class));
+            LoginActivity.this.finish();
+    	}else{
+    		showAlertDialog("NEO","you have not login before!");
+    	}
+    }
+    
     private void testLogin() {
         putAsyncTask(new AsyncTask<Void, Void, Boolean>() {
             protected void onPreExecute() {

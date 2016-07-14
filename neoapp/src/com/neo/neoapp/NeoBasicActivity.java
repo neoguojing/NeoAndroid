@@ -253,7 +253,8 @@ public abstract class NeoBasicActivity extends FragmentActivity {
     			showAlertDialog("NEO", "resolveNeoConfig faied");
         }
         
-        if (mApplication.mNeoConfig.getIp().equals(""))
+        if (mApplication.mNeoConfig.getIp().equals("")&&
+        		mApplication.mNeoConfig.getLocalip().equals(""))
         	showAlertDialog("NEO", "The server info is empty");
         
         return rtn;
