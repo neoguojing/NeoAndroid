@@ -1,7 +1,6 @@
 package com.neo.neoapp.activities;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -9,26 +8,27 @@ import android.widget.AdapterView.OnItemClickListener;
 
 import com.neo.neoapp.NeoBasicActivity;
 import com.neo.neoapp.R;
+import com.neo.neoapp.UI.adapters.NeoMeProfileEditListAdapter;
 import com.neo.neoapp.UI.adapters.NeoMeProfileListAdapter;
 import com.neo.neoapp.UI.views.list.NeoCommonListView;
 
-public class NeoMeProfileSettingsActivity extends NeoBasicActivity 
+public class NeoMeProfileEditActivity extends NeoBasicActivity 
 	implements OnItemClickListener{
 	private NeoCommonListView commonList;
-	private NeoMeProfileListAdapter commonListAdpt;
+	private NeoMeProfileEditListAdapter commonListAdpt;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_me_profile_settings);
+		setContentView(R.layout.activity_me_profile_edit);
 		initViews();
 		initEvents();
 	}
 	@Override
 	protected void initViews() {
 		// TODO Auto-generated method stub
-		commonListAdpt = new NeoMeProfileListAdapter(mApplication,this);
-		commonList = (NeoCommonListView)findViewById(R.id.me_profile_list);
+		commonListAdpt = new NeoMeProfileEditListAdapter(mApplication,this);
+		commonList = (NeoCommonListView)findViewById(R.id.me_profile_edit_list);
 		commonList.setAdapter(commonListAdpt);
 	}
 
@@ -43,13 +43,9 @@ public class NeoMeProfileSettingsActivity extends NeoBasicActivity
 		// TODO Auto-generated method stub
 		int position = (int) arg3;
 		int  end = commonListAdpt.getCount()-1;
-		if (position==0){
-			
-		}
 		
 		if (position==end){
-			startActivity(new Intent(this, NeoMeProfileEditActivity.class));
-            finish();
+			
 		}
 		
 	}
