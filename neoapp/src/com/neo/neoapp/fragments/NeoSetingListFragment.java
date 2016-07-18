@@ -24,6 +24,7 @@ import com.neo.neoapp.NeoBasicApplication;
 import com.neo.neoapp.UI.adapters.NeoCommonListAdapter;
 import com.neo.neoapp.UI.views.NeoBasicTextView;
 import com.neo.neoapp.UI.views.list.NeoCommonListView;
+import com.neo.neoapp.activities.NeoAppSettingsActivity;
 import com.neo.neoapp.activities.NeoMeProfileSettingsActivity;
 import com.neo.neoapp.entity.People;
 import com.neo.neoapp.entity.Setings;
@@ -84,7 +85,7 @@ OnItemClickListener, OnClickListener{
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		int position = (int) arg3;
-		People people = mApplication.mNearByPeoples.get(position);
+		/*People people = mApplication.mNearByPeoples.get(position);
 		String uid = null;
 		String name = null;
 		String avatar = null;
@@ -95,12 +96,17 @@ OnItemClickListener, OnClickListener{
 		}
 		name = people.getName();
 		avatar = people.getAvatar();
-		/*Intent intent = new Intent(mContext, OtherProfileActivity.class);
+		Intent intent = new Intent(mContext, OtherProfileActivity.class);
 		intent.putExtra("uid", uid);
 		intent.putExtra("name", name);
 		intent.putExtra("avatar", avatar);
 		intent.putExtra("entity_people", people);
 		startActivity(intent);8*/
+		
+		if (position==mSetingList.size()-1){
+			Intent intent = new Intent(mContext, NeoAppSettingsActivity.class);
+			startActivity(intent);
+		}
 	}
 
 	private void getListItems() {

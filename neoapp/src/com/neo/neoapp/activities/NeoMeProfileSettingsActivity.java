@@ -1,7 +1,5 @@
 package com.neo.neoapp.activities;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import android.os.Bundle;
 import android.view.View;
@@ -12,7 +10,6 @@ import com.neo.neoapp.NeoBasicActivity;
 import com.neo.neoapp.R;
 import com.neo.neoapp.UI.adapters.NeoMeProfileListAdapter;
 import com.neo.neoapp.UI.views.list.NeoCommonListView;
-import com.neo.neoapp.entity.Setings;
 
 public class NeoMeProfileSettingsActivity extends NeoBasicActivity 
 	implements OnItemClickListener{
@@ -37,12 +34,21 @@ public class NeoMeProfileSettingsActivity extends NeoBasicActivity
 	@Override
 	protected void initEvents() {
 		// TODO Auto-generated method stub
-
+		
 	}
 	
 	@Override
 	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 		// TODO Auto-generated method stub
+		int position = (int) arg3;
+		int  end = commonListAdpt.getCount()-1;
+		if (position==0){
+			
+		}
+		
+		if (position==end){
+			
+		}
 		
 	}
 
