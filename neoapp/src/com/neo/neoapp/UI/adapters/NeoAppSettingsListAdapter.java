@@ -6,6 +6,7 @@ import java.util.List;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -21,10 +22,12 @@ import com.neo.neoapp.UI.adapters.NeoMeProfileListAdapter.ViewType;
 import com.neo.neoapp.UI.views.NeoBasicTextView;
 import com.neo.neoapp.entity.People;
 
-public class NeoAppSettingsListAdapter extends NeoBasicListAdapter {
+public class NeoAppSettingsListAdapter extends NeoBasicListAdapter
+implements OnClickListener{
 	
 	private final int VIEW_TYPE_COUNT = 4;
 	private List<ViewItem> viewList = new ArrayList<ViewItem>();
+	private OnClickCallBack mCallback = null;
 	
 	enum ViewType {
 		STRING_STRING(0),
@@ -42,11 +45,16 @@ public class NeoAppSettingsListAdapter extends NeoBasicListAdapter {
 		}
 	}
 	
+	public interface OnClickCallBack{
+		public void buttonClick(View v);
+	}
+	
 	public NeoAppSettingsListAdapter(NeoBasicApplication application,
-			Context context) {
+			Context context, OnClickCallBack callback) {
 		super(application, context);
 		// TODO Auto-generated constructor stub
 		initViewList();
+		mCallback = callback;
 	}
 	
 	private void initViewList(){
@@ -103,6 +111,7 @@ public class NeoAppSettingsListAdapter extends NeoBasicListAdapter {
 				buttonholder = new ButtonViewHolder(convertView);
 				buttonholder.button.setText(viewList.get(position).title);
 				buttonholder.button.setBackgroundColor(Color.parseColor("#DC143C"));
+				buttonholder.button.setOnClickListener(this);
 				convertView.setTag(buttonholder);
 				break;
 			default:
@@ -122,6 +131,7 @@ public class NeoAppSettingsListAdapter extends NeoBasicListAdapter {
 				buttonholder = (ButtonViewHolder) convertView.getTag();
 				buttonholder.button.setText(viewList.get(position).title);
 				buttonholder.button.setBackgroundColor(Color.parseColor("#DC143C"));
+				buttonholder.button.setOnClickListener(this);
 				break;
 			default:
 				break;
@@ -181,6 +191,12 @@ public class NeoAppSettingsListAdapter extends NeoBasicListAdapter {
 			this.value = String.valueOf(value);
 			this.type = type;
 		}
+	}
+
+	@Override
+	public void onClick(View arg0) {
+		// TODO Auto-generated method stub
+		mCallback.buttonClick(arg0);
 	}
 
 }

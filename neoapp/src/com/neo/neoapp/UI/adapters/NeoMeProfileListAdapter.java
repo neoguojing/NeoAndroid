@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -14,15 +16,17 @@ import com.neo.neoandroidlib.NeoImageUtil;
 import com.neo.neoapp.NeoBasicApplication;
 import com.neo.neoapp.R;
 import com.neo.neoapp.UI.views.NeoBasicTextView;
+import com.neo.neoapp.activities.NeoMeProfileEditActivity;
 import com.neo.neoapp.entity.Entity;
 import com.neo.neoapp.entity.People;
 import com.neo.neoapp.entity.Setings;
 
-public class NeoMeProfileListAdapter extends NeoBasicListAdapter {
+public class NeoMeProfileListAdapter extends NeoBasicListAdapter 
+implements OnClickListener{
 	
 	private final int VIEW_TYPE_COUNT = 4;
 	private List<ViewItem> viewList = new ArrayList<ViewItem>();
-	
+	private CallBack mCallBack = null;
 	enum ViewType {
 		STRING_STRING(0),
 		STRING_IMAGE(1),
@@ -37,6 +41,10 @@ public class NeoMeProfileListAdapter extends NeoBasicListAdapter {
 		public int getId(){
 			return this.id;
 		}
+	}
+	
+	public interface CallBack {
+		public void buttonClick(View v);
 	}
 	
 	private void resolveMeToList(){
@@ -68,9 +76,10 @@ public class NeoMeProfileListAdapter extends NeoBasicListAdapter {
 	}
 	
 	public NeoMeProfileListAdapter(NeoBasicApplication application,
-			Context context) {
+			Context context,CallBack callbak) {
 		super(application, context);
 		// TODO Auto-generated constructor stub
+		mCallBack = callbak;
 		resolveMeToList();
 	}
 	
@@ -134,6 +143,7 @@ public class NeoMeProfileListAdapter extends NeoBasicListAdapter {
 				buttonholder = new ButtonViewHolder(convertView);
 				buttonholder.button.setText(viewList.get(position).title);
 				buttonholder.button.setBackgroundColor(Color.parseColor("#DC143C"));
+				buttonholder.button.setOnClickListener(this);
 				convertView.setTag(buttonholder);
 				break;
 			default:
@@ -161,6 +171,7 @@ public class NeoMeProfileListAdapter extends NeoBasicListAdapter {
 				buttonholder = (ButtonViewHolder) convertView.getTag();
 				buttonholder.button.setText(viewList.get(position).title);
 				buttonholder.button.setBackgroundColor(Color.parseColor("#DC143C"));
+				buttonholder.button.setOnClickListener(this);
 				break;
 			default:
 				break;
@@ -220,6 +231,12 @@ public class NeoMeProfileListAdapter extends NeoBasicListAdapter {
 			this.value = String.valueOf(value);
 			this.type = type;
 		}
+	}
+
+	@Override
+	public void onClick(View arg0) {
+		// TODO Auto-generated method stub
+		mCallBack.buttonClick(arg0);
 	}
 
 }

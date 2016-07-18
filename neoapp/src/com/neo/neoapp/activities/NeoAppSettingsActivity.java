@@ -13,6 +13,7 @@ import com.neo.neoapp.NeoBasicActivity;
 import com.neo.neoapp.NeoBasicApplication;
 import com.neo.neoapp.R;
 import com.neo.neoapp.UI.adapters.NeoAppSettingsListAdapter;
+import com.neo.neoapp.UI.adapters.NeoAppSettingsListAdapter.OnClickCallBack;
 import com.neo.neoapp.UI.adapters.NeoMeProfileListAdapter;
 import com.neo.neoapp.UI.views.list.NeoCommonListView;
 import com.neo.neoapp.entity.People;
@@ -29,7 +30,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class NeoAppSettingsActivity extends NeoBasicActivity 
-implements OnItemClickListener {
+implements OnItemClickListener,OnClickCallBack {
 	private final String Tag = "NeoAppSettingsActivity";
 	private NeoCommonListView commonList;
 	private NeoAppSettingsListAdapter commonListAdpt;
@@ -54,7 +55,7 @@ implements OnItemClickListener {
 		
 		//退出
 		if (position==end){
-			doLogout();
+			//doLogout();
 		}
 	}
 	
@@ -106,15 +107,22 @@ implements OnItemClickListener {
 	@Override
 	protected void initViews() {
 		// TODO Auto-generated method stub
-		commonListAdpt = new NeoAppSettingsListAdapter(mApplication,this);
+		commonListAdpt = new NeoAppSettingsListAdapter(mApplication,this,this);
 		commonList = (NeoCommonListView)findViewById(R.id.app_settings_list);
 		commonList.setAdapter(commonListAdpt);
+		commonList.setOnItemClickListener(this);
 	}
 
 	@Override
 	protected void initEvents() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void buttonClick(View v) {
+		// TODO Auto-generated method stub
+		doLogout();
 	}
 
 }

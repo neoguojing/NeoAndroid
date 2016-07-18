@@ -32,7 +32,8 @@
         android:cacheColorHint="@color/transparent"
         android:divider="@null"
         android:fadingEdge="none"
-        android:listSelector="@drawable/list_selector_transition">
+        android:listSelector="@drawable/list_selector_transition"
+        >
            
     </com.neo.neoapp.UI.views.list.NeoCommonListView>
 
