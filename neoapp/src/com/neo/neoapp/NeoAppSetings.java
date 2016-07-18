@@ -34,6 +34,7 @@ public class NeoAppSetings {
     private static String headpic_suffix = null;
     private static final String login_check_suffix = "/site1/android/logincheck/";
     private static final String login_suffix = "/site1/android/login/";
+    private static final String logout_suffix = "/site1/android/logout/";
     private static final String prefix = "http://";
     private static String register_suffix;
     
@@ -103,7 +104,11 @@ public class NeoAppSetings {
     public static String getLoginUrl(NeoConfig config) {
         return getServerUrlString(config) + login_suffix;
     }
-
+    
+    public static String getLogOutUrl(NeoConfig config) {
+        return getServerUrlString(config) + logout_suffix;
+    }
+    
     public static String getLoginCheckUrl(NeoConfig config) {
         return getServerUrlString(config) + login_check_suffix;
     }

@@ -30,6 +30,7 @@ public class NeoMeProfileEditActivity extends NeoBasicActivity
 		commonListAdpt = new NeoMeProfileEditListAdapter(mApplication,this);
 		commonList = (NeoCommonListView)findViewById(R.id.me_profile_edit_list);
 		commonList.setAdapter(commonListAdpt);
+		
 	}
 
 	@Override
@@ -45,7 +46,7 @@ public class NeoMeProfileEditActivity extends NeoBasicActivity
 		int  end = commonListAdpt.getCount()-1;
 		
 		if (position==end){
-			
+			commonList.getItemAtPosition(position);
 		}
 		
 	}

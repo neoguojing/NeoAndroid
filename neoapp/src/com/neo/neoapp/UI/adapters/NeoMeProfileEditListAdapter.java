@@ -6,6 +6,7 @@ import java.util.List;
 import android.content.Context;
 import android.graphics.Color;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
@@ -178,6 +179,17 @@ public class NeoMeProfileEditListAdapter extends NeoBasicListAdapter {
 		StringEditViewHolder(View view){
 			name = (NeoBasicTextView)view.findViewById(R.id.string_name);
 			value = (EditText)view.findViewById(R.id.string_edit);
+			value.setOnFocusChangeListener(new OnFocusChangeListener(){
+
+				@Override
+				public void onFocusChange(View arg0, boolean arg1) {
+					// TODO Auto-generated method stub
+					if (arg1==false){
+						String text = value.getText().toString().trim();
+					}
+				}
+				
+			});
 		}
 
 	}
