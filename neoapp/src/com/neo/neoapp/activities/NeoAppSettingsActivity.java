@@ -5,25 +5,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.neo.neoandroidlib.FileUtils;
 import com.neo.neoandroidlib.NeoAsyncHttpUtil;
 import com.neo.neoapp.NeoAppSetings;
 import com.neo.neoapp.NeoAppSetings.NEO_ERRCODE;
 import com.neo.neoapp.NeoBasicActivity;
-import com.neo.neoapp.NeoBasicApplication;
 import com.neo.neoapp.R;
 import com.neo.neoapp.UI.adapters.NeoAppSettingsListAdapter;
 import com.neo.neoapp.UI.adapters.NeoAppSettingsListAdapter.OnClickCallBack;
-import com.neo.neoapp.UI.adapters.NeoMeProfileListAdapter;
 import com.neo.neoapp.UI.views.list.NeoCommonListView;
-import com.neo.neoapp.entity.People;
 
 import cz.msebera.android.httpclient.Header;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -120,9 +114,33 @@ implements OnItemClickListener,OnClickCallBack {
 	}
 
 	@Override
-	public void buttonClick(View v) {
+	public void buttonClick(View v,int position) {
 		// TODO Auto-generated method stub
-		doLogout();
+		if (position==(commonListAdpt.getCount()-1)){
+			DialogInterface.OnClickListener positiveCallback = new DialogInterface.OnClickListener(){
+	
+				@Override
+				public void onClick(DialogInterface arg0, int arg1) {
+					// TODO Auto-generated method stub
+					doLogout();
+				}
+				
+			};
+			
+			DialogInterface.OnClickListener negtiveCallback = new DialogInterface.OnClickListener(){
+	
+				@Override
+				public void onClick(DialogInterface arg0, int arg1) {
+					// TODO Auto-generated method stub
+					arg0.dismiss();
+				}
+				
+			};
+			
+			showAlertDialog("NEO","Really want to logout?","退出",
+					positiveCallback,"取消",negtiveCallback);
+		}
+		
 	}
 
 }

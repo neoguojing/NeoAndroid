@@ -10,20 +10,11 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-
-import com.neo.neoandroidlib.NeoImageUtil;
 import com.neo.neoapp.NeoBasicApplication;
 import com.neo.neoapp.R;
-import com.neo.neoapp.UI.adapters.NeoMeProfileListAdapter.ButtonViewHolder;
-import com.neo.neoapp.UI.adapters.NeoMeProfileListAdapter.StringImageViewHolder;
-import com.neo.neoapp.UI.adapters.NeoMeProfileListAdapter.StringStringViewHolder;
-import com.neo.neoapp.UI.adapters.NeoMeProfileListAdapter.ViewItem;
-import com.neo.neoapp.UI.adapters.NeoMeProfileListAdapter.ViewType;
 import com.neo.neoapp.UI.views.NeoBasicTextView;
-import com.neo.neoapp.entity.People;
 
-public class NeoAppSettingsListAdapter extends NeoBasicListAdapter
-implements OnClickListener{
+public class NeoAppSettingsListAdapter extends NeoBasicListAdapter{
 	
 	private final int VIEW_TYPE_COUNT = 4;
 	private List<ViewItem> viewList = new ArrayList<ViewItem>();
@@ -46,7 +37,7 @@ implements OnClickListener{
 	}
 	
 	public interface OnClickCallBack{
-		public void buttonClick(View v);
+		public void buttonClick(View v, int position);
 	}
 	
 	public NeoAppSettingsListAdapter(NeoBasicApplication application,
@@ -95,7 +86,7 @@ implements OnClickListener{
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewType type = getViewType(position);
-		
+		final int  pos = position;
 		ButtonViewHolder buttonholder = null;
 		if (convertView == null) {
 			switch(type){
@@ -111,7 +102,15 @@ implements OnClickListener{
 				buttonholder = new ButtonViewHolder(convertView);
 				buttonholder.button.setText(viewList.get(position).title);
 				buttonholder.button.setBackgroundColor(Color.parseColor("#DC143C"));
-				buttonholder.button.setOnClickListener(this);
+				buttonholder.button.setOnClickListener(new OnClickListener(){
+
+					@Override
+					public void onClick(View arg0) {
+						// TODO Auto-generated method stub
+						mCallback.buttonClick(arg0,pos);
+					}
+					
+				});
 				convertView.setTag(buttonholder);
 				break;
 			default:
@@ -131,7 +130,15 @@ implements OnClickListener{
 				buttonholder = (ButtonViewHolder) convertView.getTag();
 				buttonholder.button.setText(viewList.get(position).title);
 				buttonholder.button.setBackgroundColor(Color.parseColor("#DC143C"));
-				buttonholder.button.setOnClickListener(this);
+				buttonholder.button.setOnClickListener(new OnClickListener(){
+
+					@Override
+					public void onClick(View arg0) {
+						// TODO Auto-generated method stub
+						mCallback.buttonClick(arg0,pos);
+					}
+					
+				});
 				break;
 			default:
 				break;
@@ -193,10 +200,5 @@ implements OnClickListener{
 		}
 	}
 
-	@Override
-	public void onClick(View arg0) {
-		// TODO Auto-generated method stub
-		mCallback.buttonClick(arg0);
-	}
 
 }
