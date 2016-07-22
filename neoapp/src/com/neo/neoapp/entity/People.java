@@ -141,7 +141,7 @@ public class People extends Entity implements Parcelable {
         }
     }
     
-    People(People people) {
+    public People(People people) {
         this.uid = people.getUid();
         this.avatar = people.getAvatar();
         this.isVip = people.getIsVip();

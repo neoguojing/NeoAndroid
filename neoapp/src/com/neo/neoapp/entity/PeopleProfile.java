@@ -86,6 +86,26 @@ public class PeopleProfile extends Entity implements Parcelable {
 		// TODO Auto-generated constructor stub
 	}
 
+	public PeopleProfile(PeopleProfile mMyProfile) {
+		// TODO Auto-generated constructor stub
+		this.age = mMyProfile.age;
+	    this.avatar =  mMyProfile.avatar;
+	    this.constellation= mMyProfile.constellation;
+	    this.distance = mMyProfile.distance;
+	    this.gender = mMyProfile.gender;
+	    this.genderBgId = mMyProfile.genderBgId;
+	    this.genderId = mMyProfile.genderId;
+	    this.isHasSign = mMyProfile.isHasSign;
+	    this.name = mMyProfile.name;
+	    this.photos = new ArrayList<String>();
+	    this.photos.addAll(mMyProfile.photos);
+	    this.sign = mMyProfile.sign;
+	    this.signDistance = mMyProfile.signDistance;
+	    this.signPicture = mMyProfile.signPicture;
+	    this.time = mMyProfile.time;
+	    this.uid = mMyProfile.uid; 
+	}
+
 	public String getUid() {
         return this.uid;
     }

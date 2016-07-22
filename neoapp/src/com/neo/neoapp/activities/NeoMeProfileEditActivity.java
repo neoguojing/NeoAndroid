@@ -23,6 +23,8 @@ import com.neo.neoandroidlib.TextUtils;
 import com.neo.neoapp.NeoBasicActivity;
 import com.neo.neoapp.R;
 import com.neo.neoapp.UI.views.NeoBasicTextView;
+import com.neo.neoapp.entity.People;
+import com.neo.neoapp.entity.PeopleProfile;
 
 public class NeoMeProfileEditActivity extends NeoBasicActivity implements OnFocusChangeListener {
 	//private NeoCommonListView commonList;
@@ -53,6 +55,8 @@ public class NeoMeProfileEditActivity extends NeoBasicActivity implements OnFocu
 	private static final int MAX_AGE = 100;
 	private static final int MIN_AGE = 12;
 	
+	People mMe = new People(mApplication.mMe);
+	PeopleProfile mMyProfile = new PeopleProfile(mApplication.mMyProfile);
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -64,7 +68,7 @@ public class NeoMeProfileEditActivity extends NeoBasicActivity implements OnFocu
 	
 	private void initData() {
 		// TODO Auto-generated method stub
-		mSelectDate = DateUtils.getDate(mApplication.mMe.getBirthday());
+		mSelectDate = DateUtils.getDate(mApplication.mMe.getBirthday(),"yyyy-MM-dd");
 
 		Calendar mMinCalendar = Calendar.getInstance();
 		Calendar mMaxCalendar = Calendar.getInstance();
@@ -96,6 +100,7 @@ public class NeoMeProfileEditActivity extends NeoBasicActivity implements OnFocu
 		tvAgeValue.setText(String.valueOf(mApplication.mMe.getAge()));
 		
 		tvBirthdayValue = (NeoBasicTextView)findViewById(R.id.me_edit_value_birthday);
+		tvBirthdayValue.setText(mApplication.mMe.getBirthday());
 		
 		etIndustryValue = (EditText) findViewById(R.id.me_edit_value_industry);
 		etIndustryValue.setText(mApplication.mMe.getIndustry());
@@ -135,10 +140,10 @@ public class NeoMeProfileEditActivity extends NeoBasicActivity implements OnFocu
 			public void onCheckedChanged(RadioGroup arg0, int arg1) {
 				// TODO Auto-generated method stub
 				if (arg1 == female.getId())
-					mApplication.mMe.setGender(0);
+					mMe.setGender(0);
 				
 				if (arg1 == male.getId())
-					mApplication.mMe.setGender(1);
+					mMe.setGender(1);
 			}
 			
 		});
@@ -192,9 +197,9 @@ public class NeoMeProfileEditActivity extends NeoBasicActivity implements OnFocu
 			if (arg0.getId()==etNameValue.getId()){
 				
 			}else if (arg0.getId()==etSignValue.getId()){
-				mApplication.mMe.setSign(etSignValue.getText().toString().trim());
+				mMe.setSign(etSignValue.getText().toString().trim());
 			}else if (arg0.getId()==etIndustryValue.getId()){
-				mApplication.mMe.setSign(etIndustryValue.getText().toString().trim());
+				mMe.setSign(etIndustryValue.getText().toString().trim());
 			}
 		}
 	}
@@ -205,12 +210,13 @@ public class NeoMeProfileEditActivity extends NeoBasicActivity implements OnFocu
 				calendar.get(Calendar.MONTH),
 				calendar.get(Calendar.DAY_OF_MONTH));
 		mSelectDate = calendar.getTime();
-		mApplication.mMyProfile.setConstellation(constellation);
+		mMyProfile.setConstellation(constellation);
 		int age = TextUtils.getAge(calendar.get(Calendar.YEAR),
 				calendar.get(Calendar.MONTH),
 				calendar.get(Calendar.DAY_OF_MONTH));
-		mApplication.mMe.setAge(age);
-		tvAgeValue.setText(age);
+		mMe.setAge(age);
+		mMe.setBirthday(DateUtils.dateToString(mSelectDate,"yyyy-MM-dd"));
+		//tvAgeValue.setText(age);
 	}
 
 }
