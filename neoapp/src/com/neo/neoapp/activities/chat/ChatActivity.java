@@ -263,13 +263,43 @@ public class ChatActivity extends BaseMessageActivity {
 	    if(!NeoAyncSocketServer.socketMap.containsKey(mPeople.getName())){
 	    	//get the server ip from kunkunsae
 	    	//showAlertDialog("NEO",mPeople.getIp());	    	
-	    	if (mPeople.getIp().equals(""))
+	    	if (mPeople.getIp().equals("")){
 	    		getDestIpAddress(mPeople.getName());
+	    	}
 	    	else{
 	    		socketClient = new NeoAyncSocketClient(this,mPeople.getIp());
 	    		//socketClient = new NeoAyncSocketClient(this);
 	    	}
 	    }
+	}
+	
+	private void initSocketTask()
+	{
+		putAsyncTask(new AsyncTask<Void, Void, Boolean>() {
+            protected void onPreExecute() {
+                super.onPreExecute();
+                
+            }
+
+            protected Boolean doInBackground(Void... params) {
+                try {
+                    Boolean rtn = Boolean.valueOf(true);
+                    if (mPeople.getIp()!=null&&!mPeople.getIp().isEmpty()){
+            			ChatActivity.this.showAlertDialog("NEO", mPeople.getIp());
+        	    		socketClient = new NeoAyncSocketClient(ChatActivity.this,mPeople.getIp());
+                    }
+                    return rtn;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return Boolean.valueOf(false);
+                }
+            }
+
+            protected void onPostExecute(Boolean result) {
+                super.onPostExecute(result);
+            }
+        });
+
 	}
 	
 	private void getDestIpAddress(String name) {
@@ -283,6 +313,7 @@ public class ChatActivity extends BaseMessageActivity {
 			    "netstate":0
 			}
 		 * */
+		
         if (netWorkCheck(this)) {
             NeoAsyncHttpUtil.get((Context) this, NeoAppSetings.DestIpFetchUrlPrefix+name,
             		new JsonHttpResponseHandler() {
@@ -315,9 +346,12 @@ public class ChatActivity extends BaseMessageActivity {
                     			mPeople.setIp(response.getString("ip"));
                     		
                     		if (mPeople.getIp()!=null&&!mPeople.getIp().isEmpty()){
-                	    		socketClient = new NeoAyncSocketClient(ChatActivity.this,mPeople.getIp());
+                    			ChatActivity.this.showAlertDialog("NEO", mPeople.getIp());
+                    			initSocketTask();
+                	    		/*socketClient = new NeoAyncSocketClient(ChatActivity.this,mPeople.getIp());
                 	    		//socketClient = new NeoAyncSocketClient(this);
-                	    		
+                	    		if (socketClient==null)
+                	    			ChatActivity.this.showAlertDialog("NEO", "user is offline or unreachable!");*/
                     		}
                     	}
                         

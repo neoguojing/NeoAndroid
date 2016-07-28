@@ -6,12 +6,15 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+
 import com.baidu.navisdk.adapter.BNOuterTTSPlayerCallback;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.neo.neoandroidlib.FileUtils;
 import com.neo.neoandroidlib.NeoAsyncHttpUtil;
 import com.neo.neoandroidlib.NetWorkUtils.NetWorkState;
 import com.neo.neoandroidlib.TextUtils;
@@ -26,12 +29,15 @@ import com.neo.neoapp.UI.views.NeoBasicTextView;
 import com.neo.neoapp.activities.imageactivity.ImageFactoryCrop;
 import com.neo.neoapp.dialog.SimpleListDialog;
 import com.neo.neoapp.dialog.SimpleListDialog.onSimpleListItemClickListener;
+
 import cz.msebera.android.httpclient.Header;
 import cz.msebera.android.httpclient.conn.params.ConnPerRouteBean;
 import cz.msebera.android.httpclient.entity.StringEntity;
 import cz.msebera.android.httpclient.message.BasicHeader;
+
 import java.io.UnsupportedEncodingException;
 import java.util.regex.Pattern;
+
 import org.apache.http.entity.mime.MIME;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -89,7 +95,13 @@ public class LoginActivity extends NeoBasicActivity implements OnClickListener,
 		mBtnBack = (Button) findViewById(R.id.login_btn_back);
 		mBtnLogin = (Button) findViewById(R.id.login_btn_login);
 	}
-
+	
+	@Override
+	public void onBackPressed() {
+		startActivity(new Intent(this, WelcomeActivity.class));
+		finish();
+	}
+	
 	@Override
 	protected void initEvents() {
 		mHtvForgotPassword.setOnClickListener(this);
@@ -244,7 +256,7 @@ public class LoginActivity extends NeoBasicActivity implements OnClickListener,
                     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                         super.onSuccess(statusCode, headers, response);
                         Log.i(LoginActivity.this.Tag, "onSuccess ");
-                        //LoginActivity.this.showNeoJsoErrorCodeToast(response);
+                        LoginActivity.this.showNeoJsoErrorCodeToast(response);
                         NeoAsyncHttpUtil.addPersistCookieToGlobaList(LoginActivity.this);
                         try {
                             if (response.getString("errcode").equals(NEO_ERRCODE.LOGIN_SUCCESS.toString())) {
