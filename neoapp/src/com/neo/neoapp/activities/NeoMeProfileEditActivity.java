@@ -55,8 +55,8 @@ public class NeoMeProfileEditActivity extends NeoBasicActivity implements OnFocu
 	private static final int MAX_AGE = 100;
 	private static final int MIN_AGE = 12;
 	
-	People mMe = new People(mApplication.mMe);
-	PeopleProfile mMyProfile = new PeopleProfile(mApplication.mMyProfile);
+	People mMe = null;
+	PeopleProfile mMyProfile = null;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -82,6 +82,9 @@ public class NeoMeProfileEditActivity extends NeoBasicActivity implements OnFocu
 
 		mCalendar = Calendar.getInstance();
 		mCalendar.setTime(mSelectDate);
+		
+		mMe = new People(mApplication.mMe);
+		mMyProfile = new PeopleProfile(mApplication.mMyProfile);
 	}
 	
 	@Override
