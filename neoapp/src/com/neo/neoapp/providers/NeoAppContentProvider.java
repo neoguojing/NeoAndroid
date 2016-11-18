@@ -50,7 +50,7 @@ public class NeoAppContentProvider extends ContentProvider {
 		mUriMatcher.addURI(NeoBasicMetaData.AUTHORITY, "records/#", SINGLE_URI_INDICATOR);
 	}
 	
-	//´´½¨Êı¾İ¿â
+	//åˆ›å»ºæ•°æ®åº“
 	private static class DataBaseHelper extends SQLiteOpenHelper{
 
 		public DataBaseHelper(Context context) {

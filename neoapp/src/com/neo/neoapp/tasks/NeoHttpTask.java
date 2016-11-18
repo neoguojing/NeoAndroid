@@ -13,9 +13,9 @@ public class NeoHttpTask extends AsyncTask<String, Integer, Object> {
 		mContext = ctx;
 	}
 	/** 
-	* ¸Ã·½·¨ÓÉuiÏß³Ì½øĞĞµ÷ÓÃ£¬ÓÃ»§¿ÉÒÔÔÚÕâÀï¾¡ÇéµÄ·ÃÎÊui×é¼ş¡£ 
-	* ºÜ¶àÊ±ºò£¬ÎÒÃÇ»áÔÚÕâÀïÏÔÊ¾Ò»¸ö½ø¶ÈÌõÉ¶µÄ£¬ÒÔÊ¾ºóÌ¨ÕıÔÚ 
-	* Ö´ĞĞÄ³Ïî¹¦ÄÜ¡£ 
+	* è¯¥æ–¹æ³•ç”±uiçº¿ç¨‹è¿›è¡Œè°ƒç”¨ï¼Œç”¨æˆ·å¯ä»¥åœ¨è¿™é‡Œå°½æƒ…çš„è®¿é—®uiç»„ä»¶ã€‚ 
+	* å¾ˆå¤šæ—¶å€™ï¼Œæˆ‘ä»¬ä¼šåœ¨è¿™é‡Œæ˜¾ç¤ºä¸€ä¸ªè¿›åº¦æ¡å•¥çš„ï¼Œä»¥ç¤ºåå°æ­£åœ¨ 
+	* æ‰§è¡ŒæŸé¡¹åŠŸèƒ½ã€‚ 
 	*/
 	@Override
 	protected void onPreExecute() {
@@ -23,10 +23,10 @@ public class NeoHttpTask extends AsyncTask<String, Integer, Object> {
 	}
 
 	/** 
-	* ¸Ã·½·¨ÓÉºóÌ¨½ø³Ì½øĞĞµ÷ÓÃ£¬½øĞĞÖ÷ÒªµÄºÄÊ±µÄÄÇĞ©¼ÆËã¡£ 
-	* ¸Ã·½·¨ÔÚonPreExecute·½·¨Ö®ºó½øĞĞµ÷ÓÃ¡£µ±È»ÔÚÖ´ĞĞ¹ı³ÌÖĞ 
-	* ÎÒÃÇ¿ÉÒÔÃ¿¸ô¶àÉÙÃë¾Íµ÷ÓÃÒ»´ÎpublishProgress·½·¨£¬¸üĞÂ 
-	* ½ø¶ÈĞÅÏ¢ 
+	* è¯¥æ–¹æ³•ç”±åå°è¿›ç¨‹è¿›è¡Œè°ƒç”¨ï¼Œè¿›è¡Œä¸»è¦çš„è€—æ—¶çš„é‚£äº›è®¡ç®—ã€‚ 
+	* è¯¥æ–¹æ³•åœ¨onPreExecuteæ–¹æ³•ä¹‹åè¿›è¡Œè°ƒç”¨ã€‚å½“ç„¶åœ¨æ‰§è¡Œè¿‡ç¨‹ä¸­ 
+	* æˆ‘ä»¬å¯ä»¥æ¯éš”å¤šå°‘ç§’å°±è°ƒç”¨ä¸€æ¬¡publishProgressæ–¹æ³•ï¼Œæ›´æ–° 
+	* è¿›åº¦ä¿¡æ¯ 
 	*/
 	@Override
 	protected Object doInBackground(String... params) {
@@ -34,9 +34,9 @@ public class NeoHttpTask extends AsyncTask<String, Integer, Object> {
 	}
 
 	/** 
-	* doInBackgroundÖĞµ÷ÓÃÁËpublishProgressÖ®ºó£¬uiÏß³Ì¾Í»á 
-	* µ÷ÓÃ¸Ã·½·¨¡£Äã¿ÉÒÔÔÚÕâÀï¶¯Ì¬µÄ¸Ä±ä½ø¶ÈÌõµÄ½ø¶È£¬ÈÃÓÃ»§ÖªµÀ 
-	* µ±Ç°µÄ½ø¶È¡£ 
+	* doInBackgroundä¸­è°ƒç”¨äº†publishProgressä¹‹åï¼Œuiçº¿ç¨‹å°±ä¼š 
+	* è°ƒç”¨è¯¥æ–¹æ³•ã€‚ä½ å¯ä»¥åœ¨è¿™é‡ŒåŠ¨æ€çš„æ”¹å˜è¿›åº¦æ¡çš„è¿›åº¦ï¼Œè®©ç”¨æˆ·çŸ¥é“ 
+	* å½“å‰çš„è¿›åº¦ã€‚ 
 	*/
 	@Override
 	protected void onProgressUpdate(Integer... values) {
@@ -44,8 +44,8 @@ public class NeoHttpTask extends AsyncTask<String, Integer, Object> {
 	}
 
 	/** 
-	* µ±doInBackgroundÖ´ĞĞÍê±ÏÖ®ºó£¬ÓÉuiÏß³Ìµ÷ÓÃ¡£¿ÉÒÔÔÚÕâÀï 
-	* ·µ»ØÎÒÃÇ¼ÆËãµÄ×îÖÕ½á¹û¸øÓÃ»§¡£ 
+	* å½“doInBackgroundæ‰§è¡Œå®Œæ¯•ä¹‹åï¼Œç”±uiçº¿ç¨‹è°ƒç”¨ã€‚å¯ä»¥åœ¨è¿™é‡Œ 
+	* è¿”å›æˆ‘ä»¬è®¡ç®—çš„æœ€ç»ˆç»“æœç»™ç”¨æˆ·ã€‚ 
 	*/
 	@Override
 	protected void onPostExecute(Object result) {

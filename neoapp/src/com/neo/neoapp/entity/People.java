@@ -11,7 +11,6 @@ import android.os.Parcelable.Creator;
 import com.neo.neoandroidlib.FileUtils;
 import com.neo.neoapp.NeoAppSetings;
 import com.neo.neoapp.NeoBasicApplication;
-import com.neo.neoapp.R;
 
 import cz.msebera.httpclient.android.BuildConfig;
 
